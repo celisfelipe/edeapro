@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Citas - Administrador</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Administrador</h2>
+        <ul>
+            <li><a href="inicio.html">Citas</a></li>
+            <li><a href="horarios.html">Horarios / Disponibilidad</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="empleados.html">Empleados</a></li>
+            <li><a href="notificaciones.html">Notificaciones</a></li>
+            <li><a href="estadisticas.html">Estadísticas</a></li>
+            <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Citas</h1>
+            <p id="nombre-admin">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <div class="card">
+            <h2>Citas</h2>
+            <table>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Cliente</th>
+                    <th>Mascota</th>
+                    <th>Servicio</th>
+                    <th>Estilista</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody id="tabla-citas">
+                    <tr><td colspan="8">Cargando citas...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Modal de confirmación (cancelar cita) -->
+    <div class="modal-overlay" id="modal-confirmar">
+        <div class="modal">
+            <h3>Confirmar acción</h3>
+            <p id="modal-confirmar-msg"></p>
+            <div class="modal-footer">
+                <button class="btn" style="background:#eee;" id="modal-confirmar-cancel">Cancelar</button>
+                <button class="btn btn-red" id="modal-confirmar-ok">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de operación exitosa -->
+    <div class="modal-overlay" id="modal-exito">
+        <div class="modal">
+            <h3>Operación exitosa</h3>
+            <p id="modal-exito-msg"></p>
+            <div class="modal-footer">
+                <button class="btn btn-green" id="modal-exito-ok">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de error -->
+    <div class="modal-overlay" id="modal-error">
+        <div class="modal">
+            <h3>Ha ocurrido un error</h3>
+            <p id="modal-error-msg"></p>
+            <div class="modal-footer">
+                <button class="btn btn-red" id="modal-error-ok">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/modal.js"></script>
+    <script src="../scripts/inicio.js"></script>
+</body>
+</html>

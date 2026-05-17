@@ -1,0 +1,373 @@
+/* ================================================
+   perfil.css — Panel Cliente / Mi Perfil
+   ================================================
+   Estilos de la página de perfil del cliente (perfil.html).
+   Se carga junto a ../estilos/principal.css para usar
+   el mismo navbar y estilos globales del sitio.
+
+   Secciones: Mi Perfil, Mis Mascotas, Citas, Pagos, Modales.
+================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f4f3ea;
+  color: #1a1a1a;
+}
+
+/* PAGE */
+/* Contenedor principal: limita el ancho y centra el contenido */
+.page {
+  max-width: 860px;
+  margin: 24px auto;
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* CARD */
+/* Tarjeta blanca con sombra que agrupa cada sección */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 0.5px solid #e2d4c2;
+  border-top: 3px solid #ae9d81;
+  padding: 22px 28px;
+}
+
+/* Título de cada sección del perfil */
+.card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* PERFIL */
+/* Layout de la sección Mi Perfil */
+.profile-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* Columna de campos del formulario de perfil */
+.form-fields {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Grupo de label + input */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-group.full {
+  grid-column: 1 / -1;
+}
+
+.field-group label {
+  font-size: 13px;
+  color: #555;
+}
+
+.field-group input {
+  height: 36px;
+  border: 1px solid #c5dce8;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-group input:focus {
+  border-color: #ae9d81;
+  box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.15);
+}
+
+/* BOTONES */
+/* Botón verde: guardar cambios del perfil */
+.btn-green {
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  transition: background 0.2s;
+}
+
+.btn-green:hover {
+  background: #16a34a;
+}
+
+.btn-blue {
+  background: #ae9d81;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.2s;
+}
+
+.btn-blue:hover {
+  background: #2596cc;
+}
+
+/* Botón naranja: cancelar en modal */
+.btn-orange {
+  background: #ae9d81;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s;
+}
+
+.btn-orange:hover {
+  background: #d97706;
+}
+
+/* Botón rojo: cancelar cita */
+.btn-red {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s;
+}
+
+.btn-red:hover {
+  background: #dc2626;
+}
+
+/* MASCOTAS */
+/* Grid de tarjetas de mascotas */
+.pets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Tarjeta individual de cada mascota */
+.pet-card {
+  border: 0.5px solid #d0e8f5;
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  background: #faf8f5;
+}
+
+/* Nombre de la mascota en la tarjeta */
+.pet-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+/* Especie, edad y género de la mascota */
+.pet-breed {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* CITAS */
+/* Fila de botones de filtro (Día / Semana / Mes) */
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+/* Botón de tab individual */
+.tab {
+  border: 1px solid #c5dce8;
+  background: #fff;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Tab activo: fondo oscuro */
+.tab.active {
+  background: #ae9d81;
+  color: white;
+  border-color: #ae9d81;
+}
+
+/* Tabla de citas programadas */
+.appts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appts-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  text-align: left;
+  padding: 8px 0;
+  border-bottom: 1px solid #d0e8f5;
+}
+
+.appts-table td {
+  font-size: 13px;
+  color: #1a1a1a;
+  padding: 12px 0;
+  border-bottom: 0.5px solid #e8f4fb;
+}
+
+/* Badge verde: cita Completada */
+.badge-confirm {
+  background: #22c55e;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Badge amarillo: cita Pendiente */
+.badge-pending {
+  background: #f59e0b;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Badge rojo: cita Cancelada */
+.badge-cancel {
+  background: #ef4444;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* HISTORIAL PAGOS */
+/* Tabla de historial de pagos */
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payments-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  text-align: left;
+  padding: 8px 0;
+  border-bottom: 1px solid #d0e8f5;
+}
+
+.payments-table td {
+  font-size: 13px;
+  color: #888;
+  padding: 10px 0;
+}
+
+/* Mensaje cuando no hay datos en una tabla */
+.empty-msg {
+  text-align: center;
+  padding: 20px 0 !important;
+  font-style: italic;
+}
+
+/* ── MODALES ─────────────────────────────────────── */
+/* Fondo oscuro del modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Activa la visibilidad del modal */
+.modal-overlay.open {
+    display: flex;
+}
+
+/* Caja del modal */
+.modal {
+    background: white;
+    border-radius: 10px;
+    padding: 28px;
+    width: 400px;
+    max-width: 95vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    animation: fadeInModal 0.2s ease;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal h3 {
+    margin-bottom: 14px;
+    font-size: 16px;
+    color: #1a1a1a;
+}
+
+.modal p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* Fila de botones del modal */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <title>Clientes - Empleado</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Empleado</h2>
+        <ul>
+            <li><a href="inicio.html">Servicios</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="disponibilidad.html">Disponibilidad</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Clientes</h1>
+            <p id="nombre-empleado">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <div class="card">
+            <input type="text" id="buscador" placeholder="Buscar por nombre, teléfono o correo">
+            <table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Correo electrónico</th>
+                </tr>
+                <tbody id="tabla-clientes">
+                    <tr><td colspan="3">Cargando clientes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="../scripts/clientes.js"></script>
+</body>
+
+</html>

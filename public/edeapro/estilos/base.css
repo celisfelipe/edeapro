@@ -1,0 +1,24 @@
+/* ================================================
+   base.css — Reset General del Sitio Público
+   ================================================
+   Resetea márgenes, paddings y define la tipografía
+   base para todas las páginas del sitio público.
+   Se carga en la mayoría de páginas junto a principal.css.
+================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #f4f3ea;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}

@@ -1,0 +1,483 @@
+/* ================================================
+   registro.css — Página de Registro Independiente
+   ================================================
+   Estilos de registro.html (versión standalone del registro).
+   Esta página es el destino de los botones "Agendar Cita"
+   en las páginas de servicios (perrocorto, perrolargo, etc.).
+   Incluye estilos para agregar/quitar mascotas dinámicamente.
+================================================ */
+
+:root {
+    --color-primary: #000000;
+    --color-secondary: #050505;
+    --color-dark: #000000;
+    --color-light: #f0f9ff;
+    --color-text: #164e63;
+    --color-muted: #000000;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #f6f6f6 0%, #ffffff 50%, #f2f2f6 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   FONDO ANIMADO
+   ============================================ */
+.animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    filter: blur(40px);
+    animation: float 15s infinite ease-in-out;
+}
+
+.bubble1 {
+    width: 200px;
+    height: 200px;
+    background: #0369a1;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.bubble2 {
+    width: 150px;
+    height: 150px;
+    background: #ff9500;
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.bubble3 {
+    width: 180px;
+    height: 180px;
+    background: #06b6d4;
+    bottom: 10%;
+    left: 50%;
+    animation-delay: 4s;
+}
+
+.bubble4 {
+    width: 120px;
+    height: 120px;
+    background: #ff9500;
+    top: 30%;
+    right: 20%;
+    animation-delay: 6s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) translateX(0px);
+    }
+    25% {
+        transform: translateY(-30px) translateX(20px);
+    }
+    50% {
+        transform: translateY(-60px) translateX(-20px);
+    }
+    75% {
+        transform: translateY(-30px) translateX(20px);
+    }
+}
+
+.wave {
+    position: absolute;
+    width: 150%;
+    height: 100px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z' fill='%230369a1' opacity='0.05'/%3E%3C/svg%3E") repeat-x;
+    bottom: 0;
+    animation: wave 15s linear infinite;
+}
+
+.wave1 {
+    bottom: 10px;
+    animation-delay: 0s;
+}
+
+.wave2 {
+    bottom: 20px;
+    animation-delay: -5s;
+    opacity: 0.5;
+}
+
+@keyframes wave {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 1200px 0;
+    }
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.registro-container {
+    width: 100%;
+    max-width: 700px;
+    position: relative;
+    z-index: 10;
+}
+
+.registro-box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.registro-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.registro-header h1 {
+    font-size: 2rem;
+    color: var(--color-dark);
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.registro-header p {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+}
+
+/* ============================================
+   FORMULARIO
+   ============================================ */
+.form-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, transparent 100%);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--color-dark);
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 2px solid #cffafe;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background-color: #f0f9ff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1);
+    background-color: white;
+}
+
+.form-group small {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    margin-top: 4px;
+}
+
+.form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230369a1' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 18px;
+    padding-right: 35px;
+}
+
+/* MASCOTAS */
+.mascota-form {
+    background: linear-gradient(135deg, #f0f9ff 0%, #fef9e7 100%);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #cffafe;
+    position: relative;
+}
+
+.mascota-form h3 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.mascota-form .btn-remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.mascota-form .btn-remove:hover {
+    background: #ff3838;
+    transform: scale(1.1);
+}
+
+/* BOTONES DE MASCOTAS */
+.mascota-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-muted) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(3, 105, 161, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(3, 105, 161, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-large {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--color-light);
+    transform: translateY(-2px);
+}
+
+/* CHECKBOX */
+.form-group.checkbox {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.form-group.checkbox input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.form-group.checkbox label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* MENSAJES */
+.message {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.success {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #6ee7b7;
+}
+
+.message.error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* LINK LOGIN */
+.login-link {
+    text-align: center;
+    color: var(--color-text);
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.login-link a:hover {
+    color: var(--color-secondary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 600px) {
+    .registro-box {
+        padding: 24px;
+    }
+
+    .registro-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mascota-buttons {
+        flex-direction: column;
+    }
+
+    .btn-secondary {
+        width: 100%;
+    }
+
+    .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .line {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .registro-box {
+        padding: 16px;
+    }
+
+    .registro-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+        padding: 10px 16px;
+    }
+
+    .btn-large {
+        padding: 12px;
+    }
+} 

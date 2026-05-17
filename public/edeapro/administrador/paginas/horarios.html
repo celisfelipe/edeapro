@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Horarios - Administrador</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Administrador</h2>
+        <ul>
+            <li><a href="inicio.html">Citas</a></li>
+            <li><a href="horarios.html">Horarios / Disponibilidad</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="empleados.html">Empleados</a></li>
+            <li><a href="notificaciones.html">Notificaciones</a></li>
+            <li><a href="estadisticas.html">Estadísticas</a></li>
+            <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Horarios</h1>
+            <p id="nombre-admin">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <!-- Selector de fecha y grilla de horarios -->
+        <div class="card">
+            <div class="fecha-selector">
+                <label><strong>Ver horarios del día:</strong></label>
+                <input type="date" id="fecha-selector">
+                <button class="btn btn-blue" onclick="cargarHorarios()">Ver</button>
+            </div>
+            <div id="contenedor-horarios">
+                <p>Selecciona una fecha para ver los horarios.</p>
+            </div>
+        </div>
+
+        <!-- Tabla de disponibilidad de estilistas -->
+        <div class="card">
+            <h2>Disponibilidad de Estilistas</h2>
+            <br>
+            <table>
+                <tr>
+                    <th>Estilista</th>
+                    <th>Disponibilidad</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody id="tabla-disponibilidad">
+                    <tr><td colspan="3">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="../scripts/horarios.js"></script>
+</body>
+</html>

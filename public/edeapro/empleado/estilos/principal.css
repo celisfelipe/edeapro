@@ -1,0 +1,242 @@
+/* ================================================
+   principal.css — Panel Empleado
+   ================================================
+   Estilos del panel del empleado: sidebar, header,
+   tablas y grilla de horarios.
+
+   Basado en el panel admin con ajustes de color.
+   Se carga en todas las páginas del empleado.
+================================================ */
+
+
+/* SIDEBAR */
+/* Sidebar izquierdo: menú de navegación del panel empleado */
+.sidebar {
+    width: 230px;
+    background: #ae9d81;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+}
+
+/* Título del sidebar */
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* Lista de links del menú */
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.sidebar ul li:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+/* CONTENIDO */
+/* Área principal de contenido */
+.main {
+    margin-left: 250px;
+    padding: 30px;
+    width: 100%;
+    background: #f4f3ea;
+    min-height: 100vh;
+}
+
+/* Barra superior con título, nombre del empleado y cerrar sesión */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #333333;
+}
+
+.header p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #ae9d81;
+    font-weight: 600;
+}
+
+/* TARJETAS */
+/* Tarjeta blanca que envuelve cada sección */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-top: 3px solid #ae9d81;
+}
+
+.card h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333333;
+    margin-bottom: 15px;
+}
+
+/* TABLAS */
+/* Tablas de datos */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th {
+    background: #ae9d81;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+table td {
+    padding: 10px;
+    border-bottom: 1px solid #f0ece6;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #333333;
+}
+
+table tr:hover {
+    background: #faf8f5;
+}
+
+/* BOTONES */
+/* Botón base */
+.btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.85; }
+
+/* Botón azul: acciones secundarias */
+.btn-blue { background: #ae9d81; color: white; }
+/* Botón verde: acciones de confirmación */
+.btn-green { background: #7eb56a; color: white; }
+/* Botón rojo: cerrar sesión */
+.btn-red { background: #dc3545; color: white; }
+.btn-yellow { background: #e8c56a; color: #333333; }
+
+/* Badge verde: estado Completada */
+.status-green { color: #7eb56a; font-weight: 700; }
+/* Badge amarillo: estado Pendiente */
+.status-yellow { color: #e8c56a; font-weight: 700; }
+/* Badge rojo: estado Cancelada */
+.status-red { color: #dc3545; font-weight: 700; }
+
+/* INPUT / SELECT */
+input, select {
+    padding: 8px 12px;
+    border: 1.5px solid #e2d4c2;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #333333;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #ae9d81;
+}
+
+/* ── Disponibilidad — grilla de horarios del empleado ────────
+   Usados en disponibilidad.html */
+/* Fila del selector de fecha en disponibilidad */
+.fecha-selector {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Tabla de grilla de horarios del empleado */
+.horario-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.horario-table th {
+    background: #ae9d81;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.horario-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    vertical-align: top;
+    min-width: 150px;
+}
+
+/* Columna de hora en la grilla */
+.hora-col {
+    background: #f4f3ea;
+    font-weight: bold;
+    width: 80px;
+}
+
+/* Bloque de cita en la grilla */
+.cita-bloque {
+    background: #ae9d81;
+    color: white;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 12px;
+    margin: 2px;
+}
+
+/* Cita completada en verde */
+.cita-bloque.completada { background: #7eb56a; }
+
+/* Slot libre en la grilla */
+.libre {
+    color: #ccc;
+    font-size: 12px;
+}

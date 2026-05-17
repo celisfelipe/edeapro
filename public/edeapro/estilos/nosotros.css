@@ -1,0 +1,131 @@
+/* ================================================
+   nosotros.css — Página Nosotros
+   ================================================
+   Estilos exclusivos para nosotros.html.
+   Se carga junto a principal.css para mantener consistencia visual.
+================================================ */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: #f4f3ea;
+}
+
+header {
+    background-color: #af9d81;
+    color: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px; 
+    margin: 0;
+    padding: 0;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500; 
+    margin: 0;
+}
+
+.equipo {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.titulo {
+    font-size: 2.3rem;
+    margin-bottom: 40px;
+}
+
+/* CONTENEDOR DE LAS CARDS */
+.cards-container {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* CARD */
+.card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+
+.card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card h3 {
+    margin: 15px 0 5px;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.cargo {
+    color: #555;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.texto {
+    padding: 0 15px;
+    font-size: 0.9rem;
+    text-align: justify;
+}
+
+/* SECCIÓN FINAL */
+.nuestro-presente {
+    background: linear-gradient(135deg, #f8f8f8, #dcdcdc);
+    padding: 60px 20px;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.nuestro-presente h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.nuestro-presente p {
+    max-width: 600px;
+    margin: auto;
+    color: #444;
+    line-height: 1.6;
+}
+
+.nuestro-presente button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nuestro-presente button:hover {
+    background: #ffbb00;
+    color: black;
+}

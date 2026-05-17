@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<script>
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', function() {
+            var label = document.querySelector('.toggle .label');
+            if (label) label.textContent = '☾';
+            var toggle = document.getElementById('dark-toggle');
+            if (toggle) toggle.checked = true;
+        });
+    }
+</script>
+    <link rel="stylesheet" href="../estilos/darkmode.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - EDEA PRO</title>
+    <meta name="description" content="Conoce al equipo de profesionales de EDEA PRO Peluquería Canina y Felina">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="stylesheet" href="../estilos/nosotros.css">
+    
+</head>
+
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="logo">
+            <img src="../imagenes/logo/logo2.png">
+        </div>
+                    <!-- TOGGLE MODO OSCURO -->
+    <div class="toggle-container">
+        <div class="toggle">
+            <input type="checkbox" id="dark-toggle">
+            <span class="button"></span>
+            <span class="label">☼</span>
+        </div>
+    </div>
+
+
+
+        <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="perrocorto.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="ubicacion.html">Ubicación</a></li>
+                <li><a href="agenda.html">Agendar cita</a></li>
+                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="equipo">
+        <h1 class="titulo">Nuestro Equipo</h1>
+
+        <div class="cards-container">
+            <!-- CARD 1 -->
+            <div class="card">
+                <img src="../imagenes/juanpablo.jfif" alt="Juan Pablo Lopez">
+                <h3>Juan Pablo Lopez</h3>
+                <p class="cargo">Gerente/Jefe</p>
+                <p class="texto">
+                    Al frente de Patas de Palos, lidera con la elegancia y determinación
+                    de su raza favorita: el galgo afgano. Visionaria, apasionada y con
+                    un enfoque único para el detalle, hace que cada peludo se sienta parte
+                    de esta gran familia.
+                </p>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="card">
+                <img src="../imagenes/maria.jfif" alt="Maria del Mar">
+                <h3>Maria del Mar</h3>
+                <p class="cargo">Estilista</p>
+                <p class="texto">
+                    Con la serenidad y lealtad del Bernés de la Montaña, gestiona el spa para que
+                    cada detalle funcione a la perfección. Entre agendas y peludos curiosos, garantiza
+                    experiencias únicas para perros, gatos y sus humanos.
+                </p>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="card">
+                <img src="../imagenes/camila.jfif" alt="Camila Tamayo Restrepo">
+                <h3>Camila Tamayo Restrepo</h3>
+                <p class="cargo">Estilista</p>
+                <p class="texto">
+                    Es la voz amable al teléfono y la sonrisa detrás del mostrador. Atiende humanos
+                    con paciencia y encanto, y siempre tiene una mano para los peludos.
+                </p>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="card">
+                <img src="../imagenes/katherine.jfif" alt="Katherine Ortiz Hernandez">
+                <h3>Katherine Ortiz Hernandez</h3>
+                <p class="cargo">Estilista</p>
+                <p class="texto">
+                    En su mundo, las tijeras bailan y los peludos salen renovados. Atenta y apasionada,
+                    transforma cada servicio en un momento único de amor y cuidado.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- SECCIÓN NUESTRO PRESENTE -->
+    <section class="nuestro-presente">
+        <h2>Nuestro Presente</h2>
+        <p>
+            En este apartado irá una descripción escrita por el propietario, donde
+            se explique la situación actual del negocio, su crecimiento y sus metas.
+        </p>
+    </section>
+
+
+    <footer id="contacto">
+        <div class="footer-container">
+            <div class="footer-col footer-links">
+                <h3>Servicios</h3>
+                <ul>
+                    <li><a href="perrocorto.html">Perro pelo corto</a></li>
+                    <li><a href="perrolargo.html">Perro pelo largo</a></li>
+                    <li><a href="gatos.html">Gatos</a></li>
+                    <li><a href="corteespecializado.html">Corte especializado</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-info">
+                <h3>Contacto</h3>
+                <p>📞 Llámanos: (+57) 350 507 3843</p>
+                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
+                </p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@edeaplay" aria-label="Youtube" title="Youtube">▶</a>
+                    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" aria-label="Instagram"
+                        title="Instagram">📷</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/darkmode.js"></script>
+
+    <script src="../scripts/navbar.js"></script>
+
+    
+</body>
+
+</html>

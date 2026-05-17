@@ -1,0 +1,321 @@
+/* ================================================
+   login.css — Página de Login y Registro
+   ================================================
+   Estilos del formulario de inicio de sesión y registro
+   en login.html. Usa Bootstrap 5 como base y sobreescribe
+   con la paleta café/dorado del proyecto.
+
+   Diseño: pantalla dividida (izquierda: logo, derecha: form).
+   Incluye estilos para mostrar/ocultar contraseña,
+   spinner de carga y mensajes de error/éxito.
+================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #ae9d81;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-wrapper {
+    display: flex;
+    width: 900px;
+    max-width: 100%;
+    min-height: 550px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+}
+
+/* PANEL IZQUIERDO */
+.welcome-panel {
+    width: 40%;
+    background: linear-gradient(135deg, #ae9d81, #7a6a56);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    color: white;
+}
+
+.welcome-panel .logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.welcome-panel h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.welcome-panel p {
+    font-size: 14px;
+    opacity: 0.85;
+    line-height: 1.6;
+}
+
+.welcome-panel .paws {
+    font-size: 40px;
+    margin-top: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* PANEL DERECHO */
+.forms-panel {
+    width: 60%;
+    background: #f4f3ea;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px 40px;
+    overflow-y: auto;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    transform: translateX(0);
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-box.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.form-box h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #7a6352;
+    margin-bottom: 25px;
+}
+
+/* Grupo de label + input con ícono */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #e2d4c2;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    color: #333333;
+    transition: border-color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #c0733a;
+}
+
+.password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrap input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.ojo-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #7a6352;
+    width: 20px;
+    height: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.mascota-section {
+    background: #f5ece0;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.mascota-section h3 {
+    font-size: 14px;
+    color: #3d2b1a;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 11px;
+    background: #ae9d81;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+.btn-primary:hover {
+    background: #9a8a6e;
+}
+
+/* Mensaje de error o éxito debajo del formulario */
+.mensaje {
+    font-size: 13px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: none;
+}
+
+/* Mensaje de error: texto rojo */
+.mensaje.error {
+    background: #fde8e8;
+    color: #c0392b;
+    display: block;
+}
+
+/* Mensaje de éxito: texto verde */
+.mensaje.success {
+    background: #e8f5e9;
+    color: #27ae60;
+    display: block;
+}
+
+.switch-text {
+    text-align: center;
+    font-size: 13px;
+    color: #7a6352;
+    margin-top: 15px;
+}
+
+.switch-text span {
+    color: #ae9d81;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.mascota-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.btn-agregar {
+    background: #ae9d81;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Bloque de campos de una mascota en el registro */
+.mascota-item {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1.5px solid #e2d4c2;
+    position: relative;
+}
+
+.mascota-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: #ae9d81;
+    margin-bottom: 10px;
+}
+
+/* Botón ✕ para quitar una mascota del formulario */
+.btn-quitar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .auth-wrapper { flex-direction: column; }
+    .welcome-panel { width: 100%; padding: 30px; min-height: 150px; }
+    .forms-panel { width: 100%; min-height: 500px; }
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+

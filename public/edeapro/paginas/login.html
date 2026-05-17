@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script>
+    // Aplicar modo oscuro antes de que cargue la página
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark-mode');
+    }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEA Grooming - Acceso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/login.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+
+        <!-- PANEL IZQUIERDO - BIENVENIDA -->
+        <div class="welcome-panel">
+            <img src="../imagenes/logo/logo.png" alt="Edea Logo" class="logo">
+            <h1>EDEA Grooming</h1>
+            <p>El mejor cuidado para tu mascota</p>
+            <div class="paws">🐾</div>
+        </div>
+
+        <!-- PANEL DERECHO - FORMULARIOS -->
+        <div class="forms-panel">
+
+            <!-- LOGIN -->
+            <div class="form-box" id="login-box">
+                <h2>Bienvenido</h2>
+                <p class="subtitle">Inicia sesión en tu cuenta</p>
+
+                <div class="input-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="login-correo" placeholder="tu@correo.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <div class="password-wrap">
+                        <input type="password" id="login-password" placeholder="••••••••">
+                        <box-icon name='hide' id="ojo-login-password" onclick="togglePassword('login-password', 'ojo-login-password')" class="ojo-icon"></box-icon>
+                    </div>
+                </div>
+                
+
+                <button class="btn-primary" onclick="iniciarSesion()">Iniciar sesión</button>
+                <div id="login-msg" class="mensaje"></div>
+
+                <p class="switch-text">¿No tienes cuenta? <span onclick="mostrarRegistro()">Regístrate aquí</span></p>
+            </div>
+
+            <!-- REGISTRO -->
+            <div class="form-box hidden" id="registro-box">
+                <h2>Crear cuenta</h2>
+                <p class="subtitle">Únete a EDEA Grooming</p>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Nombre</label>
+                        <input type="text" id="reg-nombre" placeholder="Tu nombre">
+                    </div>
+                    <div class="input-group">
+                        <label>Apellido</label>
+                        <input type="text" id="reg-apellido" placeholder="Tu apellido">
+                    </div>
+                    <div class="input-group">
+                        <label>Correo</label>
+                        <input type="email" id="reg-correo" placeholder="tu@correo.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="reg-telefono" placeholder="3001234567">
+                    </div>
+                    <div class="input-group">
+                        <label>Contraseña</label>
+                        <div class="password-wrap">
+                            <input type="password" id="reg-password" placeholder="Mín. 8 caracteres">
+                            <box-icon name='hide' id="ojo-reg-password" onclick="togglePassword('reg-password', 'ojo-reg-password')" class="ojo-icon"></box-icon>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Confirmar contraseña</label>
+                        <div class="password-wrap">
+                            <input type="password" id="reg-confirmar" placeholder="Repite tu contraseña">
+                            <box-icon name='hide' id="ojo-reg-confirmar" onclick="togglePassword('reg-confirmar', 'ojo-reg-confirmar')" class="ojo-icon"></box-icon>
+                        </div>
+                    </div>
+                </div>
+
+<div class="mascota-section">
+    <div class="mascota-header">
+        <h3>🐾 Mascotas</h3>
+        <button type="button" class="btn-agregar" onclick="agregarMascota()">+ Agregar otra</button>
+    </div>
+    <div id="mascotas-container">
+        <div class="mascota-item" data-num="1">
+            <p class="mascota-titulo">Mascota #1</p>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" id="mascota-nombre-1" placeholder="Ej: Max">
+                </div>
+                <div class="input-group">
+                    <label>Edad</label>
+                    <input type="number" id="mascota-edad-1" placeholder="Años" min="0" max="50">
+                </div>
+                <div class="input-group">
+                    <label>Género</label>
+                    <select id="mascota-genero-1">
+                        <option value="">-- Selecciona --</option>
+                        <option value="macho">Macho</option>
+                        <option value="hembra">Hembra</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Tipo</label>
+                    <select id="mascota-tipo-1">
+                        <option value="">-- Selecciona --</option>
+                        <option value="perro">Perro</option>
+                        <option value="gato">Gato</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <button class="btn-primary" onclick="registrarse()">Crear cuenta</button>
+                <div id="reg-msg" class="mensaje"></div>
+
+                <p class="switch-text">¿Ya tienes cuenta? <span onclick="mostrarLogin()">Inicia sesión</span></p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>  
+    <script src="../scripts/login.js"></script>
+
+</body>
+</html>

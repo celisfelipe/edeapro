@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes - Administrador</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Administrador</h2>
+        <ul>
+            <li><a href="inicio.html">Citas</a></li>
+            <li><a href="horarios.html">Horarios / Disponibilidad</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="empleados.html">Empleados</a></li>
+            <li><a href="notificaciones.html">Notificaciones</a></li>
+            <li><a href="estadisticas.html">Estadísticas</a></li>
+            <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Clientes</h1>
+            <p id="nombre-admin">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <div class="card">
+            <input type="text" id="buscador" placeholder="Buscar por nombre, teléfono o correo">
+            <table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Correo electrónico</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody id="tabla-clientes">
+                    <tr><td colspan="4">Cargando clientes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Modal para editar datos del cliente -->
+    <div class="modal-overlay" id="modal-editar-cliente">
+        <div class="modal">
+            <h3>Editar cliente</h3>
+            <div class="modal-form-group">
+                <label>Nombre</label>
+                <input type="text" id="edit-nombre">
+            </div>
+            <div class="modal-form-group">
+                <label>Apellido</label>
+                <input type="text" id="edit-apellido">
+            </div>
+            <div class="modal-form-group">
+                <label>Teléfono</label>
+                <input type="text" id="edit-telefono">
+            </div>
+            <div class="modal-form-group">
+                <label>Correo</label>
+                <input type="email" id="edit-correo">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" style="background:#eee;" id="edit-cliente-cancel">Cancelar</button>
+                <button class="btn btn-blue" id="edit-cliente-ok">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación (eliminar cliente) -->
+    <div class="modal-overlay" id="modal-confirmar">
+        <div class="modal">
+            <h3>Confirmar acción</h3>
+            <p id="modal-confirmar-msg"></p>
+            <div class="modal-footer">
+                <button class="btn" style="background:#eee;" id="modal-confirmar-cancel">Cancelar</button>
+                <button class="btn btn-red" id="modal-confirmar-ok">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de operación exitosa -->
+    <div class="modal-overlay" id="modal-exito">
+        <div class="modal">
+            <h3>Operación exitosa</h3>
+            <p id="modal-exito-msg"></p>
+            <div class="modal-footer">
+                <button class="btn btn-blue" id="modal-exito-ok">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de error -->
+    <div class="modal-overlay" id="modal-error">
+        <div class="modal">
+            <h3>Ha ocurrido un error</h3>
+            <p id="modal-error-msg"></p>
+            <div class="modal-footer">
+                <button class="btn btn-red" id="modal-error-ok">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/modal.js"></script>
+    <script src="../scripts/clientes.js"></script>
+</body>
+</html>

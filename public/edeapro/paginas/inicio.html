@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<script>
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', function() {
+            var label = document.querySelector('.toggle .label');
+            if (label) label.textContent = '☾';
+            var toggle = document.getElementById('dark-toggle');
+            if (toggle) toggle.checked = true;
+        });
+    }
+</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../estilos/darkmode.css">
+    <meta charset="UTF-8">
+    <title>EDEA PRO - Peluquería Canina y Felina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EDEA PRO - Peluquería profesional canina y felina con servicios premium">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/principal.css" />
+    
+</head>
+
+<body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="logo">
+            <img src="../imagenes/logo/logo2.png">
+        </div>
+            <!-- TOGGLE MODO OSCURO -->
+    <div class="toggle-container">
+        <div class="toggle">
+            <input type="checkbox" id="dark-toggle">
+            <span class="button"></span>
+            <span class="label">☼</span>
+        </div>
+    </div>
+        <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="perrocorto.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="ubicacion.html">Ubicación</a></li>
+                <li><a href="agenda.html">Agendar cita</a></li>
+                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+            </ul>
+            
+        </nav>
+    </header>
+
+
+    <main>
+        <section id="carrusel-hero">
+            <div class="carrusel-slide">
+                <div class="carrusel-item active">
+                    <img src="../imagenes/perro-amarillo.jfif" class="d-block w-100" />
+                    <div class="carrusel-caption">
+                        <h1>EDEA PRO</h1>
+                        <p>Peluquería Canina y Felina Premium</p>
+                    </div>
+                </div>
+
+                <div class="carrusel-item">
+                    <img src="../imagenes/carrusel2.jfif" alt="Cuidado experto para tu mascota">
+                    <div class="carrusel-caption">
+                        <h1>Cuidado Experto</h1>
+                        <p>Profesionales certificados en el cuidado de tu mascota</p>
+                    </div>
+                </div>
+
+                <div class="carrusel-item">
+                    <img src="../imagenes/carrusel3.jfif" alt="Instalaciones modernas y seguras">
+                    <div class="carrusel-caption">
+                        <h1>Instalaciones Modernas</h1>
+                        <p>Ambiente limpio, seguro y cómodo para tu compañero</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dot-container">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+            </div>
+
+            <button class="carrusel-control prev" aria-label="Slide anterior">❮</button>
+            <button class="carrusel-control next" aria-label="Siguiente slide">❯</button>
+        </section>
+
+
+
+        <section id="featured-section">
+            <div class="featured-container">
+                <!-- IMAGEN A LA DERECHA + TEXTO A LA IZQUIERDA -->
+                <div class="featured-content">
+                    <div class="featured-text">
+                        <h2>Cuida a tu Mascota con Profesionales</h2>
+                        <p>En EDEA PRO, ofrecemos servicios de grooming de alta calidad para perros y gatos. Nuestro
+                            equipo de expertos utiliza técnicas avanzadas y productos premium para garantizar que tu
+                            mascota se sienta cómoda, segura y hermosa.</p>
+                        <p>Contamos con instalaciones modernas, personal certificado y un profundo amor por los
+                            animales. Cada servicio es personalizado según las necesidades específicas de tu compañero
+                            peludo.</p>
+                        <a href="registro.html" class="btn-reserve">
+                            Reserva Aquí
+                        </a>
+                    </div>
+                    <div class="featured-image">
+                        <img src="../imagenes/descripcion.jpeg" alt="Mascota cuidada profesionalmente">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DE SERVICIOS -->
+                <div class="services-header">
+                    <h2>💈 Nuestros Servicios de Grooming 💈</h2>
+                    <p>Descubre la variedad de servicios que ofrecemos para tu mascota</p>
+                </div>
+
+                <div class="services-cards">
+                    <!-- CARD 1 - IZQUIERDA -->
+                    <div class="service-card card-left">
+                        <div class="card-image">
+                            <img src="../imagenes/tarjeta1.jpeg" alt="Grooming Completo">
+                        </div>
+                        <div class="card-content">
+                            <h3>Peluqueria Canina</h3>
+                            <p>Brindamos un cuidado completo para tu perro, adaptando cada baño y corte según su raza, tamaño y necesidades. 
+                                Usamos productos especializados y técnicas profesionales para que tu compañero siempre luzca y se sienta increíble.</p>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2 - DERECHA -->
+                    <div class="service-card card-right">
+                        <div class="card-image">
+                            <img src="../imagenes/gato.jpeg" alt="Baño y Secado">
+                        </div>
+                        <div class="card-content">
+                            <h3>Peluqueria Felina</h3>
+                            <p>¡Hacer que tu gato se sienta cómodo es nuestra prioridad! Nuestros baños están pensados para su tranquilidad, con atención personalizada y productos especiales para mimar a tu felino.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicios"></section>
+        <!-- LÍNEA DIVISORA -->
+        <div class="divider-line"></div>
+        <section id="features-zigzag">
+            <h2>ARTE, PASIÓN Y PROFESIÓN</h2>
+            <p class="section-subtitle">En EDEA, combinamos el arte, la pasión y la profesión para transformar vidas,
+                tanto de personas como de animales de compañía.
+                Somos más que una escuela; somos un espacio donde la creatividad y la conexión animal convergen para
+                despertar el potencial humano y profesional. Aquí, estudiantes y estilistas no solo perfeccionan su
+                oficio, sino que descubren su propósito, se conectan con sus capacidades y comprenden un camino hacia la
+                excelencia, a través de nuestra dedicación al estilismo canino y felino.</p>
+
+            <div class="feature-card">
+                <div class="feature-image">
+                    <img src="../imagenes/equipo.jfif" alt="Profesionales certificados">
+                </div>
+                <div class="feature-content">
+                    <h3>Profesionales Certificados</h3>
+                    <p>Nuestro equipo cuenta con años de experiencia y certificaciones internacionales en grooming y
+                        cuidado animal. Cada miembro está comprometido con la excelencia y el bienestar de tu mascota.
+                    </p>
+                    <a href="nosotros.html" class="cta-card">Conocer equipo</a>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer id="contacto">
+        <div class="footer-container">
+            <div class="footer-col footer-links">
+                <h3>Servicios</h3>
+                <ul>
+                    <li><a href="perrocorto.html">Perro pelo corto</a></li>
+                    <li><a href="perrolargo.html">Perro pelo largo</a></li>
+                    <li><a href="gatos.html">Gatos</a></li>
+                    <li><a href="corteespecializado.html">Corte especializado</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-info">
+                <h3>Contacto</h3>
+                <p>📞 Llámanos: (+57) 350 507 3843</p>
+                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
+                </p>
+<div class="redes-sociales">
+    <a href="https://www.youtube.com/@edeaplay" target="_blank">
+        <i class="fab fa-youtube"></i>
+    </a>
+    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="../scripts/inicio.js"></script>
+
+    <script src="../scripts/navbar.js"></script>
+
+    <script src="../scripts/darkmode.js"></script>
+</body>
+
+
+</html>

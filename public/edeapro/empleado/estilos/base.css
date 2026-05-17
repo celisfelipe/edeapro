@@ -1,0 +1,26 @@
+/* ================================================
+   base.css — Reset del Panel Empleado
+   ================================================
+   Resetea estilos base para el panel del empleado.
+   Se carga antes que principal.css en cada página.
+================================================ */
+
+/* Reset general */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* El body usa flex para el layout sidebar + main */
+body {
+    display: flex;
+    background: #f4f6f9;
+}
+
+/* Quitar subrayado de los links del sidebar */
+a {
+    text-decoration: none;
+    color: inherit;
+}

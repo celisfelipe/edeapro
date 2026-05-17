@@ -1,0 +1,27 @@
+/* ================================================
+   base.css — Reset del Panel Administrador
+   ================================================
+   Resetea estilos base para el panel admin.
+   Se carga en todas las páginas del administrador,
+   siempre antes que principal.css.
+================================================ */
+
+/* Reset general: quitar márgenes y paddings por defecto del navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* El body usa flex para colocar el sidebar a la izquierda y el main a la derecha */
+body {
+    display: flex;
+    background: #f4f6f9;
+}
+
+/* Quitar subrayado de los links del sidebar */
+a {
+    text-decoration: none;
+    color: inherit;
+}

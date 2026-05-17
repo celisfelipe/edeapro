@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Perfil - EDEA Grooming</title>
+  <link rel="stylesheet" href="perfil.css" />
+  <link rel="stylesheet" href="../estilos/principal.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+        <img src="../imagenes/logo/logo2.png">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="../paginas/inicio.html">Inicio</a></li>
+            <li><a href="../paginas/perrocorto.html">Servicios</a></li>
+            <li><a href="../paginas/nosotros.html">Nosotros</a></li>
+            <li><a href="../paginas/ubicacion.html">Ubicación</a></li>
+            <li><a href="../paginas/agenda.html">Agendar cita</a></li>
+            <li><a href="#" class="login" onclick="cerrarSesion()">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+  </header>
+
+  <main class="page">
+
+    <!-- MI PERFIL -->
+    <section class="card">
+      <h2 class="card-title">Mi Perfil</h2>
+      <div class="profile-layout">
+        <div class="form-fields">
+          <div class="field-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" />
+          </div>
+          <div class="field-group">
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" />
+          </div>
+          <div class="field-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" />
+          </div>
+          <div class="field-group">
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" />
+          </div>
+          <div class="field-group full">
+            <button class="btn-green" id="btnActualizar">Actualizar Perfil</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MIS MASCOTAS -->
+    <section class="card">
+      <h2 class="card-title">Mis Mascotas</h2>
+      <div class="pets-grid" id="pets-grid"></div>
+    </section>
+
+    <!-- CITAS PROGRAMADAS -->
+    <section class="card">
+      <h2 class="card-title">Citas Programadas</h2>
+      <div class="filter-tabs">
+        <button class="tab active" data-filter="dia">Día</button>
+        <button class="tab" data-filter="semana">Semana</button>
+        <button class="tab" data-filter="mes">Mes</button>
+      </div>
+      <table class="appts-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Mascota</th>
+            <th>Servicio</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="citasBody"></tbody>
+      </table>
+    </section>
+
+    <!-- HISTORIAL DE PAGOS -->
+    <section class="card">
+      <h2 class="card-title">Historial de Pagos</h2>
+      <table class="payments-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Servicio</th>
+          </tr>
+        </thead>
+        <tbody id="pagosBody">
+          <tr><td colspan="2" class="empty-msg">Sin registros de pagos</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- MODAL CONFIRMAR -->
+  <div class="modal-overlay" id="modal-confirmar">
+    <div class="modal">
+      <h3>Confirmar acción</h3>
+      <p id="modal-confirmar-msg"></p>
+      <div class="modal-footer">
+        <button class="btn-orange" id="modal-confirmar-cancel">Cancelar</button>
+        <button class="btn-red" id="modal-confirmar-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ÉXITO -->
+  <div class="modal-overlay" id="modal-exito">
+    <div class="modal">
+      <h3>Operación exitosa</h3>
+      <p id="modal-exito-msg"></p>
+      <div class="modal-footer">
+        <button class="btn-green" id="modal-exito-ok">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ERROR -->
+  <div class="modal-overlay" id="modal-error">
+    <div class="modal">
+      <h3>Ha ocurrido un error</h3>
+      <p id="modal-error-msg"></p>
+      <div class="modal-footer">
+        <button class="btn-red" id="modal-error-ok">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="modal.js"></script>
+  <script src="perfil.js"></script>
+</body>
+</html>

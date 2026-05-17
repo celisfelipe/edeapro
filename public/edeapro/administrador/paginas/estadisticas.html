@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estadísticas - Administrador</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Administrador</h2>
+        <ul>
+            <li><a href="inicio.html">Citas</a></li>
+            <li><a href="horarios.html">Horarios / Disponibilidad</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="empleados.html">Estilistas</a></li>
+            <li><a href="notificaciones.html">Notificaciones</a></li>
+            <li><a href="estadisticas.html">Estadísticas</a></li>
+            <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Estadísticas</h1>
+            <p id="nombre-admin">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <!-- Tarjetas de resumen -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3 id="total-clientes">-</h3>
+                <p>Clientes registrados</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-citas">-</h3>
+                <p>Citas totales</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-ingresos">-</h3>
+                <p>Ingresos totales</p>
+            </div>
+        </div>
+
+        <!-- Gráfico de torta: citas por estado -->
+        <div class="card">
+            <h2>Citas por estado</h2>
+            <div style="max-width:400px; margin:0 auto;">
+                <canvas id="graficoCitas" height="60"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de barras: servicios más solicitados -->
+        <div class="card">
+            <h2>Servicios más solicitados</h2>
+            <canvas id="graficoServicios" height="30"></canvas>
+        </div>
+
+    </div>
+
+    <script src="../scripts/estadisticas.js"></script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+/* ================================================
+   darkmode.css — Variables de Modo Oscuro
+   ================================================
+   Define las variables CSS que se sobreescriben cuando
+   el <html> tiene la clase "dark-mode".
+   Se activa desde darkmode.js según la preferencia del usuario.
+   La preferencia se guarda en localStorage con la key "darkMode".
+================================================ */
+
+/* ============================================
+   DARK MODE - Sistema unificado EDEA PRO
+   Se aplica via html.dark-mode para evitar
+   destellos al cambiar de página
+   ============================================ */
+
+/* Fondo instantáneo antes de que cargue el body */
+/* Variables del modo oscuro — sobreescriben las de :root */
+html.dark-mode {
+    background: #0f0f0f;
+}
+
+/* ===== GENERAL ===== */
+html.dark-mode body {
+    background-image: url('../imagenes/logo/fondo2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+}
+
+/* ===== HEADER ===== */
+/* Header en modo oscuro */
+html.dark-mode header {
+    background-color: #000000;
+}
+
+html.dark-mode .logo img {
+    filter: brightness(0) invert(0.7);
+}
+
+html.dark-mode header nav a {
+    color: #d2b48c;
+}
+
+/* ===== LINKS Y BOTONES ===== */
+html.dark-mode a,
+html.dark-mode a.btn-reserve,
+html.dark-mode .cta-card {
+    color: #d2b48c;
+}
+
+html.dark-mode nav a,
+html.dark-mode .btn-filtro,
+html.dark-mode .btn-login,
+html.dark-mode .hero a,
+html.dark-mode .footer-links a {
+    color: #d2b48c;
+}
+
+/* ===== CARDS INICIO (service-card) ===== */
+/* Tarjetas de servicio en modo oscuro */
+html.dark-mode .service-card {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+html.dark-mode .service-card::after {
+    background: #1a1a1a;
+}
+
+html.dark-mode .service-card .card-content h3 {
+    color: #d2b48c;
+}
+
+html.dark-mode .service-card .card-content p {
+    color: #f5f0e8;
+}
+
+html.dark-mode .service-card h3 {
+    color: #d2b48c;
+}
+
+/* ===== CARDS SERVICIOS (service) ===== */
+html.dark-mode .service {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+html.dark-mode .service h3 {
+    color: #d2b48c;
+}
+
+html.dark-mode .price {
+    color: #d2b48c;
+}
+
+/* Hero en modo oscuro */
+html.dark-mode .hero {
+    color: #ffffff;
+}
+
+/* ===== CARRUSEL ===== */
+html.dark-mode .carrusel-caption h1,
+html.dark-mode .carrusel-caption p {
+    color: #ffffff;
+}
+
+/* ===== FOOTER ===== */
+html.dark-mode footer {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+html.dark-mode .footer-links a {
+    color: #d2b48c;
+}
+
+/* ===== NOSOTROS ===== */
+html.dark-mode .titulo,
+html.dark-mode .nuestro-presente h2 {
+    color: #d2b48c;
+}
+
+html.dark-mode .card {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+html.dark-mode .card h3 {
+    color: #d2b48c;
+}
+
+html.dark-mode .cargo {
+    color: #d2b48c;
+}
+
+html.dark-mode .texto {
+    color: #ffffff;
+}
+
+html.dark-mode .nuestro-presente {
+    background: #111111;
+}
+
+html.dark-mode .nuestro-presente p {
+    color: #ffffff;
+}
+
+html.dark-mode .nuestro-presente button {
+    background: #d2b48c;
+    color: #000;
+}
+
+/* ===== UBICACION ===== */
+html.dark-mode #mapa-ubicacion h2,
+html.dark-mode #resenas h2,
+html.dark-mode .resena-form-container h3 {
+    color: #d2b48c;
+}
+
+html.dark-mode .map-responsive {
+    background-color: #1a1a1a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-mode .contact-info {
+    background: #111111;
+    border-left-color: #d2b48c;
+}
+
+html.dark-mode .contact-info p,
+html.dark-mode .contact-info a,
+html.dark-mode .contact-info strong {
+    color: #ffffff;
+}
+
+html.dark-mode .contact-info a:hover {
+    color: #ffbb00;
+}
+
+html.dark-mode .resena-card {
+    background-color: #1a1a1a;
+    border-left-color: #d2b48c;
+    color: #ffffff;
+}
+
+html.dark-mode .resena-card h4 {
+    color: #d2b48c;
+}
+
+html.dark-mode .rating {
+    color: #ffbb00;
+}
+
+html.dark-mode .resena-card p {
+    color: #ffffff;
+}
+
+html.dark-mode .resena-form-container {
+    background: #111111;
+    border: 1px solid #444;
+}
+
+html.dark-mode .resena-form label {
+    color: #d2b48c;
+}
+
+html.dark-mode .resena-form input,
+html.dark-mode .resena-form select,
+html.dark-mode .resena-form textarea {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: #ffffff;
+}
+
+html.dark-mode .resena-form input:focus,
+html.dark-mode .resena-form select:focus,
+html.dark-mode .resena-form textarea:focus {
+    border-color: #d2b48c;
+    box-shadow: 0 0 0 3px rgba(210, 180, 140, 0.2);
+    background-color: #222;
+}
+
+html.dark-mode .submit-btn {
+    background: linear-gradient(135deg, #d2b48c 0%, #ffbb00 100%);
+    color: #000;
+}
+
+html.dark-mode .submit-btn:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #d2b48c 100%);
+    color: #000;
+}
+
+html.dark-mode .message.success {
+    background: #064e3b;
+    color: #d1fae5;
+    border-color: #10b981;
+}
+/* MODO OSCURO LOGIN */
+html.dark-mode .auth-wrapper {
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+}
+
+html.dark-mode .welcome-panel {
+    background: linear-gradient(135deg, #3d2b1a, #1a1208);
+}
+
+html.dark-mode .forms-panel {
+    background: #1a1a1a;
+}
+
+html.dark-mode .form-box h2 {
+    color: #d2b48c;
+}
+
+html.dark-mode .subtitle {
+    color: #af9d81;
+}
+
+html.dark-mode .input-group label {
+    color: #d2b48c;
+}
+
+html.dark-mode .input-group input,
+html.dark-mode .input-group select {
+    background: #2a2a2a;
+    border-color: #3d3d3d;
+    color: #ffffff;
+}
+
+html.dark-mode .input-group input:focus,
+html.dark-mode .input-group select:focus {
+    border-color: #c0733a;
+}
+
+html.dark-mode .mascota-section {
+    background: #2a2a2a;
+}
+
+html.dark-mode .mascota-section h3 {
+    color: #d2b48c;
+}
+
+html.dark-mode .mascota-item {
+    background: #1a1a1a;
+    border-color: #3d3d3d;
+}
+
+html.dark-mode .mascota-titulo {
+    color: #c0733a;
+}
+
+html.dark-mode .switch-text {
+    color: #af9d81;
+}

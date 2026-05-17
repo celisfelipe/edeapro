@@ -1,0 +1,170 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    background: #f4f6f9;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 230px;
+    background: #2f3e4e;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+}
+
+.sidebar h2 {
+    margin-bottom: 25px;
+    font-size: 18px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.sidebar ul li:hover {
+    background: #1f2b38;
+}
+
+/* CONTENIDO PRINCIPAL */
+
+.main {
+    margin-left: 230px;
+    width: 100%;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* TARJETAS */
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+/* TABLAS */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th {
+    background: #f1f3f5;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+/* BOTONES */
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-blue {
+    background: #2d8cf0;
+    color: white;
+}
+
+.btn-green {
+    background: #28a745;
+    color: white;
+}
+
+.btn-red {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-yellow {
+    background: #ffc107;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* ESTADOS */
+
+.status-green {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-yellow {
+    color: #d39e00;
+    font-weight: bold;
+}
+
+/* INPUTS */
+
+input,
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* BUSCADOR */
+
+.search {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* GRAFICOS FALSOS */
+
+.grafico {
+    height: 220px;
+    background: #dfe3e8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-size: 15px;
+}

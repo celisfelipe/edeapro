@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<script>
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', function() {
+            var label = document.querySelector('.toggle .label');
+            if (label) label.textContent = '☾';
+            var toggle = document.getElementById('dark-toggle');
+            if (toggle) toggle.checked = true;
+        });
+    }
+</script>
+    <link rel="stylesheet" href="../estilos/darkmode.css">
+    <meta charset="UTF-8">
+    <title>Servicios.- Perro Pelo Largo - EDEA PRO Peluquería Canina y Felina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Conoce todos los servicios de grooming canino y felino que ofrece EDEA PRO">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/principal.css" />
+    <link rel="stylesheet" href="../estilos/servicios.css" />
+    
+</head>
+
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="logo">
+            <img src="../imagenes/logo/logo2.png">
+        </div>
+
+                    <!-- TOGGLE MODO OSCURO -->
+    <div class="toggle-container">
+        <div class="toggle">
+            <input type="checkbox" id="dark-toggle">
+            <span class="button"></span>
+            <span class="label">☼</span>
+        </div>
+    </div>
+
+        <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="perrocorto.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="ubicacion.html">Ubicación</a></li>
+                <li><a href="agenda.html">Agendar cita</a></li>
+                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="filtros-servicios">
+
+        <a href="perrocorto.html" class="btn-filtro">Perro pelo corto</a> 
+
+        <a href="perrolargo.html" class="btn-filtro active">Perro largo doble capa</a>
+
+        <a href="gatos.html" class="btn-filtro">Gato</a>
+
+        <a href="corteespecializado.html" class="btn-filtro">Corte Especializado</a>
+
+    </div>
+
+    <section class="services">
+        <h2>💈 Nuestros Servicios</h2>
+        <div class="service-container">
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/chow chow.jpg" alt="Baño y Corte">
+                <h3>Chow Chow</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/afgano.jpg" alt="Corte de Uñas">
+                <h3>Afgano</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pastor collie.jpg" alt="Limpieza Dental">
+                <h3>Pastor Collie</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Deslanado</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/maltipoo.jpg" alt="Spa Canino">
+                <h3>maltipoo</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/cocker spaniel.jpg" alt="Spa Canino">
+                <h3>Cocker Spaniel</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pomerania.jpg" alt="Spa Canino">
+                <h3>Pomerania</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/bernes.webp" alt="Spa Canino">
+                <h3>Bernes de la montaña</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/akita.jpg" alt="Spa Canino">
+                <h3>Akita Americano</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/border.jpg" alt="Spa Canino">
+                <h3>Border Collie</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/corgi.avif" alt="Spa Canino">
+                <h3>Corgi</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/golden retriever.jpg" alt="Spa Canino">
+                <h3>Golden Retriever</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/goldendoodle.jpg" alt="Spa Canino">
+                <h3>Goldendoodle</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/husky.avif" alt="Spa Canino">
+                <h3>Husky</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/maltes.webp" alt="Spa Canino">
+                <h3>Maltes</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pastor aleman.jpg" alt="Spa Canino">
+                <h3>Pastor Aleman</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pomsky.webp" alt="Spa Canino">
+                <h3>Pomsky</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pastor belga.jpg" alt="Spa Canino">
+                <h3>Pastor Belga</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/pastor australiano.jpg" alt="Spa Canino">
+                <h3>Pastor Australiano</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/poodle.jpeg" alt="Spa Canino">
+                <h3>Poodle</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/shetland.jpg" alt="Spa Canino">
+                <h3>Shetland</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/samoyedo.jpg" alt="Spa Canino">
+                <h3>Samoyedo</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/springer.jpg" alt="Spa Canino">
+                <h3>Springer Spaniel</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/scottish.jpg" alt="Spa Canino">
+                <h3>Scottish Terrier</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/shiba inu.jpg" alt="Spa Canino">
+                <h3>Shiba inu</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/shihtzu.jpg" alt="Spa Canino">
+                <h3>Shih Tzu</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/schnauzer.avif" alt="Spa Canino">
+                <h3>Schnauzer</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/westy.jpg" alt="Spa Canino">
+                <h3>West Highland White Terrier</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/imagenes servicios/pelo largo-doblecapa/yorkie mini.jpg" alt="Spa Canino">
+                <h3>Yorkshire Mini</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Corte de uñas</li>
+                    <li>Corte de pulpejos</li>
+                    <li>Corte hijienico</li>
+                    <li>Desenredado estándar</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                    <li>Corte segun la raza</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/spa.jfif" alt="Spa Canino">
+                <h3>Spa Canino</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Remoción de pelo muerto</li>
+                    <li>Corte de Uñas</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+
+            <div class="service">
+                <img src="../imagenes/spa.jfif" alt="Spa Canino">
+                <h3>Spa Canino</h3>
+                <ul>
+                    <li>Limpieza de Oídos</li>
+                    <li>Remoción de pelo muerto</li>
+                    <li>Corte de Uñas</li>
+                    <li>Baño completo productos HYDRA</li>
+                    <li>Secado</li>
+                </ul>
+                <section class="price">
+                    <p>150.000$</p>
+                </section>
+            </div>
+            </div>
+            </section>
+
+    <section class="hero">
+        <a href="login.html">Agendar Cita</a>
+    </section>
+
+    <footer id="contacto">
+        <div class="footer-container">
+            <div class="footer-col footer-links">
+                <h3>Servicios</h3>
+                <ul>
+                    <li><a href="perrocorto.html">Perro pelo corto</a></li>
+                    <li><a href="perrolargo.html">Perro pelo largo</a></li>
+                    <li><a href="gatos.html">Gatos</a></li>
+                    <li><a href="corteespecializado.html">Corte especializado</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-info">
+                <h3>Contacto</h3>
+                <p>📞 Llámanos: (+57) 350 507 3843</p>
+                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
+                </p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@edeaplay" aria-label="Youtube" title="Youtube">▶</a>
+                    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" aria-label="Instagram"
+                        title="Instagram">📷</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/servicios.js"></script>
+
+    <script src="../scripts/navbar.js"></script>
+
+    <script src="../scripts/darkmode.js"></script>
+</body>
+
+</html>

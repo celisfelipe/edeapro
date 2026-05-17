@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Empleado - Servicios</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Empleado</h2>
+        <ul>
+            <li><a href="inicio.html">Servicios</a></li>
+            <li><a href="clientes.html">Clientes</a></li>
+            <li><a href="disponibilidad.html">Disponibilidad</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="header">
+            <h1>Mis Servicios</h1>
+            <p id="nombre-empleado">Cargando...</p>
+            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <div class="card">
+            <h2>Citas asignadas</h2>
+            <br>
+            <table>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                </tr>
+                <tbody id="tabla-servicios">
+                    <tr><td colspan="5">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="../scripts/inicio.js"></script>
+</body>
+
+</html>

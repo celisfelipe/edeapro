@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<script>
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', function() {
+            var label = document.querySelector('.toggle .label');
+            if (label) label.textContent = '☾';
+            var toggle = document.getElementById('dark-toggle');
+            if (toggle) toggle.checked = true;
+        });
+    }
+</script>
+    <link rel="stylesheet" href="../estilos/darkmode.css">
+    <meta charset="UTF-8">
+    <title>Ubicación - EDEA PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Encuéntranos en Mall Terracina Plaza, Envigado, Antioquia. Reseñas y horarios de EDEA PRO">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/ubicacion.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    
+</head>
+
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="logo">
+            <img src="../imagenes/logo/logo2.png">
+        </div>
+
+                    <!-- TOGGLE MODO OSCURO -->
+    <div class="toggle-container">
+        <div class="toggle">
+            <input type="checkbox" id="dark-toggle">
+            <span class="button"></span>
+            <span class="label">☼</span>
+        </div>
+    </div>
+
+
+        <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="perrocorto.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="ubicacion.html">Ubicación</a></li>
+                <li><a href="agenda.html">Agendar cita</a></li>
+                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+                
+            </ul>
+        </nav>
+    </header>
+
+    <main class="ubicacion-page">
+        <!-- SECCIÓN MAPA -->
+        <section id="mapa-ubicacion">
+            <h2>📍 Encuéntranos Fácilmente</h2>
+
+            <div class="map-responsive">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.8542754649223!2d-75.56887342345888!3d6.167691818719845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682fe71f3f23b%3A0x4d726ed3f68d8088!2sMall%20Terracina%20Plaza%20P.H.%2C%20Cra.%2027%20%2335%20sur%20162%2C%20Quebrada%20Clara%2C%20Envigado%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1699564800000!5m2!1ses!2sco"
+                    style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <div class="contact-info">
+                <p><strong>🐾 Dirección:</strong> Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara,
+                    Envigado, Antioquia</p>
+                <p><strong>📞 Llámanos:</strong> <a href="tel:+573505073843">(+57) 350 507 3843</a></p>
+                <p><strong>🕒 Horario:</strong> Lunes a Sábado 9:00 AM - 5:00 PM | Domingos 9:00 AM - 4:00 PM</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN RESEÑAS -->
+        <section id="resenas">
+            <h2>⭐ Lo Que Dicen Nuestros Clientes</h2>
+
+            <div class="resenas-grid">
+                <div class="resena-card">
+                    <h4>Felipe Celis</h4>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p>"¡El mejor spa canino! Max siempre vuelve tranquilo y con un corte perfecto. El sistema de
+                        agendamiento es muy fácil de usar."</p>
+                </div>
+
+                <div class="resena-card">
+                    <h4>Juan G. (Dueño de Nala)</h4>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p>"Muy profesionales. Me gustaría que tuvieran más horas disponibles los domingos, pero la atención
+                        y la tienda son geniales."</p>
+                </div>
+
+                <div class="resena-card">
+                    <h4>María López</h4>
+                    <div class="rating">⭐⭐⭐⭐</div>
+                    <p>"Excelente servicio y atención personalizada. Mi gato Mishu quedó perfecto después del grooming.
+                        ¡Volveremos pronto!"</p>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE RESEÑA -->
+            <div class="resena-form-container">
+                <h3>✍️ Deja tu Opinión</h3>
+                <form class="resena-form" onsubmit="handleSubmitResena(event)">
+                    <div class="form-group">
+                        <label for="nombre">Tu Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Tu Email:</label>
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="puntuacion">Puntuación:</label>
+                        <select id="puntuacion" name="puntuacion" required>
+                            <option value="">-- Selecciona una puntuación --</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5 Estrellas</option>
+                            <option value="4">⭐⭐⭐⭐ 4 Estrellas</option>
+                            <option value="3">⭐⭐⭐ 3 Estrellas</option>
+                            <option value="2">⭐⭐ 2 Estrellas</option>
+                            <option value="1">⭐ 1 Estrella</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comentario">Tu Reseña:</label>
+                        <textarea id="comentario" name="comentario" rows="5"
+                            placeholder="Cuéntanos tu experiencia con EDEA PRO..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">✉️ Enviar Reseña</button>
+                </form>
+                <div id="message" class="message"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="footer-container">
+            <div class="footer-col footer-links">
+                <h3>Servicios</h3>
+                <ul>
+                    <li><a href="perrocorto.html">Perro pelo corto</a></li>
+                    <li><a href="perrolargo.html">Perro pelo largo</a></li>
+                    <li><a href="gatos.html">Gatos</a></li>
+                    <li><a href="corteespecializado.html">Corte especializado</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-info">
+                <h3>Contacto</h3>
+                <p>📞 Llámanos: (+57) 350 507 3843</p>
+                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
+                </p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@edeaplay" aria-label="Youtube" title="Youtube">▶</a>
+                    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" aria-label="Instagram"
+                        title="Instagram">📷</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/ubicacion.js"></script>
+
+    <script src="../scripts/navbar.js"></script>
+
+    <script src="../scripts/darkmode.js"></script>
+</body>
+
+</html>
