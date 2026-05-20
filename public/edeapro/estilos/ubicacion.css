@@ -5,23 +5,19 @@
    Se carga junto a principal.css para mantener consistencia visual.
 ================================================ */
 
-
-:root {
-    --color-primary: #000000;
-    --color-secondary: #ff9500;
-    --color-dark: #0c4a6e;
-    --color-light: #f0f9ff;
-    --color-text: #000000;
-    --color-muted: #06b6d4;
-    --color-bg-main: #e0f2fe;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+/* Reset básico de body para esta página */
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f3ea;
+    color: #333;
 }
 
+/* Links del navbar */
 header nav ul {
     display: flex;
     list-style: none;
-    gap: 30px; /* El espacio que quieres */
+    gap: 30px;
     margin: 0;
     padding: 0;
 }
@@ -29,44 +25,31 @@ header nav ul {
 header nav a {
     color: white;
     text-decoration: none;
-    font-weight: 500; /* El grosor que quieres */
+    font-weight: 500;
     margin: 0;
 }
 
-body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f4f3ea; /* Igual que servicios */
-    color: #333;
-}
-/* ============================================
-   VARIABLES
-   ============================================ */
-
-/* ============================================
-   PÁGINA UBICACIÓN
-   ============================================ */
+/* ── Contenedor principal ────────────────────────────────────*/
 .ubicacion-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: clamp(20px, 4vw, 60px);
+    padding: 40px 60px;
 }
 
-/* ============================================
-   SECCIÓN MAPA
-   ============================================ */
+/* ── Sección del mapa ────────────────────────────────────────*/
 #mapa-ubicacion {
     margin-bottom: 60px;
 }
 
 #mapa-ubicacion h2 {
     text-align: center;
-    color: var(--color-dark);
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    color: #333;
+    font-size: 2rem;
     margin-bottom: 30px;
     font-weight: 800;
 }
 
+/* Mapa responsivo con proporción 16:9 */
 .map-responsive {
     position: relative;
     width: 100%;
@@ -74,9 +57,8 @@ body {
     height: 0;
     overflow: hidden;
     border-radius: 12px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     margin-bottom: 30px;
-    background: var(--color-light);
 }
 
 .map-responsive iframe {
@@ -88,305 +70,221 @@ body {
     border: none;
 }
 
-/* INFORMACIÓN DE CONTACTO */
-/* Información de contacto y dirección */
+/* Información de contacto debajo del mapa */
 .contact-info {
-    background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
-    padding: clamp(20px, 4vw, 40px);
+    background: white;
+    padding: 30px 40px;
     border-radius: 12px;
-    border-left: 4px solid var(--color-secondary);
-    box-shadow: var(--shadow);
+    border-left: 4px solid #ae9d81;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: clamp(15px, 3vw, 30px);
+    gap: 20px;
 }
 
 .contact-info p {
-    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
-    color: var(--color-text);
+    font-size: 15px;
+    color: #333;
     line-height: 1.6;
     margin: 0;
 }
 
 .contact-info strong {
-    color: var(--color-primary);
+    color: #a67c52;
     font-weight: 700;
 }
 
 .contact-info a {
-    color: var(--color-primary);
+    color: #a67c52;
     text-decoration: none;
     font-weight: 600;
-    transition: var(--transition);
+    transition: color 0.3s ease;
 }
 
 .contact-info a:hover {
-    color: var(--color-secondary);
+    color: #8a6340;
 }
 
-/* ============================================
-   SECCIÓN RESEÑAS
-   ============================================ */
+/* ── Sección de reseñas ──────────────────────────────────────*/
 #resenas {
-    padding: clamp(40px, 6vw, 80px) 0;
-    border-top: 3px solid var(--color-secondary);
+    padding: 60px 0;
+    border-top: 2px solid #e0d5c5;
 }
 
 #resenas h2 {
     text-align: center;
-    color: var(--color-dark);
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    font-size: 2rem;
     margin-bottom: 40px;
-    font-weight: 800;
+    color: #333;
 }
 
+/* Grid de cards de reseñas */
 .resenas-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: clamp(20px, 3vw, 30px);
-    margin-bottom: 60px;
+    gap: 24px;
+    margin-bottom: 50px;
 }
 
-/* TARJETAS DE RESEÑA */
+/* Card individual de reseña */
 .resena-card {
     background: white;
-    padding: clamp(20px, 3vw, 30px);
     border-radius: 12px;
-    box-shadow: var(--shadow);
-    border-left: 5px solid var(--color-secondary);
-    transition: var(--transition);
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-left: 4px solid #ae9d81;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .resena-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(166, 124, 82, 0.2);
 }
 
 .resena-card h4 {
-    color: var(--color-primary);
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    margin-top: 0;
-    margin-bottom: 10px;
     font-weight: 700;
+    color: #333;
+    margin-bottom: 6px;
 }
 
+/* Estrellas de calificación */
 .rating {
-    color: var(--color-secondary);
-    font-size: clamp(1rem, 1.5vw, 1.3rem);
-    margin-bottom: 15px;
+    color: #f59e0b;
+    font-size: 16px;
+    margin-bottom: 10px;
     letter-spacing: 2px;
 }
 
 .resena-card p {
-    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
-    color: var(--color-text);
-    line-height: 1.7;
-    margin: 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
     font-style: italic;
 }
 
-/* ============================================
-   FORMULARIO DE RESEÑA
-   ============================================ */
+/* ── Formulario de reseña ────────────────────────────────────*/
 .resena-form-container {
+    background: #faf8f5;
+    border-radius: 16px;
+    padding: 40px;
     max-width: 600px;
     margin: 0 auto;
-    padding: clamp(25px, 4vw, 40px);
-    background: linear-gradient(135deg, rgba(3, 105, 161, 0.05) 0%, rgba(6, 182, 212, 0.1) 100%);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(6, 182, 212, 0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e0d5c5;
 }
 
 .resena-form-container h3 {
     text-align: center;
-    color: var(--color-dark);
-    font-size: clamp(1.3rem, 3vw, 1.8rem);
-    margin-bottom: 30px;
-    font-weight: 800;
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 28px;
 }
 
-.resena-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
+/* Grupo de label + campo */
 .form-group {
     display: flex;
     flex-direction: column;
+    margin-bottom: 18px;
 }
 
 .resena-form label {
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: 8px;
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
 }
 
-.resena-form input[type="text"],
-.resena-form input[type="email"],
+/* Inputs, select y textarea */
+.resena-form input,
 .resena-form select,
 .resena-form textarea {
-    padding: clamp(10px, 2vw, 14px);
-    border: 2px solid #cffafe;
+    padding: 11px 14px;
+    border: 1.5px solid #d0c4b0;
     border-radius: 8px;
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
-    background-color: white;
-    transition: var(--transition);
-    color: var(--color-text);
+    font-size: 14px;
+    background: white;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
 }
 
-.resena-form input[type="text"]:focus,
-.resena-form input[type="email"]:focus,
+/* Borde café dorado al hacer foco */
+.resena-form input:focus,
 .resena-form select:focus,
 .resena-form textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1);
-    background-color: #f0f9ff;
-}
-
-.resena-form select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230369a1' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 18px;
-    padding-right: 35px;
+    border-color: #a67c52;
+    box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.15);
 }
 
 .resena-form textarea {
     resize: vertical;
     min-height: 120px;
-    font-family: 'Montserrat', sans-serif;
 }
 
+/* Botón enviar — color café del sitio */
 .submit-btn {
-    padding: clamp(12px, 2vw, 16px);
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-muted) 100%);
+    width: 100%;
+    padding: 14px;
+    background: #a67c52;
     color: white;
     border: none;
     border-radius: 8px;
-    font-weight: 700;
-    font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(3, 105, 161, 0.3);
     font-family: 'Montserrat', sans-serif;
-    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(3, 105, 161, 0.5);
-    background: linear-gradient(135deg, #0c4a6e 0%, var(--color-primary) 100%);
+    background: #8a6340;
+    transform: translateY(-2px);
 }
 
-.submit-btn:active {
-    transform: translateY(-1px);
-}
-
-/* MENSAJE */
+/* Mensaje de éxito o error al enviar */
 .message {
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    display: none;
-    animation: slideIn 0.3s ease-out;
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
     font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 6px;
+    display: none;
+    animation: slideIn 0.3s ease;
 }
 
 .message.success {
-    background: #ecfdf5;
-    color: #059669;
-    border: 1px solid #6ee7b7;
+    background: #d4edda;
+    color: #2d6a4f;
+    border: 1px solid #b7dfca;
     display: block;
 }
 
 .message.error {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+    background: #fde8e8;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
     display: block;
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(-8px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
+/* ── Responsive ──────────────────────────────────────────────*/
 @media (max-width: 768px) {
-    .ubicacion-page {
-        padding: clamp(15px, 3vw, 30px);
-    }
-
-    .map-responsive {
-        padding-bottom: 66.67%;
-    }
-
-    .contact-info {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .resenas-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .resena-form-container {
-        padding: 20px;
-    }
+    .ubicacion-page { padding: 20px; }
+    .map-responsive { padding-bottom: 66.67%; }
+    .contact-info   { grid-template-columns: 1fr; }
+    .resenas-grid   { grid-template-columns: 1fr; }
+    .resena-form-container { padding: 20px; }
 }
 
 @media (max-width: 480px) {
-    .ubicacion-page {
-        padding: 12px;
-    }
-
     #mapa-ubicacion h2,
-    #resenas h2 {
-        font-size: 1.5rem;
-    }
-
-    .contact-info {
-        gap: 10px;
-        padding: 15px;
-    }
-
-    .contact-info p {
-        font-size: 0.85rem;
-    }
-
-    .resena-form-container h3 {
-        font-size: 1.3rem;
-    }
-
-    .resena-form label {
-        font-size: 0.85rem;
-    }
-
-    .resena-form input,
-    .resena-form textarea,
-    .resena-form select {
-        font-size: 0.9rem;
-        padding: 10px;
-    }
-
-    .submit-btn {
-        padding: 10px;
-        font-size: 0.9rem;
-    }
+    #resenas h2 { font-size: 1.5rem; }
+    .submit-btn { font-size: 14px; }
 }

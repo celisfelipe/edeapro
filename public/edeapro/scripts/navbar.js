@@ -1,15 +1,9 @@
 /**
  * navbar.js — Navbar Dinámico del Sitio Público
  * ================================================
- * Cambia el botón "Inicio de Sesión" del navbar según si hay sesión activa.
- * Se carga en todas las páginas públicas del sitio.
- *
- * Si hay sesión activa, el botón cambia a:
- *   cliente       → "Mi perfil"    → cliente/perfil.html
- *   administrador → "Panel Admin"  → administrador/paginas/inicio.html
- *   peluquero     → "Mi panel"     → empleado/paginas/inicio.html
- *
- * Si no hay sesión, el botón queda como "Inicio de Sesión" (por defecto en el HTML).
+ * Cambia el botón "Inicio de Sesión" según si hay sesión activa.
+ * El botón arranca invisible para evitar el parpadeo al cargar.
+ * Se vuelve visible solo cuando el JS ya sabe qué texto mostrar.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -17,10 +11,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const rol       = localStorage.getItem('rol');
     const loginLink = document.querySelector('nav .login');
 
-    // Si la página no tiene navbar, no hacer nada
     if (!loginLink) return;
 
-    // Cambiar el texto y destino del botón según el rol del usuario
+    // Cambiar texto y destino según el rol del usuario
     if (user && rol === 'cliente') {
         loginLink.textContent = 'Mi perfil';
         loginLink.href = '../cliente/perfil.html';
@@ -31,5 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
         loginLink.textContent = 'Mi panel';
         loginLink.href = '../empleado/paginas/inicio.html';
     }
-    // Si no hay sesión, el botón queda con el href y texto originales del HTML
+
+    // Mostrar el botón solo cuando ya sabe qué texto poner
+    // Esto evita el parpadeo de "Inicio de Sesión" → "Mi perfil"
+    loginLink.style.visibility = 'visible';
 });

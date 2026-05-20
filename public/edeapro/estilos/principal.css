@@ -873,3 +873,38 @@ footer::before {
     color: #fff;
 }
 
+/* ── Sección de estadísticas ─────────────────────────────────
+   Barra con fondo crema y números grandes en café */
+.stats-section {
+    background: #f4f3ea;
+    border-top: 2px solid #ae9d81;
+    border-bottom: 2px solid #ae9d81;
+    padding: 50px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+    color: #a67c52;
+}
+
+.stat-number {
+    font-size: 52px;
+    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
+    display: block;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+

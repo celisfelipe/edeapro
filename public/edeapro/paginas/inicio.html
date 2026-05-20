@@ -48,7 +48,7 @@
                 <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="ubicacion.html">Ubicación</a></li>
                 <li><a href="agenda.html">Agendar cita</a></li>
-                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+                <li><a href="login.html" class="login" style="visibility:hidden">Inicio de Sesión</a></li>
             </ul>
             
         </nav>
@@ -93,6 +93,28 @@
             <button class="carrusel-control next" aria-label="Siguiente slide">❯</button>
         </section>
 
+        
+        <!-- SECCIÓN DE ESTADÍSTICAS
+     Los números se animan contando desde 0 hasta el valor
+     de data-target cuando el usuario llega a esta sección -->
+<section class="stats-section">
+    <div class="stat-item">
+        <span class="stat-number" data-target="500">0</span>
+        <span class="stat-label">Clientes felices</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-target="50">0</span>
+        <span class="stat-label">Razas atendidas</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-target="5">0</span>
+        <span class="stat-label">Años de experiencia</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" data-target="100">0</span>
+        <span class="stat-label">% Satisfacción</span>
+    </div>
+</section>
 
 
         <section id="featured-section">
@@ -215,6 +237,45 @@
     <script src="../scripts/navbar.js"></script>
 
     <script src="../scripts/darkmode.js"></script>
+
+<script>
+/**
+ * Contador animado para la sección de estadísticas.
+ * Usa IntersectionObserver para detectar cuando la sección
+ * entra en pantalla y activa la animación de conteo.
+ */
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Animar cada número cuando la sección es visible
+            entry.target.querySelectorAll('.stat-number').forEach(el => {
+                const target   = parseInt(el.getAttribute('data-target'));
+                const duracion = 1800; // milisegundos que dura la animación
+                const paso     = target / (duracion / 16);
+                let actual     = 0;
+
+                const intervalo = setInterval(() => {
+                    actual += paso;
+                    if (actual >= target) {
+                        // Mostrar el número final con + o %
+                        el.textContent = target + (target === 100 ? '%' : '+');
+                        clearInterval(intervalo);
+                    } else {
+                        el.textContent = Math.floor(actual) + (target === 100 ? '%' : '+');
+                    }
+                }, 16);
+            });
+            // Dejar de observar — la animación solo corre una vez
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 });
+
+// Observar la sección de estadísticas
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) statsObserver.observe(statsSection);
+</script>
+
 </body>
 
 
