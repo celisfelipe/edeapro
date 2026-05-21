@@ -1,10 +1,12 @@
 /* ================================================
-   servicios.css — Página de Servicios
+   servicios.css — Páginas de Servicios
    ================================================
-   Estilos exclusivos para las páginas de servicios.
-   Se carga junto a principal.css para mantener consistencia visual.
+   Estilos para perrocorto.html, perrolargo.html,
+   gatos.html y corteespecializado.html.
+   Se carga junto a principal.css.
 ================================================ */
 
+/* Reset básico */
 body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
@@ -12,16 +14,7 @@ body {
     color: #333;
 }
 
-/* Encabezado */
-header {
-    background-color: #af9d81;
-    color: white;
-    padding: 15px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
+/* Links del navbar */
 header nav a {
     color: white;
     text-decoration: none;
@@ -35,224 +28,193 @@ nav ul {
     gap: 30px;
 }
 
+/* ── Filtros de categoría ────────────────────────────────────*/
 .filtros-servicios {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 16px;
+    padding: 24px 20px;
     flex-wrap: wrap;
 }
 
+/* Botón de filtro individual */
 .btn-filtro {
     text-decoration: none;
     display: inline-block;
     background: white;
-    border: 2px solid #cfcfcf;
+    border: 2px solid #d0c4b0;
     border-radius: 30px;
-    padding: 10px 20px;
+    padding: 10px 22px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #333;
+    color: #555;
 }
 
-/* Hover */
 .btn-filtro:hover {
-    background: #f3f3f3;
+    border-color: #a67c52;
+    color: #a67c52;
+    background: #faf6f1;
 }
 
-/* Botón activo */
+/* Categoría activa — café dorado del sitio */
 .btn-filtro.active {
-    background: #F4D06F;
-    border-color: #F4D06F;
-    color: black;
-}
-
-.btn-login {
-    background-color: #f8c23c;
-    padding: 8px 15px;
-    border-radius: 6px;
-    color: #0a1930;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.hero {
-    background: url('https://cdn.pixabay.com/photo/2017/02/20/15/11/dog-2083492_1280.jpg') center/cover no-repeat;
+    background: #af9d81;
+    border-color: #af9d81;
     color: white;
-    text-align: center;
-    padding: 100px 20px;
 }
 
-.hero h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.hero p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-.hero a {
-    background-color: #f8c23c;
-    color: #0a1930;
-    padding: 12px 25px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/* ============================================
-   BARRA DE BÚSQUEDA
-   ============================================ */
-.search-section {
-    background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 100%);
-    padding: 30px 20px;
-    text-align: center;
-}
-
-.search-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.search-bar {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 1rem;
-    border: 2px solid #0369a1;
-    border-radius: 50px;
-    outline: none;
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(3, 105, 161, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Montserrat', sans-serif;
-}
-
-.search-bar:focus {
-    border-color: #ff9500;
-    box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.2);
-    transform: scale(1.02);
-}
-
-.search-bar::placeholder {
-    color: #94a3b8;
-}
-
-/* MENSAJE DE SIN RESULTADOS */
-.no-results {
-    text-align: center;
-    padding: 40px 20px;
-    color: #e11d48;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-/* ANIMACIÓN DE FADE PARA SERVICIOS */
-.service {
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* SERVICIO OCULTO */
-.service.hidden {
-    display: none;
-}
-
-/* ...existing code... */
-.info h1 {
-    color: #0a1930;
-    text-align: center;
-}
-
-.info p {
-    text-align: center;
-}
-
+/* ── Sección de servicios ────────────────────────────────────*/
 .services {
     text-align: center;
-    padding: 50px 20px;
+    padding: 40px 20px;
 }
 
 .services h2 {
-    color: #0a1930;
-    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 30px;
 }
 
-.services ul {
-    list-style: none;
-}
-
+/* Grid de cards */
 .service-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 25px;
-    max-width: 1000px;
+    max-width: 1100px;
     margin: auto;
 }
 
+/* Card individual */
 .service {
-    background-color: #f8f8f8;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.3s ease;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+}
+
+/* Borde superior café al hacer hover */
+.service::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #a67c52;
+    transform: scaleX(0);
+    transition: transform 0.35s ease;
+}
+
+.service:hover::before {
+    transform: scaleX(1);
 }
 
 .service:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(166, 124, 82, 0.18);
 }
 
+/* Imagen — altura fija con object-fit para que no se corte */
 .service img {
     width: 100%;
-    border-radius: 10px;
-    height: 180px;
+    height: 220px;
     object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    transition: transform 0.4s ease;
 }
 
-.price {
-    font-weight: bold;
-    font-size: 20px;
-    color: #000;
+.service:hover img {
+    transform: scale(1.04);
 }
 
-.btn-small {
-    background-color: #e4a52b;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 6px;
-    margin-top: 10px;
-}
-
-.title img {
-    width: 100%;
-    border-radius: 10px;
-    height: 80px;
-    object-fit: contain;
-}
-
+/* Nombre de la raza */
 .service h3 {
-    color: #0a1930;
-    margin-top: 15px;
+    color: #333;
+    margin: 14px 15px 8px;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
+/* Lista de servicios incluidos */
+.service ul {
+    text-align: left;
+    padding: 0 20px;
+    margin: 0 0 10px;
+    list-style: none;
+}
+
+.service ul li {
+    font-size: 13px;
+    color: #555;
+    padding: 3px 0;
+    border-bottom: 1px solid #f0ebe3;
+}
+
+.service ul li:last-child {
+    border-bottom: none;
+}
+
+/* Descripción (en corteespecializado.html) */
 .service p {
     color: #555;
-    font-size: 0.95em;
+    font-size: 13px;
+    padding: 0 15px;
+    line-height: 1.5;
+}
+
+/* Badge de precio */
+.price {
+    margin: 10px 15px 0;
+}
+
+.price p {
+    display: inline-block;
+    background: #f4ede4;
+    color: #a67c52;
+    font-weight: 800;
+    font-size: 15px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin: 0;
+}
+
+/* ── Botón "Agendar Cita" al final ───────────────────────────*/
+.hero {
+    background: #f4ede4;
+    border-top: 2px solid #e0d5c5;
+    text-align: center;
+    padding: 50px 20px;
+    margin-top: 20px;
+}
+
+.hero a {
+    display: inline-block;
+    background: #af9d81;
+    color: white;
+    padding: 14px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(175, 157, 129, 0.3);
+}
+
+.hero a:hover {
+    background: #a67c52;
+    transform: translateY(-2px);
+}
+
+/* Animación de entrada de las cards */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
