@@ -70,3 +70,8 @@ Route::get('/cliente/mascotas',       [App\Http\Controllers\Cliente\ClienteContr
 Route::get('/cliente/citas',          [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
 Route::post('/cliente/cancelar-cita', [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
 Route::get('/cliente/pagos',          [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
+
+
+// Reseñas de clientes — página de ubicación
+Route::get('/resenas',        [App\Http\Controllers\ResenaController::class, 'index']);
+Route::post('/resenas/crear', [App\Http\Controllers\ResenaController::class, 'crear']);

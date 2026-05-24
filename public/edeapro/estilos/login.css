@@ -311,6 +311,21 @@ body {
     justify-content: center;
 }
 
+/* Botón volver al inicio desde el login */
+.btn-volver-login {
+    display: inline-block;
+    color: #a67c52;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.btn-volver-login:hover {
+    color: #8a6340;
+}
+
 @media (max-width: 640px) {
     .auth-wrapper { flex-direction: column; }
     .welcome-panel { width: 100%; padding: 30px; min-height: 150px; }

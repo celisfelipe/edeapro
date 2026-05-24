@@ -51,7 +51,7 @@
                 <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="ubicacion.html">Ubicación</a></li>
                 <li><a href="agenda.html">Agendar cita</a></li>
-                <li><a href="login.html" class="login">Inicio de Sesión</a></li>
+                <li><a href="login.html" class="login" style="visibility:hidden">Inicio de Sesión</a></li>
                 
             </ul>
         </nav>
@@ -82,66 +82,47 @@
         <section id="resenas">
             <h2>⭐ Lo Que Dicen Nuestros Clientes</h2>
 
-            <div class="resenas-grid">
-                <div class="resena-card">
-                    <h4>Felipe Celis</h4>
-                    <div class="rating">⭐⭐⭐⭐⭐</div>
-                    <p>"¡El mejor spa canino! Max siempre vuelve tranquilo y con un corte perfecto. El sistema de
-                        agendamiento es muy fácil de usar."</p>
+        <!-- Carrusel de reseñas -->
+        <div class="resenas-carrusel">
+                <button class="resena-prev" onclick="moverResena(-1)">❮</button>
+                <div class="resenas-track" id="resenas-track">
+                    <!-- Las reseñas se cargan dinámicamente desde Laravel -->
                 </div>
-
-                <div class="resena-card">
-                    <h4>Juan G. (Dueño de Nala)</h4>
-                    <div class="rating">⭐⭐⭐⭐⭐</div>
-                    <p>"Muy profesionales. Me gustaría que tuvieran más horas disponibles los domingos, pero la atención
-                        y la tienda son geniales."</p>
-                </div>
-
-                <div class="resena-card">
-                    <h4>María López</h4>
-                    <div class="rating">⭐⭐⭐⭐</div>
-                    <p>"Excelente servicio y atención personalizada. Mi gato Mishu quedó perfecto después del grooming.
-                        ¡Volveremos pronto!"</p>
-                </div>
+                <button class="resena-next" onclick="moverResena(1)">❯</button>
             </div>
+            <div class="resenas-dots" id="resenas-dots"></div>
 
-            <!-- FORMULARIO DE RESEÑA -->
-            <div class="resena-form-container">
-                <h3>✍️ Deja tu Opinión</h3>
-                <form class="resena-form" onsubmit="handleSubmitResena(event)">
-                    <div class="form-group">
-                        <label for="nombre">Tu Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="Juan Pérez" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Tu Email:</label>
-                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="puntuacion">Puntuación:</label>
-                        <select id="puntuacion" name="puntuacion" required>
-                            <option value="">-- Selecciona una puntuación --</option>
-                            <option value="5">⭐⭐⭐⭐⭐ 5 Estrellas</option>
-                            <option value="4">⭐⭐⭐⭐ 4 Estrellas</option>
-                            <option value="3">⭐⭐⭐ 3 Estrellas</option>
-                            <option value="2">⭐⭐ 2 Estrellas</option>
-                            <option value="1">⭐ 1 Estrella</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="comentario">Tu Reseña:</label>
-                        <textarea id="comentario" name="comentario" rows="5"
-                            placeholder="Cuéntanos tu experiencia con EDEA PRO..." required></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn">✉️ Enviar Reseña</button>
-                </form>
-                <div id="message" class="message"></div>
+    <!-- Formulario — solo visible si hay sesión de cliente -->
+    <div class="resena-form-container" id="form-resena" style="display:none">
+        <h3>Deja tu Opinión</h3>
+        <div class="form-group">
+            <label>Puntuación:</label>
+            <div class="estrellas-input" id="estrellas-input">
+                <span class="estrella" data-valor="1">★</span>
+                <span class="estrella" data-valor="2">★</span>
+                <span class="estrella" data-valor="3">★</span>
+                <span class="estrella" data-valor="4">★</span>
+                <span class="estrella" data-valor="5">★</span>
             </div>
-        </section>
+            <input type="hidden" id="puntuacion-valor" value="0">
+        </div>
+        <div class="form-group">
+            <label>Tu Reseña:</label>
+            <textarea id="comentario-texto" rows="4"
+                placeholder="Cuéntanos tu experiencia con EDEA PRO..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="enviarResena()">✉️ Enviar Reseña</button>
+        <div id="resena-mensaje" class="message"></div>
+    </div>
+
+    <!-- Mensaje si no hay sesión -->
+    <div id="resena-login-msg" style="text-align:center; margin-top:30px; display:none">
+        <p style="color:#888; font-size:14px;">
+            <a href="login.html" style="color:#a67c52; font-weight:700;">Inicia sesión</a>
+            para dejar tu reseña
+        </p>
+    </div>
+</section>
     </main>
 
     <footer id="contacto">

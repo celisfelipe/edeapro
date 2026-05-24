@@ -118,48 +118,105 @@ header nav a {
     color: #333;
 }
 
-/* Grid de cards de reseñas */
-.resenas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-bottom: 50px;
+/* ── Carrusel de reseñas ─────────────────────────────────────*/
+.resenas-carrusel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.resenas-track {
+    display: flex;
+    overflow: hidden;
+    gap: 20px;
+    flex: 1;
 }
 
 /* Card individual de reseña */
 .resena-card {
+    min-width: calc(33.33% - 14px);
     background: white;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     border-left: 4px solid #ae9d81;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
 }
 
 .resena-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     box-shadow: 0 10px 25px rgba(166, 124, 82, 0.2);
 }
 
 .resena-card h4 {
     font-weight: 700;
     color: #333;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    font-size: 15px;
 }
 
-/* Estrellas de calificación */
-.rating {
+.resena-card .fecha {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+/* Estrellas de calificación en las cards */
+.resena-card .rating {
     color: #f59e0b;
     font-size: 16px;
     margin-bottom: 10px;
-    letter-spacing: 2px;
 }
 
 .resena-card p {
-    font-size: 14px;
+    font-size: 13px;
     color: #555;
     line-height: 1.6;
     font-style: italic;
+}
+
+/* Botones prev/next del carrusel */
+.resena-prev,
+.resena-next {
+    background: #af9d81;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+}
+
+.resena-prev:hover,
+.resena-next:hover {
+    background: #a67c52;
+}
+
+/* Dots de navegación del carrusel */
+.resenas-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 40px;
+}
+
+.resenas-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d0c4b0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.resenas-dots span.active {
+    background: #a67c52;
 }
 
 /* ── Formulario de reseña ────────────────────────────────────*/
@@ -178,6 +235,7 @@ header nav a {
     font-size: 1.4rem;
     color: #333;
     margin-bottom: 28px;
+    font-weight: 700;
 }
 
 /* Grupo de label + campo */
@@ -187,46 +245,69 @@ header nav a {
     margin-bottom: 18px;
 }
 
-.resena-form label {
+/* Labels del formulario */
+#form-resena .form-group label {
     font-size: 13px;
     font-weight: 600;
     color: #555;
     margin-bottom: 6px;
 }
 
-/* Inputs, select y textarea */
-.resena-form input,
-.resena-form select,
-.resena-form textarea {
-    padding: 11px 14px;
+/* Estrellas interactivas — más grandes y con animación */
+.estrellas-input {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0 10px;
+}
+
+.estrella {
+    font-size: 36px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+    user-select: none;
+    line-height: 1;
+}
+
+.estrella:hover,
+.estrella.activa {
+    color: #f59e0b;
+    transform: scale(1.15);
+}
+
+/* Textarea del comentario */
+#comentario-texto {
+    width: 100%;
+    padding: 12px 14px;
     border: 1.5px solid #d0c4b0;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     background: white;
     color: #333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+    min-height: 110px;
     outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    line-height: 1.6;
 }
 
-/* Borde café dorado al hacer foco */
-.resena-form input:focus,
-.resena-form select:focus,
-.resena-form textarea:focus {
+#comentario-texto:focus {
     border-color: #a67c52;
     box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.15);
 }
 
-.resena-form textarea {
-    resize: vertical;
-    min-height: 120px;
+#comentario-texto::placeholder {
+    color: #bbb;
+    font-style: italic;
 }
 
-/* Botón enviar — color café del sitio */
+/* Botón enviar */
 .submit-btn {
     width: 100%;
     padding: 14px;
-    background: #a67c52;
+    background: #af9d81;
     color: white;
     border: none;
     border-radius: 8px;
@@ -239,14 +320,14 @@ header nav a {
 }
 
 .submit-btn:hover {
-    background: #8a6340;
+    background: #a67c52;
     transform: translateY(-2px);
 }
 
 /* Mensaje de éxito o error al enviar */
-.message {
+#resena-mensaje {
+    margin-top: 12px;
     text-align: center;
-    margin-top: 14px;
     font-size: 14px;
     font-weight: 600;
     padding: 10px 14px;
@@ -255,14 +336,14 @@ header nav a {
     animation: slideIn 0.3s ease;
 }
 
-.message.success {
+#resena-mensaje.success {
     background: #d4edda;
     color: #2d6a4f;
     border: 1px solid #b7dfca;
     display: block;
 }
 
-.message.error {
+#resena-mensaje.error {
     background: #fde8e8;
     color: #c0392b;
     border: 1px solid #f5c6c6;
@@ -276,10 +357,10 @@ header nav a {
 
 /* ── Responsive ──────────────────────────────────────────────*/
 @media (max-width: 768px) {
-    .ubicacion-page { padding: 20px; }
-    .map-responsive { padding-bottom: 66.67%; }
-    .contact-info   { grid-template-columns: 1fr; }
-    .resenas-grid   { grid-template-columns: 1fr; }
+    .ubicacion-page       { padding: 20px; }
+    .map-responsive       { padding-bottom: 66.67%; }
+    .contact-info         { grid-template-columns: 1fr; }
+    .resena-card          { min-width: 100%; }
     .resena-form-container { padding: 20px; }
 }
 
