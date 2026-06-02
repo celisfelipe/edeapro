@@ -61,7 +61,7 @@ async function genSlots(){
 
   const out = [];
   for(let h=9; h<17; h++){
-    for(let m=0; m<60; m+=30){
+    for(let m=0; m<60; m+=15){
       const label = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
       const fin   = h*60 + m + dur;
       if(fin <= 17*60) out.push({label, ocupado: ocup.includes(label)});

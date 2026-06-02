@@ -61,12 +61,15 @@ class CitaController extends Controller
         return response()->json(['ok' => true, 'estilistas' => $datos]);
     }
 
-    /**
+/**
      * Devuelve los horarios ocupados para una fecha y estilista.
      * Si id_estilista = 0 (sin preferencia), revisa todos los estilistas
      * y marca un slot como ocupado solo si TODOS están ocupados a esa hora.
      * Convierte la fecha de dd/mm/yyyy a yyyy-mm-dd para consultar la BD.
-     * Calcula los slots de 30 min que cubre cada cita según su duración.
+     *
+     * PRECISIÓN: Usa slots de 15 min y comparación de rangos exacta.
+     * Ejemplo: cita de 45 min a las 9:00 bloquea 9:00, 9:15, 9:30.
+     * Ejemplo: cita de 70 min a las 9:00 bloquea 9:00, 9:15, 9:30, 9:45, 10:00.
      */
     public function slots(Request $request)
     {
@@ -78,10 +81,10 @@ class CitaController extends Controller
         $fecha_bd = $partes[2] . '-' . str_pad($partes[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($partes[0], 2, '0', STR_PAD_LEFT);
 
         if ($id_estilista === 0) {
-            // Sin preferencia: contar todos los estilistas activos
-            $total = DB::select("SELECT COUNT(*) AS total FROM estilista WHERE estado = 'Activo' AND disponibilidad = 'Disponible'");
+            // Sin preferencia: contar todos los estilistas activos y disponibles
+            $total            = DB::select("SELECT COUNT(*) AS total FROM estilista WHERE estado = 'Activo' AND disponibilidad = 'Disponible'");
             $total_estilistas = $total[0]->total;
-            $citas = DB::select("
+            $citas            = DB::select("
                 SELECT c.hora, rs.duracion
                 FROM cita c
                 JOIN raza_servicio rs ON c.id_servicio = rs.id_servicio
@@ -90,7 +93,7 @@ class CitaController extends Controller
         } else {
             // Con preferencia: revisar solo ese estilista
             $total_estilistas = 1;
-            $citas = DB::select("
+            $citas            = DB::select("
                 SELECT c.hora, rs.duracion
                 FROM cita c
                 JOIN raza_servicio rs ON c.id_servicio = rs.id_servicio
@@ -98,22 +101,30 @@ class CitaController extends Controller
             ", [$id_estilista, $fecha_bd]);
         }
 
-        // Calcular qué slots de 30 min están ocupados por cada cita
+        // Calcular qué slots de 15 min están afectados por cada cita
+        // Usa comparación de rangos en vez de avanzar slot por slot
         $slots_ocupados = [];
         foreach ($citas as $row) {
             $hora_inicio = strtotime($row->hora);
-            $duracion    = intval($row->duracion);
-            $hora_fin    = $hora_inicio + ($duracion * 60);
-            $slot        = $hora_inicio;
-            while ($slot < $hora_fin) {
-                $label = date('H:i', $slot);
-                if (!isset($slots_ocupados[$label])) $slots_ocupados[$label] = 0;
-                $slots_ocupados[$label]++;
-                $slot += 1800; // Avanzar 30 minutos
+            $duracion    = intval($row->duracion); // "45 min" → 45
+            $hora_fin    = $hora_inicio + ($duracion * 60); // Hora exacta de fin
+
+            // Revisar cada slot de 15 min entre 9:00 y 17:00
+            for ($s = strtotime('09:00'); $s < strtotime('17:00'); $s += 900) {
+                $slot_fin = $s + 900; // Cada slot dura 15 min (900 segundos)
+
+                // Bloquear el slot si la cita se cruza con él:
+                // la cita empieza antes de que el slot termine
+                // Y la cita termina después de que el slot empiece
+                if ($hora_inicio < $slot_fin && $hora_fin > $s) {
+                    $label = date('H:i', $s);
+                    if (!isset($slots_ocupados[$label])) $slots_ocupados[$label] = 0;
+                    $slots_ocupados[$label]++;
+                }
             }
         }
 
-        // Un slot se bloquea solo si todos los estilistas están ocupados
+        // Un slot se bloquea solo si todos los estilistas están ocupados en él
         $ocupados = [];
         foreach ($slots_ocupados as $slot => $cantidad) {
             if ($cantidad >= $total_estilistas) $ocupados[] = $slot;
