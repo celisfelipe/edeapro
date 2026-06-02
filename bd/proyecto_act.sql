@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2026 a las 04:21:34
+-- Tiempo de generación: 02-06-2026 a las 17:38:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -122,7 +122,10 @@ INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_es
 (8, 3, 2, 1, 1, '2026-05-11', '11:30:00', 'Cancelada'),
 (9, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
 (10, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
-(11, 3, 2, 1, 3, '2026-05-19', '11:30:00', 'Pendiente');
+(11, 3, 2, 1, 3, '2026-05-19', '11:30:00', 'Cancelada'),
+(12, 3, 2, 2, 2, '2026-05-27', '09:00:00', 'Pendiente'),
+(13, 3, 2, 1, 2, '2026-05-28', '09:00:00', 'Pendiente'),
+(14, 3, 2, 2, 3, '2026-05-29', '09:00:00', 'Pendiente');
 
 --
 -- Disparadores `cita`
@@ -404,7 +407,10 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (4, 8, 3, 'Tu cita fue agendada para el 2026-05-11 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'No leída'),
 (5, 9, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
 (6, 10, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(7, 11, 3, 'Tu cita fue agendada para el 2026-05-19 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'No leída');
+(7, 11, 3, 'Tu cita fue agendada para el 2026-05-19 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(8, 12, 3, 'Tu cita fue agendada para el 2026-05-27 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(9, 13, 3, 'Tu cita fue agendada para el 2026-05-28 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(10, 14, 3, 'Tu cita fue agendada para el 2026-05-29 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
 
 -- --------------------------------------------------------
 
@@ -644,6 +650,27 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 (45, 3, NULL, '90 min', 80000.00),
 (46, 4, NULL, '60 min', 70000.00),
 (47, 4, NULL, '120 min', 90000.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `resena`
+--
+
+CREATE TABLE `resena` (
+  `id_resena` int(11) NOT NULL,
+  `id_cliente` int(11) NOT NULL,
+  `puntuacion` int(11) NOT NULL CHECK (`puntuacion` between 1 and 5),
+  `comentario` text NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `resena`
+--
+
+INSERT INTO `resena` (`id_resena`, `id_cliente`, `puntuacion`, `comentario`, `fecha`) VALUES
+(1, 3, 5, 'Gran servicio', '2026-05-23 20:08:37');
 
 -- --------------------------------------------------------
 
@@ -897,6 +924,13 @@ ALTER TABLE `raza_servicio`
   ADD KEY `id_raza` (`id_raza`);
 
 --
+-- Indices de la tabla `resena`
+--
+ALTER TABLE `resena`
+  ADD PRIMARY KEY (`id_resena`),
+  ADD KEY `id_cliente` (`id_cliente`);
+
+--
 -- Indices de la tabla `servicio`
 --
 ALTER TABLE `servicio`
@@ -925,7 +959,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -974,6 +1008,12 @@ ALTER TABLE `pago`
 --
 ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `resena`
+--
+ALTER TABLE `resena`
+  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
@@ -1034,6 +1074,12 @@ ALTER TABLE `pago`
 ALTER TABLE `raza_servicio`
   ADD CONSTRAINT `raza_servicio_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`),
   ADD CONSTRAINT `raza_servicio_ibfk_2` FOREIGN KEY (`id_raza`) REFERENCES `raza` (`id_raza`);
+
+--
+-- Filtros para la tabla `resena`
+--
+ALTER TABLE `resena`
+  ADD CONSTRAINT `resena_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
