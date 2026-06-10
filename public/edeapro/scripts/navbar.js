@@ -45,3 +45,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Mostrar el botón solo cuando ya sabe qué texto poner
     loginLink.style.visibility = 'visible';
 });
+
+/**
+ * verificarSesionAgenda()
+ * Verifica si hay sesión de cliente antes de ir a la agenda.
+ * Se usa en cualquier botón del sitio que lleve a agendar cita.
+ * Sin sesión manda al login, con sesión va directo a la agenda.
+ */
+function verificarSesionAgenda(event) {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const rol  = localStorage.getItem('rol');
+
+    if (user && rol === 'cliente') {
+        window.location.href = 'agenda.html';
+    } else {
+        window.location.href = 'login.html';
+    }
+}

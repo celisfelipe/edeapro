@@ -32,10 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         init() {
-            this.setupEventListeners();
+        this.setupEventListeners();
+        // Delay de 100ms para que el CSS detecte el cambio de clase
+        // y active el zoom Ken Burns desde el primer slide
+        setTimeout(() => {
             this.showSlide(0);
             this.startAutoPlay();
-        }
+        }, 100);
+    }
 
         setupEventListeners() {
             // Botones de navegación
@@ -63,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (document.hidden) {
                     this.pauseAutoPlay();
                 } else {
+                    this.showSlide(this.currentIndex);
                     this.startAutoPlay();
                 }
             });
