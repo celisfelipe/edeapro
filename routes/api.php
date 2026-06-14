@@ -3,47 +3,31 @@
 /**
  * EDEA Grooming - Rutas de la API
  * ================================
- * Todas las peticiones del frontend (HTML/JS) llegan aquí.
- * Cada ruta llama al método correspondiente en un Controlador.
- *
- * SEGURIDAD:
- * - Rutas públicas: login, registro, agenda (cualquiera puede verlas)
- * - Rutas protegidas: admin, empleado, cliente (requieren token)
- *
- * El token se genera al hacer login y se envía en cada fetch
- * en el header: Authorization: Bearer {token}
+ * SEGURIDAD — Tres niveles de acceso:
+ * - Públicas: sin token
+ * - Protegidas por rol: solo el rol indicado puede acceder
  */
 
 use Illuminate\Support\Facades\Route;
 
-// ─────────────────────────────────────────────────────────────
-// RUTAS PÚBLICAS — no requieren autenticación
-// ─────────────────────────────────────────────────────────────
+// ── Rutas públicas ────────────────────────────────────────────
 Route::post('/login',    [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/registro', [App\Http\Controllers\AuthController::class, 'registro']);
 
-// Agenda pública — cualquier visitante puede ver servicios y estilistas
 Route::get('/citas/servicios',   [App\Http\Controllers\CitaController::class, 'servicios']);
 Route::get('/citas/adicionales', [App\Http\Controllers\CitaController::class, 'adicionales']);
 Route::get('/citas/estilistas',  [App\Http\Controllers\CitaController::class, 'estilistas']);
 Route::get('/citas/slots',       [App\Http\Controllers\CitaController::class, 'slots']);
+Route::get('/resenas',           [App\Http\Controllers\ResenaController::class, 'index']);
 
-// Reseñas públicas — cualquiera puede verlas
-Route::get('/resenas', [App\Http\Controllers\ResenaController::class, 'index']);
-
-// ─────────────────────────────────────────────────────────────
-// RUTAS PROTEGIDAS — requieren token de autenticación
-// Solo accesibles si el usuario inició sesión
-// ─────────────────────────────────────────────────────────────
+// ── Rutas que requieren cualquier sesión activa ───────────────
 Route::middleware('verificar.token')->group(function () {
+    Route::post('/citas/crear',      [App\Http\Controllers\CitaController::class, 'crear']);
+    Route::post('/resenas/crear',    [App\Http\Controllers\ResenaController::class, 'crear']);
+});
 
-    // Crear cita — solo clientes autenticados
-    Route::post('/citas/crear', [App\Http\Controllers\CitaController::class, 'crear']);
-
-    // Reseñas — solo clientes autenticados pueden crear
-    Route::post('/resenas/crear', [App\Http\Controllers\ResenaController::class, 'crear']);
-
-    // ── Panel Administrador ───────────────────────────────────
+// ── Rutas solo para administrador ────────────────────────────
+Route::middleware('verificar.token:administrador')->group(function () {
     Route::get('/admin/citas',           [App\Http\Controllers\Admin\CitaAdminController::class, 'index']);
     Route::post('/admin/citas/cancelar', [App\Http\Controllers\Admin\CitaAdminController::class, 'cancelar']);
 
@@ -65,15 +49,19 @@ Route::middleware('verificar.token')->group(function () {
     Route::get('/admin/pagos',            [App\Http\Controllers\Admin\PagoAdminController::class, 'index']);
     Route::post('/admin/pagos/registrar', [App\Http\Controllers\Admin\PagoAdminController::class, 'registrar']);
 
+    Route::get('/admin/estadisticas', [App\Http\Controllers\Admin\EstadisticaAdminController::class, 'index']);
+});
+
+// ── Rutas para administrador y peluquero ─────────────────────
+Route::middleware('verificar.token:administrador,peluquero')->group(function () {
     Route::get('/admin/horarios',                 [App\Http\Controllers\Admin\HorarioAdminController::class, 'index']);
     Route::post('/admin/horarios/disponibilidad', [App\Http\Controllers\Admin\HorarioAdminController::class, 'disponibilidad']);
+    Route::get('/admin/clientes-empleado',        [App\Http\Controllers\Admin\ClienteAdminController::class, 'index']);
+    Route::get('/empleado/citas',                 [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
+});
 
-    Route::get('/admin/estadisticas', [App\Http\Controllers\Admin\EstadisticaAdminController::class, 'index']);
-
-    // ── Panel Empleado ────────────────────────────────────────
-    Route::get('/empleado/citas', [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
-
-    // ── Panel Cliente ─────────────────────────────────────────
+// ── Rutas solo para cliente ───────────────────────────────────
+Route::middleware('verificar.token:cliente')->group(function () {
     Route::get('/cliente/perfil',         [App\Http\Controllers\Cliente\ClienteController::class, 'perfil']);
     Route::post('/cliente/actualizar',    [App\Http\Controllers\Cliente\ClienteController::class, 'actualizar']);
     Route::get('/cliente/mascotas',       [App\Http\Controllers\Cliente\ClienteController::class, 'mascotas']);

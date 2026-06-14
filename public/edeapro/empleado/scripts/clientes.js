@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('nombre-empleado').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
 
     // Cargar todos los clientes del sistema
-    fetch('http://127.0.0.1:8000/api/admin/clientes')
+    fetchAuth('http://127.0.0.1:8000/api/admin/clientes-empleado')
     .then(res => res.json())
     .then(data => {
         if (data.ok) {

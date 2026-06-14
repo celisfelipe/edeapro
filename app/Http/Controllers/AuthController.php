@@ -4,38 +4,41 @@
  * AuthController
  * ==============
  * Maneja el inicio de sesión y el registro de clientes.
- * Genera tokens de Sanctum para autenticar las peticiones.
  *
  * Ruta login:    POST /api/login
  * Ruta registro: POST /api/registro
+ *
+ * SEGURIDAD:
+ * - Contraseñas verificadas con bcrypt (Hash::check)
+ * - Genera token único al hacer login
+ * - Token se guarda en personal_access_tokens
  */
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     /**
-     * Login — verifica correo y contraseña.
-     * Genera un token único y lo guarda en personal_access_tokens.
-     * Devuelve el rol, los datos del usuario y el token.
+     * Login — verifica correo y contraseña hasheada.
+     * Genera un token y lo guarda en personal_access_tokens.
      */
     public function login(Request $request)
     {
         $correo     = $request->input('correo');
         $contrasena = $request->input('contrasena');
 
-        // Buscar en tabla cliente
+        // Buscar cliente por correo
         $cliente = DB::table('cliente')
             ->where('correo', $correo)
-            ->where('contrasena', $contrasena)
             ->first();
 
-        if ($cliente) {
+        // Verificar contraseña con bcrypt
+        if ($cliente && Hash::check($contrasena, $cliente->contrasena)) {
             $token = $this->generarToken('cliente', $cliente->id_cliente, 'cliente');
             return response()->json([
                 'ok'    => true,
@@ -45,13 +48,13 @@ class AuthController extends Controller
             ]);
         }
 
-        // Buscar en tabla estilista
+        // Buscar estilista por correo
         $estilista = DB::table('estilista')
             ->where('correo', $correo)
-            ->where('contrasena', $contrasena)
             ->first();
 
-        if ($estilista) {
+        // Verificar contraseña con bcrypt
+        if ($estilista && Hash::check($contrasena, $estilista->contrasena)) {
             $rol   = strtolower($estilista->rol) === 'administrador' ? 'administrador' : 'peluquero';
             $token = $this->generarToken('estilista', $estilista->id_estilista, $rol);
             return response()->json([
@@ -69,15 +72,11 @@ class AuthController extends Controller
     }
 
     /**
-     * Genera un token de acceso y lo guarda en personal_access_tokens.
-     * @param string $tipo  - 'cliente' o 'estilista'
-     * @param int    $id    - id del usuario
-     * @param string $rol   - rol del usuario
-     * @return string       - token en texto plano para enviar al frontend
+     * Genera un token único y lo guarda en personal_access_tokens.
+     * Elimina tokens anteriores del mismo usuario antes de crear uno nuevo.
      */
     private function generarToken($tipo, $id, $rol)
     {
-        // Generar token aleatorio
         $plainToken = Str::random(40);
 
         // Eliminar tokens anteriores del mismo usuario
@@ -86,7 +85,7 @@ class AuthController extends Controller
             ->where('tokenable_id', $id)
             ->delete();
 
-        // Guardar el token hasheado en la BD
+        // Guardar token hasheado en la BD
         DB::table('personal_access_tokens')->insert([
             'tokenable_type' => $tipo,
             'tokenable_id'   => $id,
@@ -103,6 +102,7 @@ class AuthController extends Controller
 
     /**
      * Registro — crea un nuevo cliente con sus mascotas.
+     * Hashea la contraseña antes de guardarla en la BD.
      */
     public function registro(Request $request)
     {
@@ -114,20 +114,23 @@ class AuthController extends Controller
         $contrasena = $request->input('contrasena');
         $mascotas   = json_decode($request->input('mascotas'), true);
 
+        // Verificar si el correo ya existe
         $existe = DB::table('cliente')->where('correo', $correo)->first();
         if ($existe) {
             return response()->json(['ok' => false, 'error' => 'El correo ya está registrado']);
         }
 
+        // Insertar cliente con contraseña hasheada
         $id_cliente = DB::table('cliente')->insertGetId([
             'nombre'     => $nombre,
             'apellido'   => $apellido,
             'telefono'   => $telefono,
             'correo'     => $correo,
             'direccion'  => $direccion,
-            'contrasena' => $contrasena
+            'contrasena' => Hash::make($contrasena)
         ]);
 
+        // Insertar mascotas asociadas al cliente
         if ($mascotas && count($mascotas) > 0) {
             foreach ($mascotas as $mascota) {
                 DB::table('mascota')->insert([

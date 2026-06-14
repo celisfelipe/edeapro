@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function cargarServicios() {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    fetch(`http://127.0.0.1:8000/api/empleado/citas?id_estilista=${user.id_estilista}`)
+    fetchAuth(`http://127.0.0.1:8000/api/empleado/citas?id_estilista=${user.id_estilista}`)
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('tabla-servicios');
