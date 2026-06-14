@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
 
-    fetch('http://127.0.0.1:8000/api/admin/estadisticas')
+    fetchAuth('http://127.0.0.1:8000/api/admin/estadisticas')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;

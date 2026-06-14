@@ -4,7 +4,7 @@
  * AuthController
  * ==============
  * Maneja el inicio de sesión y el registro de clientes.
- * Recibe los datos del formulario en login.html (login.js).
+ * Genera tokens de Sanctum para autenticar las peticiones.
  *
  * Ruta login:    POST /api/login
  * Ruta registro: POST /api/registro
@@ -14,14 +14,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     /**
      * Login — verifica correo y contraseña.
-     * Busca primero en la tabla 'cliente', luego en 'estilista'.
-     * Devuelve el rol ('cliente', 'administrador' o 'peluquero')
-     * y los datos del usuario para guardar en localStorage.
+     * Genera un token único y lo guarda en personal_access_tokens.
+     * Devuelve el rol, los datos del usuario y el token.
      */
     public function login(Request $request)
     {
@@ -35,25 +36,29 @@ class AuthController extends Controller
             ->first();
 
         if ($cliente) {
+            $token = $this->generarToken('cliente', $cliente->id_cliente, 'cliente');
             return response()->json([
-                'ok'   => true,
-                'rol'  => 'cliente',
-                'user' => $cliente
+                'ok'    => true,
+                'rol'   => 'cliente',
+                'user'  => $cliente,
+                'token' => $token
             ]);
         }
 
-        // Buscar en tabla estilista (admin o peluquero)
+        // Buscar en tabla estilista
         $estilista = DB::table('estilista')
             ->where('correo', $correo)
             ->where('contrasena', $contrasena)
             ->first();
 
         if ($estilista) {
-            $rol = strtolower($estilista->rol) === 'administrador' ? 'administrador' : 'peluquero';
+            $rol   = strtolower($estilista->rol) === 'administrador' ? 'administrador' : 'peluquero';
+            $token = $this->generarToken('estilista', $estilista->id_estilista, $rol);
             return response()->json([
-                'ok'   => true,
-                'rol'  => $rol,
-                'user' => $estilista
+                'ok'    => true,
+                'rol'   => $rol,
+                'user'  => $estilista,
+                'token' => $token
             ]);
         }
 
@@ -64,9 +69,40 @@ class AuthController extends Controller
     }
 
     /**
+     * Genera un token de acceso y lo guarda en personal_access_tokens.
+     * @param string $tipo  - 'cliente' o 'estilista'
+     * @param int    $id    - id del usuario
+     * @param string $rol   - rol del usuario
+     * @return string       - token en texto plano para enviar al frontend
+     */
+    private function generarToken($tipo, $id, $rol)
+    {
+        // Generar token aleatorio
+        $plainToken = Str::random(40);
+
+        // Eliminar tokens anteriores del mismo usuario
+        DB::table('personal_access_tokens')
+            ->where('tokenable_type', $tipo)
+            ->where('tokenable_id', $id)
+            ->delete();
+
+        // Guardar el token hasheado en la BD
+        DB::table('personal_access_tokens')->insert([
+            'tokenable_type' => $tipo,
+            'tokenable_id'   => $id,
+            'name'           => 'auth_token',
+            'token'          => hash('sha256', $plainToken),
+            'abilities'      => json_encode([$rol]),
+            'expires_at'     => now()->addDays(1),
+            'created_at'     => now(),
+            'updated_at'     => now()
+        ]);
+
+        return $plainToken;
+    }
+
+    /**
      * Registro — crea un nuevo cliente con sus mascotas.
-     * Valida que el correo no esté ya registrado.
-     * Inserta en las tablas 'cliente' y 'mascota'.
      */
     public function registro(Request $request)
     {
@@ -78,13 +114,11 @@ class AuthController extends Controller
         $contrasena = $request->input('contrasena');
         $mascotas   = json_decode($request->input('mascotas'), true);
 
-        // Verificar si el correo ya existe
         $existe = DB::table('cliente')->where('correo', $correo)->first();
         if ($existe) {
             return response()->json(['ok' => false, 'error' => 'El correo ya está registrado']);
         }
 
-        // Insertar cliente
         $id_cliente = DB::table('cliente')->insertGetId([
             'nombre'     => $nombre,
             'apellido'   => $apellido,
@@ -94,7 +128,6 @@ class AuthController extends Controller
             'contrasena' => $contrasena
         ]);
 
-        // Insertar mascotas asociadas al cliente
         if ($mascotas && count($mascotas) > 0) {
             foreach ($mascotas as $mascota) {
                 DB::table('mascota')->insert([

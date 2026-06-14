@@ -65,6 +65,10 @@ header {
     width: 100%;
     height: auto;
 }
+/* Quitar la línea animada del botón login — es un botón, no un link */
+.login::after {
+    display: none;
+}
 
 /* Lista de links del navbar */
 nav ul {

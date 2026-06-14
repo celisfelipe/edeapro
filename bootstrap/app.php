@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\CorsMiddleware::class);
+        
+        // Registrar el middleware de verificación de token
+        $middleware->alias([
+        'verificar.token' => \App\Http\Middleware\VerificarToken::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

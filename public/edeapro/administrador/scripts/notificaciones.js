@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * y tienen un botón para marcarlas como leídas.
  */
 function cargarNotificaciones() {
-    fetch('http://127.0.0.1:8000/api/admin/notificaciones')
+    fetchAuth('http://127.0.0.1:8000/api/admin/notificaciones')
     .then(res => res.json())
     .then(data => {
         const contenedor = document.getElementById('contenedor-notificaciones');
@@ -59,7 +59,7 @@ function cargarNotificaciones() {
  * Recarga la lista para reflejar el cambio visualmente.
  */
 function marcarLeida(id) {
-    fetch('http://127.0.0.1:8000/api/admin/notificaciones/leer', {
+    fetchAuth('http://127.0.0.1:8000/api/admin/notificaciones/leer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_notificacion: id })

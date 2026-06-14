@@ -39,7 +39,7 @@ function cargarHorarios() {
     const fecha = document.getElementById('fecha-selector').value;
     if (!fecha) return;
 
-    fetch(`http://127.0.0.1:8000/api/admin/horarios?fecha=${fecha}`)
+    fetchAuth(`http://127.0.0.1:8000/api/admin/horarios?fecha=${fecha}`)
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -98,7 +98,7 @@ function cargarHorarios() {
  * Esto afecta si el estilista aparece en la agenda pública.
  */
 function cargarDisponibilidad() {
-    fetch('http://127.0.0.1:8000/api/admin/horarios?fecha=' + new Date().toISOString().split('T')[0])
+    fetchAuth('http://127.0.0.1:8000/api/admin/horarios?fecha=' + new Date().toISOString().split('T')[0])
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -127,7 +127,7 @@ function cargarDisponibilidad() {
  * @param {string} nuevaDisponibilidad - 'Disponible' o 'No Disponible'
  */
 function cambiarDisponibilidad(id, nuevaDisponibilidad) {
-    fetch('http://127.0.0.1:8000/api/admin/horarios/disponibilidad', {
+    fetchAuth('http://127.0.0.1:8000/api/admin/horarios/disponibilidad', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_estilista: id, disponibilidad: nuevaDisponibilidad })

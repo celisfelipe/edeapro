@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /** Trae todos los estilistas desde Laravel y los muestra en la tabla */
 function cargarEmpleados() {
-    fetch('http://127.0.0.1:8000/api/admin/empleados')
+    fetchAuth('http://127.0.0.1:8000/api/admin/empleados')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -82,7 +82,7 @@ function agregarEmpleado() {
         return;
     }
 
-    fetch('http://127.0.0.1:8000/api/admin/empleados/agregar', {
+    fetchAuth('http://127.0.0.1:8000/api/admin/empleados/agregar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ nombre, apellido, telefono, correo, contrasena, rol })
@@ -114,7 +114,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
     overlay.classList.add('open');
 
     document.getElementById('edit-empleado-ok').onclick = function () {
-        fetch('http://127.0.0.1:8000/api/admin/empleados/editar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/empleados/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -146,7 +146,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
 /** Pide confirmación antes de eliminar el estilista */
 function eliminarEmpleado(id) {
     modalConfirmar('¿Seguro que deseas eliminar este empleado?', function () {
-        fetch('http://127.0.0.1:8000/api/admin/empleados/eliminar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/empleados/eliminar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_estilista: id })

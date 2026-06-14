@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const id = user.id_cliente;
 
     // ── Cargar datos del perfil ───────────────────────────────
-    fetch(`http://127.0.0.1:8000/api/cliente/perfil?id_cliente=${id}`)
+    fetchAuth(`http://127.0.0.1:8000/api/cliente/perfil?id_cliente=${id}`)
     .then(res => res.json())
     .then(data => {
         if (data.ok) {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Cargar mascotas ───────────────────────────────────────
-    fetch(`http://127.0.0.1:8000/api/cliente/mascotas?id_cliente=${id}`)
+    fetchAuth(`http://127.0.0.1:8000/api/cliente/mascotas?id_cliente=${id}`)
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarCitas(id);
 
     // ── Cargar historial de pagos ─────────────────────────────
-    fetch(`http://127.0.0.1:8000/api/cliente/pagos?id_cliente=${id}`)
+    fetchAuth(`http://127.0.0.1:8000/api/cliente/pagos?id_cliente=${id}`)
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('pagosBody');
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {number} id - id_cliente del usuario logueado
  */
 function cargarCitas(id) {
-    fetch(`http://127.0.0.1:8000/api/cliente/citas?id_cliente=${id}`)
+    fetchAuth(`http://127.0.0.1:8000/api/cliente/citas?id_cliente=${id}`)
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('citasBody');
@@ -140,7 +140,7 @@ document.getElementById('btnActualizar').addEventListener('click', () => {
         return;
     }
 
-    fetch('http://127.0.0.1:8000/api/cliente/actualizar', {
+    fetchAuth('http://127.0.0.1:8000/api/cliente/actualizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_cliente: user.id_cliente, nombre, apellido, telefono, correo })
@@ -167,7 +167,7 @@ document.getElementById('btnActualizar').addEventListener('click', () => {
 function cancelarCita(id_cita) {
     modalConfirmar('¿Seguro que deseas cancelar esta cita?', function () {
         const user = JSON.parse(localStorage.getItem('user'));
-        fetch('http://127.0.0.1:8000/api/cliente/cancelar-cita', {
+        fetchAuth('http://127.0.0.1:8000/api/cliente/cancelar-cita', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_cita })

@@ -69,9 +69,10 @@ function iniciarSesion() {
     .then(res => res.json())
     .then(data => {
         if (data.ok) {
-            // Guardar sesión en localStorage
+            // Guardar sesión en localStorage incluyendo el token de seguridad
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('rol', data.rol);
+            localStorage.setItem('token', data.token);
 
             // Redirigir al panel correspondiente según el rol
             if (data.rol === 'cliente') {

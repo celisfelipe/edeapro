@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /** Trae todos los clientes desde Laravel y los muestra en la tabla */
 function cargarClientes() {
-    fetch('http://127.0.0.1:8000/api/admin/clientes')
+    fetchAuth('http://127.0.0.1:8000/api/admin/clientes')
     .then(res => res.json())
     .then(data => {
         if (data.ok) {
@@ -94,7 +94,7 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
 
     // Al confirmar, enviar los datos actualizados a Laravel
     document.getElementById('edit-cliente-ok').onclick = function () {
-        fetch('http://127.0.0.1:8000/api/admin/clientes/editar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/clientes/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -130,7 +130,7 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
  */
 function eliminarCliente(id) {
     modalConfirmar('¿Seguro que deseas eliminar este cliente? Esta acción no se puede deshacer.', function () {
-        fetch('http://127.0.0.1:8000/api/admin/clientes/eliminar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/clientes/eliminar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_cliente: id })

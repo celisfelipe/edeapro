@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * Cada categoría se muestra como un acordeón con tabla de razas adentro.
  */
 function cargarServicios() {
-    fetch('http://127.0.0.1:8000/api/admin/servicios')
+    fetchAuth('http://127.0.0.1:8000/api/admin/servicios')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -113,7 +113,7 @@ function editarServicio(id_raza, id_servicio, duracion, precio) {
     overlay.classList.add('open');
 
     document.getElementById('edit-servicio-ok').onclick = function () {
-        fetch('http://127.0.0.1:8000/api/admin/servicios/editar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/servicios/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({

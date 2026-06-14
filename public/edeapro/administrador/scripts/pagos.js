@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /** Trae el historial completo de pagos registrados */
 function cargarPagos() {
-    fetch('http://127.0.0.1:8000/api/admin/pagos')
+    fetchAuth('http://127.0.0.1:8000/api/admin/pagos')
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('tabla-pagos');
@@ -58,7 +58,7 @@ function cargarPagos() {
  * Estas son las que aún no tienen pago registrado.
  */
 function cargarCitasSinPago() {
-    fetch('http://127.0.0.1:8000/api/admin/citas')
+    fetchAuth('http://127.0.0.1:8000/api/admin/citas')
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('tabla-sin-pago');
@@ -99,7 +99,7 @@ function cargarCitasSinPago() {
 function registrarPago(id_cita) {
     const metodo = document.getElementById('metodo-' + id_cita).value;
     modalConfirmar(`¿Registrar pago con método "${metodo}"?`, function () {
-        fetch('http://127.0.0.1:8000/api/admin/pagos/registrar', {
+        fetchAuth('http://127.0.0.1:8000/api/admin/pagos/registrar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_cita, metodo })
