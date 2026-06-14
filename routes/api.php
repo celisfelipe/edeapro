@@ -53,6 +53,16 @@ Route::middleware('verificar.token:administrador')->group(function () {
     Route::post('/admin/pagos/registrar', [App\Http\Controllers\Admin\PagoAdminController::class, 'registrar']);
 
     Route::get('/admin/estadisticas', [App\Http\Controllers\Admin\EstadisticaAdminController::class, 'index']);
+
+    // ── Reportes PDF — solo administrador ────────────────────────
+    Route::get('/reportes/citas/pdf',    [App\Http\Controllers\ReporteController::class, 'citasPdf']);
+    Route::get('/reportes/pagos/pdf',    [App\Http\Controllers\ReporteController::class, 'pagosPdf']);
+    Route::get('/reportes/clientes/pdf', [App\Http\Controllers\ReporteController::class, 'clientesPdf']);
+
+    // ── Reportes Excel — solo administrador ──────────────────────
+    Route::get('/reportes/citas/excel',    [App\Http\Controllers\ReporteController::class, 'citasExcel']);
+    Route::get('/reportes/pagos/excel',    [App\Http\Controllers\ReporteController::class, 'pagosExcel']);
+    Route::get('/reportes/clientes/excel', [App\Http\Controllers\ReporteController::class, 'clientesExcel']);
 });
 
 // ── Rutas para administrador y peluquero ─────────────────────

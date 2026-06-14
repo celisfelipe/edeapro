@@ -24,6 +24,15 @@
     </div>
 
     <div class="main">
+        <div style="display:flex; gap:8px;">
+            <button class="btn btn-blue" onclick="descargarReporte('citas')">📄 Reporte Citas</button>
+            <button class="btn btn-blue" onclick="descargarReporte('pagos')">📄 Reporte Pagos</button>
+            <button class="btn btn-blue" onclick="descargarReporte('clientes')">📄 Reporte Clientes</button>
+
+            <button class="btn btn-green" onclick="descargarExcel('citas')">📊 Excel Citas</button>
+            <button class="btn btn-green" onclick="descargarExcel('pagos')">📊 Excel Pagos</button>
+            <button class="btn btn-green" onclick="descargarExcel('clientes')">📊 Excel Clientes</button>
+        </div>
 
         <div class="header">
             <h1>Citas</h1>

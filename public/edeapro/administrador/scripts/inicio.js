@@ -90,3 +90,63 @@ function cerrarSesion() {
     localStorage.removeItem('rol');
     window.location.href = '../../paginas/login.html';
 }
+
+/**
+ * descargarReporte() — Descarga un reporte PDF desde Laravel
+ * El token se envía en el header para autenticar la petición.
+ * @param {string} tipo - 'citas', 'pagos' o 'clientes'
+ */
+function descargarReporte(tipo) {
+    const token = localStorage.getItem('token');
+
+    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/pdf`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => {
+        if (!res.ok) {
+            modalError('Error al generar el reporte');
+            return;
+        }
+        return res.blob();
+    })
+    .then(blob => {
+        if (!blob) return;
+        // Crear link temporal para descargar el PDF
+        const url  = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href     = url;
+        link.download = `reporte-${tipo}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(() => modalError('Error de conexión al generar el reporte'));
+}
+
+/**
+ * descargarExcel() — Descarga un reporte Excel desde Laravel
+ * @param {string} tipo - 'citas', 'pagos' o 'clientes'
+ */
+function descargarExcel(tipo) {
+    const token = localStorage.getItem('token');
+
+    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/excel`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => {
+        if (!res.ok) {
+            modalError('Error al generar el reporte Excel');
+            return;
+        }
+        return res.blob();
+    })
+    .then(blob => {
+        if (!blob) return;
+        const url  = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href     = url;
+        link.download = `reporte-${tipo}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(() => modalError('Error de conexión al generar el reporte Excel'));
+}
