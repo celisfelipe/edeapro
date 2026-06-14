@@ -11,8 +11,11 @@
 use Illuminate\Support\Facades\Route;
 
 // ── Rutas públicas ────────────────────────────────────────────
-Route::post('/login',    [App\Http\Controllers\AuthController::class, 'login']);
-Route::post('/registro', [App\Http\Controllers\AuthController::class, 'registro']);
+// Máximo 5 intentos de login por minuto por IP
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/login',    [App\Http\Controllers\AuthController::class, 'login']);
+    Route::post('/registro', [App\Http\Controllers\AuthController::class, 'registro']);
+});
 
 Route::get('/citas/servicios',   [App\Http\Controllers\CitaController::class, 'servicios']);
 Route::get('/citas/adicionales', [App\Http\Controllers\CitaController::class, 'adicionales']);

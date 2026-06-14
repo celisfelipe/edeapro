@@ -8,10 +8,12 @@
  * Ruta login:    POST /api/login
  * Ruta registro: POST /api/registro
  *
- * SEGURIDAD:
- * - Contraseñas verificadas con bcrypt (Hash::check)
- * - Genera token único al hacer login
- * - Token se guarda en personal_access_tokens
+ * SEGURIDAD IMPLEMENTADA:
+ * - Validación de datos de entrada
+ * - Sanitización de datos
+ * - Contraseñas hasheadas con bcrypt
+ * - Tokens de autenticación
+ * - Rate limiting en rutas
  */
 
 namespace App\Http\Controllers;
@@ -29,7 +31,14 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $correo     = $request->input('correo');
+        // Validar que los campos no vengan vacíos y con formato correcto
+        $request->validate([
+            'correo'     => 'required|email',
+            'contrasena' => 'required|min:8'
+        ]);
+
+        // Sanitizar datos de entrada
+        $correo     = filter_var(trim($request->input('correo')), FILTER_SANITIZE_EMAIL);
         $contrasena = $request->input('contrasena');
 
         // Buscar cliente por correo
@@ -102,15 +111,25 @@ class AuthController extends Controller
 
     /**
      * Registro — crea un nuevo cliente con sus mascotas.
-     * Hashea la contraseña antes de guardarla en la BD.
+     * Sanitiza y hashea la contraseña antes de guardar.
      */
     public function registro(Request $request)
     {
-        $nombre     = $request->input('nombre');
-        $apellido   = $request->input('apellido');
-        $telefono   = $request->input('telefono');
-        $correo     = $request->input('correo');
-        $direccion  = $request->input('direccion', '');
+        // Validar datos del registro
+        $request->validate([
+            'nombre'     => 'required|string|max:100',
+            'apellido'   => 'required|string|max:100',
+            'correo'     => 'required|email|max:150',
+            'telefono'   => 'required|string|max:20',
+            'contrasena' => 'required|min:8'
+        ]);
+
+        // Sanitizar — limpiar espacios extra y caracteres peligrosos
+        $nombre     = strip_tags(trim($request->input('nombre')));
+        $apellido   = strip_tags(trim($request->input('apellido')));
+        $telefono   = strip_tags(trim($request->input('telefono')));
+        $correo     = filter_var(trim($request->input('correo')), FILTER_SANITIZE_EMAIL);
+        $direccion  = strip_tags(trim($request->input('direccion', '')));
         $contrasena = $request->input('contrasena');
         $mascotas   = json_decode($request->input('mascotas'), true);
 
@@ -135,10 +154,10 @@ class AuthController extends Controller
             foreach ($mascotas as $mascota) {
                 DB::table('mascota')->insert([
                     'id_cliente' => $id_cliente,
-                    'nombre'     => $mascota['nombre'],
-                    'edad'       => $mascota['edad'],
-                    'genero'     => $mascota['genero'],
-                    'especie'    => $mascota['tipo']
+                    'nombre'     => strip_tags(trim($mascota['nombre'])),
+                    'edad'       => intval($mascota['edad']),
+                    'genero'     => strip_tags(trim($mascota['genero'])),
+                    'especie'    => strip_tags(trim($mascota['tipo']))
                 ]);
             }
         }

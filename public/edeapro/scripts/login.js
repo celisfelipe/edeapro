@@ -66,10 +66,18 @@ function iniciarSesion() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ correo, contrasena })
     })
-    .then(res => res.json())
+    .then(res => {
+        // Manejar error 429 — demasiados intentos de login
+        if (res.status === 429) {
+            mostrarMsg(msg, 'Demasiados intentos. Espera un minuto e intenta de nuevo.', 'error');
+            return null;
+        }
+        return res.json();
+    })
     .then(data => {
+        if (!data) return;
         if (data.ok) {
-            // Guardar sesión en localStorage incluyendo el token de seguridad
+            // Guardar sesión en localStorage
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('rol', data.rol);
             localStorage.setItem('token', data.token);
