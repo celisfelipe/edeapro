@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-06-2026 a las 17:38:29
+-- Tiempo de generación: 16-06-2026 a las 04:01:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -82,6 +82,14 @@ CREATE TABLE `cache` (
   `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `cache`
+--
+
+INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1781414469),
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1781414469;', 1781414469);
+
 -- --------------------------------------------------------
 
 --
@@ -123,7 +131,7 @@ INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_es
 (9, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
 (10, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
 (11, 3, 2, 1, 3, '2026-05-19', '11:30:00', 'Cancelada'),
-(12, 3, 2, 2, 2, '2026-05-27', '09:00:00', 'Pendiente'),
+(12, 3, 2, 2, 2, '2026-05-27', '09:00:00', 'Cancelada'),
 (13, 3, 2, 1, 2, '2026-05-28', '09:00:00', 'Pendiente'),
 (14, 3, 2, 2, 3, '2026-05-29', '09:00:00', 'Pendiente');
 
@@ -191,7 +199,7 @@ CREATE TABLE `cliente` (
   `id_cliente` int(11) NOT NULL,
   `nombre` varchar(30) DEFAULT NULL,
   `apellido` varchar(30) DEFAULT NULL,
-  `contrasena` varchar(30) DEFAULT NULL,
+  `contrasena` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `correo` varchar(30) DEFAULT NULL,
   `direccion` varchar(50) DEFAULT NULL
@@ -202,8 +210,10 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `contrasena`, `telefono`, `correo`, `direccion`) VALUES
-(1, 'jose', 'lopez', 'Celis123*', '3218403116', 'pruebaedea15@gmail.com', ''),
-(3, 'felipe', 'celis', 'Felipe123*', '3001231043', 'felipe@gmail.com', NULL);
+(1, 'jose', 'lopez', '$2y$12$ueMwAeEv98tT2zlK2Rww0ukGvkCtOy/h0DZAG3cYRMYe7jwpMaZKy', '3218403116', 'pruebaedea15@gmail.com', ''),
+(3, 'felipe', 'celis', '$2y$12$fw.QWaajsKEovi45Gi0CBeYdScM/Iu4azyb6qa5F/O.imOm1giw86', '3502802461', 'felipe@gmail.com', NULL),
+(4, 'fernada', 'avendaño', '$2y$12$fLVPWt7DSzMXqJZqa5kvIe5LhLZv78QROx0bWwxzB.YkRc4t2eH9a', '3218403565', 'fernanda@gmail.com', NULL),
+(5, 'blessd', 'el bendito', '$2y$12$ULngQhzgrspQkl4oFoq.cOwpjplD9ttK3OQ4etEM3Ru4Bwb/OMH6u', '3156459812', 'blessd@gmail.com', '');
 
 -- --------------------------------------------------------
 
@@ -231,7 +241,7 @@ CREATE TABLE `estilista` (
   `estado` varchar(20) DEFAULT NULL,
   `disponibilidad` varchar(20) DEFAULT NULL,
   `correo` varchar(50) DEFAULT NULL,
-  `contrasena` varchar(30) DEFAULT NULL
+  `contrasena` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -239,9 +249,9 @@ CREATE TABLE `estilista` (
 --
 
 INSERT INTO `estilista` (`id_estilista`, `nombre_estilista`, `apellido_estilista`, `telefono_estilista`, `rol`, `estado`, `disponibilidad`, `correo`, `contrasena`) VALUES
-(1, 'Santiago', 'Torres', '3127896540', 'Administrador', 'Activo', 'Disponible', 'santiago@edea.com', 'Admin1234*'),
-(2, 'Paola', 'Díaz', '3119876543', 'Peluquero', 'Activo', 'Disponible', 'paola@edea.com', 'Paola1234*'),
-(3, 'Carlos', 'Pérez', '3006547891', 'Peluquero', 'Activo', 'Disponible', 'carlos@edea.com', 'Carlos1234*');
+(1, 'Santiago', 'Torres', '3127896540', 'Administrador', 'Activo', 'Disponible', 'santiago@edea.com', '$2y$12$o50ctPKWMgKje7OKz0blqO8hTP1j/vTxVWq1B9GMbkL/RQX/H9Uue'),
+(2, 'Paola', 'Díaz', '3119876543', 'Peluquero', 'Activo', 'Disponible', 'paola@edea.com', '$2y$12$i1ALdsf64X/D5N1ZqZAJm.F4K9P1k684PnlpkyDJmlPstQ9ngfLna'),
+(3, 'Carlos', 'Pérez', '3006547891', 'Peluquero', 'Activo', 'Disponible', 'carlos@edea.com', '$2y$12$/D.5EhHAWyEcCMBkPiw/AO4E1tVqOw3T1CczQW6YQRXRWWfLaZkPK');
 
 --
 -- Disparadores `estilista`
@@ -326,7 +336,10 @@ CREATE TABLE `mascota` (
 
 INSERT INTO `mascota` (`id_mascota`, `id_cliente`, `id_raza`, `nombre`, `especie`, `edad`, `genero`) VALUES
 (1, 1, NULL, 'penelope', 'Canino', 3, 'Hembra'),
-(2, 3, NULL, 'max', 'perro', 10, 'macho');
+(2, 3, NULL, 'max', 'perro', 10, 'macho'),
+(3, 4, NULL, 'lucas', 'perro', 10, 'macho'),
+(4, 4, NULL, 'luna', 'gato', 5, 'hembra'),
+(5, 5, NULL, 'loco', 'gato', 2, 'macho');
 
 -- --------------------------------------------------------
 
@@ -496,6 +509,17 @@ CREATE TABLE `personal_access_tokens` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `personal_access_tokens`
+--
+
+INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
+(7, 'estilista', 2, 'auth_token', '3aa85d90d6784ef1cf35e1ab038b76aa0c43f6daf8507ddd6e80b75b2dd59c76', '[\"peluquero\"]', NULL, '2026-06-15 06:13:00', '2026-06-14 06:13:00', '2026-06-14 06:13:00'),
+(11, 'cliente', 3, 'auth_token', '39037d60a1e83b62ec1a31a3bb98896607148ba8e412055ea0e3a0f4b692adb3', '[\"cliente\"]', NULL, '2026-06-15 07:15:59', '2026-06-14 07:15:59', '2026-06-14 07:15:59'),
+(12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
+(13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
+(16, 'estilista', 1, 'auth_token', 'a48b8cd33d7e9481f0d4b630545ab317482ec13876f24235d1473f79c2ec9810', '[\"administrador\"]', NULL, '2026-06-15 10:20:10', '2026-06-14 10:20:10', '2026-06-14 10:20:10');
 
 -- --------------------------------------------------------
 
@@ -965,7 +989,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `estilista`
@@ -989,7 +1013,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1007,7 +1031,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
