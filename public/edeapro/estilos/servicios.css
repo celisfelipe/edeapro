@@ -3,20 +3,24 @@
    ================================================
    Estilos para perrocorto.html, perrolargo.html,
    gatos.html y corteespecializado.html.
-   Se carga junto a principal.css.
+   Se carga junto a principal.css y reutiliza sus variables.
+
+   Filtros activos en teal info (#00a7b5), tarjetas modernizadas
+   con borde redondeado 16px y borde animado metal→dorado, precio
+   destacado en CTA dorado (#f0ab06) con texto #050505.
 ================================================ */
 
 /* Reset básico */
 body {
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f4f3ea;
-    color: #333;
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 /* Links del navbar */
 header nav a {
-    color: white;
+    color: var(--color-light);
     text-decoration: none;
     margin: 0;
     font-weight: 500;
@@ -41,29 +45,30 @@ nav ul {
 .btn-filtro {
     text-decoration: none;
     display: inline-block;
-    background: white;
-    border: 2px solid #d0c4b0;
+    background: var(--color-surface);
+    border: 2px solid var(--color-metal);
     border-radius: 30px;
     padding: 10px 22px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #555;
+    color: var(--color-text);
 }
 
 .btn-filtro:hover {
-    border-color: #a67c52;
-    color: #a67c52;
-    background: #faf6f1;
+    border-color: var(--color-heading);
+    color: var(--color-heading);
+    background: white;
 }
 
-/* Categoría activa — café dorado del sitio */
+/* Categoría activa — teal info */
 .btn-filtro.active {
-    background: #af9d81;
-    border-color: #af9d81;
-    color: white;
+    background: var(--color-info);
+    border-color: var(--color-info);
+    color: var(--color-heading);
+    font-weight: 700;
 }
 
 /* ── Sección de servicios ────────────────────────────────────*/
@@ -75,7 +80,7 @@ nav ul {
 .services h2 {
     font-size: 1.8rem;
     font-weight: 800;
-    color: #333;
+    color: var(--color-heading);
     margin-bottom: 30px;
 }
 
@@ -88,11 +93,11 @@ nav ul {
     margin: auto;
 }
 
-/* Card individual */
+/* Card individual — más redondeada y con sombra suave */
 .service {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     padding-bottom: 20px;
     overflow: hidden;
     transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -100,13 +105,13 @@ nav ul {
     animation: fadeIn 0.4s ease;
 }
 
-/* Borde superior café al hacer hover */
+/* Borde superior con degradado metal→dorado al hacer hover */
 .service::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
-    background: #a67c52;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-metal), var(--color-cta));
     transform: scaleX(0);
     transition: transform 0.35s ease;
 }
@@ -117,7 +122,7 @@ nav ul {
 
 .service:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 28px rgba(166, 124, 82, 0.18);
+    box-shadow: 0 14px 28px rgba(5, 5, 5, 0.12);
 }
 
 /* Imagen — altura fija con object-fit para que no se corte */
@@ -136,7 +141,7 @@ nav ul {
 
 /* Nombre de la raza */
 .service h3 {
-    color: #333;
+    color: var(--color-heading);
     margin: 14px 15px 8px;
     font-size: 1rem;
     font-weight: 700;
@@ -152,9 +157,9 @@ nav ul {
 
 .service ul li {
     font-size: 13px;
-    color: #555;
+    color: var(--color-text);
     padding: 3px 0;
-    border-bottom: 1px solid #f0ebe3;
+    border-bottom: 1px solid var(--color-surface);
 }
 
 .service ul li:last-child {
@@ -163,7 +168,7 @@ nav ul {
 
 /* Descripción (en corteespecializado.html) */
 .service p {
-    color: #555;
+    color: var(--color-text);
     font-size: 13px;
     padding: 0 15px;
     line-height: 1.5;
@@ -174,10 +179,11 @@ nav ul {
     margin: 10px 15px 0;
 }
 
+/* Precio destacado — CTA dorado con texto oscuro */
 .price p {
     display: inline-block;
-    background: #f4ede4;
-    color: #a67c52;
+    background: var(--color-cta);
+    color: var(--color-heading);
     font-weight: 800;
     font-size: 15px;
     padding: 4px 14px;
@@ -187,8 +193,8 @@ nav ul {
 
 /* ── Botón "Agendar Cita" al final ───────────────────────────*/
 .hero {
-    background: #f4ede4;
-    border-top: 2px solid #e0d5c5;
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-metal);
     text-align: center;
     padding: 50px 20px;
     margin-top: 20px;
@@ -196,20 +202,20 @@ nav ul {
 
 .hero a {
     display: inline-block;
-    background: #af9d81;
-    color: white;
+    background: var(--color-cta);
+    color: var(--color-heading);
     padding: 14px 36px;
     border-radius: 50px;
     text-decoration: none;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: 15px;
     transition: background 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(175, 157, 129, 0.3);
+    box-shadow: 0 4px 15px rgba(240, 171, 6, 0.35);
 }
 
 .hero a:hover {
-    background: #a67c52;
+    background: var(--color-cta-dark);
     transform: translateY(-2px);
 }
 

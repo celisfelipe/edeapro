@@ -6,7 +6,8 @@
   <title>Mi Perfil - EDEA Grooming</title>
   <link rel="stylesheet" href="perfil.css" />
   <link rel="stylesheet" href="../estilos/principal.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -14,6 +15,7 @@
     <div class="logo">
         <img src="../imagenes/logo/logo2.png">
     </div>
+    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
     <nav>
         <ul>
             <li><a href="../paginas/inicio.html">Inicio</a></li>
@@ -30,7 +32,7 @@
 
     <!-- MI PERFIL -->
     <section class="card">
-      <h2 class="card-title">Mi Perfil</h2>
+      <h2 class="card-title"><i class="fa-solid fa-user"></i> Mi Perfil</h2>
       <div class="profile-layout">
         <div class="form-fields">
           <div class="field-group">
@@ -50,7 +52,7 @@
             <input type="email" id="correo" />
           </div>
           <div class="field-group full">
-            <button class="btn-green" id="btnActualizar">Actualizar Perfil</button>
+            <button class="btn-green" id="btnActualizar"><i class="fa-solid fa-floppy-disk"></i> Actualizar Perfil</button>
           </div>
         </div>
       </div>
@@ -58,13 +60,13 @@
 
     <!-- MIS MASCOTAS -->
     <section class="card">
-      <h2 class="card-title">Mis Mascotas</h2>
+      <h2 class="card-title"><i class="fa-solid fa-paw"></i> Mis Mascotas</h2>
       <div class="pets-grid" id="pets-grid"></div>
     </section>
 
     <!-- CITAS PROGRAMADAS -->
     <section class="card">
-      <h2 class="card-title">Citas Programadas</h2>
+      <h2 class="card-title"><i class="fa-solid fa-calendar-days"></i> Citas Programadas</h2>
       <div class="filter-tabs">
         <button class="tab active" data-filter="dia">Día</button>
         <button class="tab" data-filter="semana">Semana</button>
@@ -86,7 +88,7 @@
 
     <!-- HISTORIAL DE PAGOS -->
     <section class="card">
-      <h2 class="card-title">Historial de Pagos</h2>
+      <h2 class="card-title"><i class="fa-solid fa-receipt"></i> Historial de Pagos</h2>
       <table class="payments-table">
         <thead>
           <tr>
@@ -95,7 +97,7 @@
           </tr>
         </thead>
         <tbody id="pagosBody">
-          <tr><td colspan="2" class="empty-msg">Sin registros de pagos</td></tr>
+          <tr><td colspan="2" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Sin registros de pagos</td></tr>
         </tbody>
       </table>
     </section>
@@ -139,5 +141,22 @@
   <script src="../scripts/fetchToken.js"></script>
   <script src="modal.js"></script>
   <script src="perfil.js"></script>
+  <script>
+    // Menú hamburguesa (móvil/tablet) — independiente de navbar.js porque
+    // esta página ya maneja su propio link de "Cerrar sesión".
+    document.addEventListener('DOMContentLoaded', function () {
+        const header = document.querySelector('header');
+        const hamburger = document.querySelector('.nav-hamburger');
+        if (!header || !hamburger) return;
+        hamburger.addEventListener('click', function () {
+            header.classList.toggle('nav-open');
+        });
+        header.querySelectorAll('nav a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                header.classList.remove('nav-open');
+            });
+        });
+    });
+  </script>
 </body>
 </html>

@@ -47,8 +47,8 @@ function cargarEmpleados() {
                     <td>${e.correo}</td>
                     <td>${e.estado}</td>
                     <td>
-                        <button class="btn btn-blue" onclick="editarEstilista(${e.id_estilista}, '${e.nombre_estilista}', '${e.apellido_estilista}', '${e.telefono_estilista}', '${e.correo}', '${e.rol}')">Editar</button>
-                        <button class="btn btn-red" onclick="eliminarEmpleado(${e.id_estilista})">Eliminar</button>
+                        <button class="btn btn-blue" onclick="editarEstilista(${e.id_estilista}, '${e.nombre_estilista}', '${e.apellido_estilista}', '${e.telefono_estilista}', '${e.correo}', '${e.rol}')"><i class="fa-solid fa-pen"></i> Editar</button>
+                        <button class="btn btn-red" onclick="eliminarEmpleado(${e.id_estilista})"><i class="fa-solid fa-trash"></i> Eliminar</button>
                     </td>
                 </tr>`;
         });

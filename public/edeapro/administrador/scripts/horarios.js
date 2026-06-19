@@ -75,7 +75,7 @@ function cargarHorarios() {
                     const clase = cita.estado === 'Completada' ? 'completada' : '';
                     html += `<td>
                         <div class="cita-bloque ${clase}">
-                            🐾 ${cita.nombre_raza}<br>
+                            <i class="fa-solid fa-paw"></i> ${cita.nombre_raza}<br>
                             <small>${cita.nombre_cliente} ${cita.apellido_cliente}</small><br>
                             <small>${cita.duracion}</small>
                         </div>
@@ -109,11 +109,11 @@ function cargarDisponibilidad() {
             tbody.innerHTML += `
                 <tr>
                     <td>${e.nombre_estilista}</td>
-                    <td class="${disponible ? 'status-green' : 'status-red'}">${e.disponibilidad}</td>
+                    <td class="${disponible ? 'status-green' : 'status-red'}"><i class="fa-solid ${disponible ? 'fa-check' : 'fa-xmark'}"></i> ${e.disponibilidad}</td>
                     <td>
                         <button class="btn ${disponible ? 'btn-red' : 'btn-green'}"
                             onclick="cambiarDisponibilidad(${e.id_estilista}, '${disponible ? 'No Disponible' : 'Disponible'}')">
-                            ${disponible ? 'Marcar No Disponible' : 'Marcar Disponible'}
+                            <i class="fa-solid ${disponible ? 'fa-ban' : 'fa-check'}"></i> ${disponible ? 'Marcar No Disponible' : 'Marcar Disponible'}
                         </button>
                     </td>
                 </tr>`;

@@ -10,6 +10,12 @@
 
    Usa variables CSS propias (--bark, --cream, etc.)
    independientes de las demás páginas del sitio.
+   Mapeo de la modernización (ver docs/MODERNIZACION-VISUAL.md):
+     --bark    = #ae9d81 (metal — marca, subtítulos, bordes)
+     --caramel = #f0ab06 (CTA dorado — paso activo, día/slot elegido)
+     --info    = #00a7b5 (teal — tab de raza seleccionada)
+     --special = #7671a6 (púrpura — marcador "hoy" en el calendario)
+     --sage    = verde semántico para "completado" (sin cambios)
    Incluye estilos para el stepper, tarjetas de selección,
    calendario y slots de horario.
 ================================================ */
@@ -18,31 +24,35 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 /* Variables de color exclusivas de la agenda */
 :root{
-  --ink:#1c1208;
+  --ink:#050505;
+  --dark-surface:#2A211A;
   --bark:#ae9d81;
-  --caramel:#ae9d81;
-  --caramel2:#9a8a6e;
-  --caramel-bg:#fef3e2;
+  --metal-text:#8B6F4E;
+  --caramel:#f0ab06;
+  --caramel2:#d69a05;
+  --caramel-bg:#fcebc0;
+  --info:#00a7b5;
+  --special:#7671a6;
   --cream:#f4f3ea;
-  --parchment:#f5ece0;
-  --parchment2:#ede0ce;
+  --parchment:#f4f4f4;
+  --parchment2:#e6e6e1;
   --sage:#5e8c61;
   --sage-light:#d4e9d5;
-  --muted:#7a6352;
-  --hint:#b09a86;
-  --border:#e2d4c2;
-  --border2:#cfc0aa;
+  --muted:#333333;
+  --hint:#a39a8c;
+  --border:#e2e2dd;
+  --border2:#cfcfc2;
   --r:14px;
   --rs:8px;
 }
 html{font-size:15px}
 body{
-  font-family:'Montserrat',sans-serif;
+  font-family:'Inter',sans-serif;
   background:#ffffff;
   color:var(--ink);
   min-height:100vh;
   padding:2rem 1rem 4rem;
-  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23c0733a' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ae9d81' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Barra superior con logo y nombre del negocio */
@@ -51,7 +61,7 @@ body{
 .brand-icon{width:42px;height:42px;border-radius:12px;background:var(--bark);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .brand-icon svg{width:22px;height:22px}
 /* Nombre del negocio */
-.brand-name{font-family:'Montserrat',sans-serif;;font-size:18px;font-weight:600;color:var(--bark);letter-spacing:-.3px}
+.brand-name{font-family:'Outfit',sans-serif;font-size:18px;font-weight:600;color:var(--bark);letter-spacing:-.3px}
 .brand-sub{font-size:11px;color:var(--muted);margin-top:1px}
 
 /* Contenedor principal del flujo de agendamiento */
@@ -60,40 +70,44 @@ body{
 .stepper{width:52px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:.25rem}
 .st-item{display:flex;flex-direction:column;align-items:center}
 .st-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border2);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--hint);transition:all .3s;z-index:1}
-.st-dot.active{background:#ae9d81;border-color:#ae9d81;color:#fff;box-shadow:0 0 0 5px rgba(174,157,129,.25)}
+/* Paso activo — CTA dorado con texto oscuro */
+.st-dot.active{background:var(--caramel);border-color:var(--caramel);color:var(--ink);box-shadow:0 0 0 5px rgba(240,171,6,.25)}
+/* Paso completado — verde semántico, sin cambios */
 .st-dot.done{background:var(--sage);border-color:var(--sage);color:#fff}
 .st-line{width:2px;height:40px;background:var(--border)}
 .st-line.done{background:var(--sage)}
 /* Área donde se renderiza el contenido de cada paso */
 .main{flex:1;display:flex;flex-direction:column;gap:1.25rem}
 
-.sec-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--caramel);margin-bottom:4px}
-.sec-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:26px;font-weight:600;color:var(--bark);letter-spacing:-.5px;line-height:1.2}
+.sec-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--metal-text);margin-bottom:4px}
+.sec-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:26px;color:var(--bark);letter-spacing:-.5px;line-height:1.2}
 .sec-sub{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6}
 
 /* SERVICIOS */
 .svc-layout{display:flex;gap:1.25rem;align-items:flex-start}
 .race-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
-.rtab{font-size:12px;font-weight:600;padding:5px 14px;border-radius:99px;border:1.5px solid #ae9d81;background:transparent;color:var(--muted);cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .15s}
-.rtab:hover{border-color:var(--caramel);color:var(--caramel)}
-.rtab.on{background:var(--bark);border-color:var(--bark);color:#fff}
+.rtab{font-size:12px;font-weight:600;padding:5px 14px;border-radius:99px;border:1.5px solid var(--bark);background:transparent;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.rtab:hover{border-color:var(--bark);color:var(--bark)}
+/* Tab de raza activa — teal info, igual que los filtros de servicios.css */
+.rtab.on{background:var(--info);border-color:var(--info);color:var(--ink)}
 .svc-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}
 .svc-tile{background:var(--parchment);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
 .svc-tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent;border-radius:4px 0 0 4px;transition:background .2s}
 .svc-tile.on{border-color:var(--caramel);background:var(--cream)}
 .svc-tile.on::before{background:var(--caramel)}
-.svc-tile:hover:not(.on){border-color:var(--border2);background:#f9f1e7}
+.svc-tile:hover:not(.on){border-color:var(--border2);background:#f9f9f7}
 .svc-body{flex:1}
 .svc-body strong{font-size:14px;font-weight:600;display:block;margin-bottom:2px}
 .svc-body .meta{font-size:12px;color:var(--muted);margin-bottom:4px}
-.svc-body .price{font-size:15px;font-weight:700;color:#ae9d81}
+.svc-body .price{font-size:15px;font-weight:700;color:var(--metal-text)}
 .svc-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .svc-tile.on .svc-check{background:var(--caramel);border-color:var(--caramel)}
 .svc-check svg{display:none}
 .svc-tile.on .svc-check svg{display:block}
 
-.basket{width:230px;flex-shrink:0;background:var(--bark);border-radius:var(--r);padding:1.25rem;color:#fff;position:sticky;top:1rem}
-.basket-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;margin-bottom:1rem;opacity:.9}
+/* Carrito lateral — superficie oscura premium (igual idioma visual que header/footer) */
+.basket{width:230px;flex-shrink:0;background:var(--dark-surface);border-radius:var(--r);padding:1.25rem;color:#fff;position:sticky;top:1rem}
+.basket-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;margin-bottom:1rem;opacity:.9}
 .basket-empty{font-size:13px;opacity:.45;text-align:center;padding:1.5rem 0}
 .basket-items{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
 .b-item{display:flex;justify-content:space-between;font-size:12px;padding:6px 8px;background:rgba(255,255,255,.08);border-radius:8px}
@@ -103,56 +117,60 @@ body{
 .b-divider{height:1px;background:rgba(255,255,255,.12);margin:.75rem 0}
 .b-total{display:flex;justify-content:space-between;font-size:14px;font-weight:600}
 .b-total-dur{font-size:11px;opacity:.5;text-align:right;margin-top:3px}
-.btn-go{width:100%;margin-top:1rem;padding:.65rem;border-radius:var(--rs);border:none;background:#e8c56a;color:#333333;font-size:13px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:background .15s}
+/* Botón continuar — CTA dorado */
+.btn-go{width:100%;margin-top:1rem;padding:.65rem;border-radius:var(--rs);border:none;background:var(--caramel);color:var(--ink);font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s}
 .btn-go:hover{background:var(--caramel2)}
 .btn-go:disabled{opacity:.3;cursor:not-allowed}
 
 /* PELUQUEROS */
 .grm-list{display:flex;flex-direction:column;gap:10px}
 .grm-tile{background:var(--parchment);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
-.grm-tile:hover{border-color:var(--border2);background:#f9f1e7}
+.grm-tile:hover{border-color:var(--border2);background:#f9f9f7}
 .grm-tile.picked{border-color:var(--caramel);background:var(--cream)}
-.grm-av{width:46px;height:46px;border-radius:50%;background:var(--parchment2);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--bark);flex-shrink:0;border:2px solid var(--border2)}
+.grm-av{width:46px;height:46px;border-radius:50%;background:var(--parchment2);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;color:var(--bark);flex-shrink:0;border:2px solid var(--border2)}
 .grm-tile.picked .grm-av{border-color:var(--caramel)}
 .grm-info{flex:1}
 .grm-name{font-size:14px;font-weight:700;margin-bottom:2px}
 .grm-spec{font-size:12px;color:var(--muted)}
 .grm-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .grm-tile.picked .grm-radio{background:var(--caramel);border-color:var(--caramel)}
-.grm-radio-dot{width:8px;height:8px;border-radius:50%;background:#fff;display:none}
+.grm-radio-dot{width:8px;height:8px;border-radius:50%;background:var(--ink);display:none}
 .grm-tile.picked .grm-radio-dot{display:block}
 
 /* CALENDARIO */
 .cal-section{display:flex;gap:1.25rem;flex-wrap:wrap}
 .cal-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem;flex:1;min-width:260px}
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.cal-month{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--bark)}
+.cal-month{font-family:'Outfit',sans-serif;font-size:17px;font-weight:600;color:var(--bark)}
 .cal-arr{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border2);background:transparent;cursor:pointer;font-size:15px;color:var(--bark);display:flex;align-items:center;justify-content:center;transition:all .15s}
-.cal-arr:hover{background:var(--caramel);border-color:var(--caramel);color:#fff}
+.cal-arr:hover{background:var(--caramel);border-color:var(--caramel);color:var(--ink)}
 /* Grid del calendario (7 columnas = días de la semana) */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
 .cal-dh{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);padding:3px 0}
 .cal-d{font-size:13px;font-weight:500;padding:8px 2px;border-radius:8px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
 .cal-d:hover:not(.dis):not(.emp){background:var(--parchment2);border-color:var(--border2)}
-.cal-d.sel{background:var(--caramel);color:#fff;border-color:var(--caramel)}
+/* Día seleccionado — CTA dorado con texto oscuro */
+.cal-d.sel{background:var(--caramel);color:var(--ink);border-color:var(--caramel)}
 .cal-d.dis{color:var(--hint);cursor:not-allowed;opacity:.4}
 .cal-d.emp{cursor:default}
-.cal-d.tod:not(.sel){border-color:var(--caramel);color:var(--caramel);font-weight:700}
+/* Marcador "hoy" — púrpura especial, distinto de la selección dorada */
+.cal-d.tod:not(.sel){border-color:var(--special);color:var(--special);font-weight:700}
 
 .slots-box{flex:1;min-width:200px;background:var(--parchment);border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem}
 .slots-label{font-size:13px;font-weight:700;color:var(--bark);margin-bottom:3px}
 .slots-sublabel{font-size:11px;color:var(--hint);margin-bottom:.85rem;line-height:1.5}
 .slots-grid{display:flex;flex-wrap:wrap;gap:6px}
-.slot-pill{font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px;border:1.5px solid var(--border2);background:var(--cream);cursor:pointer;transition:all .15s;color:var(--bark);font-family:'Montserrat',sans-serif}
+.slot-pill{font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px;border:1.5px solid var(--border2);background:var(--cream);cursor:pointer;transition:all .15s;color:var(--bark);font-family:'Inter',sans-serif}
 .slot-pill:hover:not(.tk){background:var(--caramel-bg);border-color:var(--caramel)}
-.slot-pill.picked{background:var(--caramel);border-color:var(--caramel);color:#fff}
+/* Horario seleccionado — CTA dorado con texto oscuro */
+.slot-pill.picked{background:var(--caramel);border-color:var(--caramel);color:var(--ink)}
 .slot-pill.tk{opacity:.35;cursor:not-allowed;text-decoration:line-through;color:var(--hint)}
 .slots-empty{font-size:13px;color:var(--hint);padding:1rem 0;line-height:1.6}
 
 /* CONFIRMAR */
 .confirm-layout{display:flex;gap:1.25rem;flex-wrap:wrap}
 .confirm-card{flex:1;min-width:260px;background:var(--parchment);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden}
-.cc-head{background:var(--bark);padding:1rem 1.25rem;font-family:'Fraunces',serif;font-size:15px;color:#fff;font-weight:600}
+.cc-head{background:var(--dark-surface);padding:1rem 1.25rem;font-family:'Outfit',sans-serif;font-size:15px;color:#fff;font-weight:600}
 .cc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 1.25rem;font-size:13px;border-bottom:1px solid var(--border)}
 .cc-row:last-child{border-bottom:none;font-weight:700;font-size:14px}
 .cc-lbl{color:var(--muted);flex-shrink:0;margin-right:12px}
@@ -164,22 +182,22 @@ body{
 .policy-card strong{color:var(--bark);display:block;margin-bottom:4px}
 
 .actions{display:flex;gap:10px;align-items:center;margin-top:.5rem}
-/* Botón principal: avanzar al siguiente paso */
-.btn-primary{padding:.7rem 1.75rem;border-radius:var(--rs);border:none;background:#e8c56a;color:#333333;font-size:14px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:background .15s}
+/* Botón principal: avanzar al siguiente paso / confirmar — CTA dorado */
+.btn-primary{padding:.7rem 1.75rem;border-radius:var(--rs);border:none;background:var(--caramel);color:var(--ink);font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s}
 .btn-primary:hover{background:var(--caramel2)}
 .btn-primary:disabled{opacity:.3;cursor:not-allowed}
-.btn-sec{padding:.7rem 1.25rem;border-radius:var(--rs);border:1.5px solid var(--border2);background:transparent;font-size:14px;font-weight:600;color:var(--muted);font-family:'Montserrat',sans-serif;cursor:pointer;transition:all .15s}
+.btn-sec{padding:.7rem 1.25rem;border-radius:var(--rs);border:1.5px solid var(--border2);background:transparent;font-size:14px;font-weight:600;color:var(--muted);font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
 .btn-sec:hover{border-color:var(--bark);color:var(--bark)}
 
 .success-wrap{max-width:480px;margin:3rem auto;text-align:center;background:var(--parchment);border:1.5px solid var(--border);border-radius:20px;padding:3rem 2rem}
 .success-paw{font-size:52px;margin-bottom:1rem;display:block}
-.success-title{font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--bark);margin-bottom:.75rem}
+.success-title{font-family:'Outfit',sans-serif;font-size:26px;font-weight:600;color:var(--bark);margin-bottom:.75rem}
 .success-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1.5rem}
 .success-detail{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--rs);padding:.9rem 1.25rem;font-size:13px;color:var(--bark);margin-bottom:1.5rem;display:flex;flex-direction:column;gap:6px;text-align:left}
 .success-detail span{display:flex;justify-content:space-between}
 .success-detail .sd-lbl{color:var(--muted);font-weight:400}
 .success-detail .sd-val{font-weight:600}
-.btn-nueva{padding:.65rem 1.5rem;border-radius:var(--rs);border:1.5px solid var(--border2);background:transparent;font-size:13px;font-weight:700;color:var(--bark);font-family:'Montserrat',sans-serif;cursor:pointer}
+.btn-nueva{padding:.65rem 1.5rem;border-radius:var(--rs);border:1.5px solid var(--border2);background:transparent;font-size:13px;font-weight:700;color:var(--bark);font-family:'Inter',sans-serif;cursor:pointer}
 
 
 /* Botón para volver al inicio desde la agenda */

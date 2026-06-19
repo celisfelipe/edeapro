@@ -70,7 +70,7 @@ function cargarHorarios() {
                     <td class="hora-col">${hora}</td>
                     <td>
                         <div class="cita-bloque ${clase}">
-                            🐾 ${cita.nombre_raza}<br>
+                            <i class="fa-solid fa-paw"></i> ${cita.nombre_raza}<br>
                             <small>${cita.nombre_cliente} ${cita.apellido_cliente}</small>
                         </div>
                     </td>

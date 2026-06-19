@@ -44,11 +44,11 @@ function cargarNotificaciones() {
             const noLeida = n.estado === 'No leída';
             contenedor.innerHTML += `
                 <div class="notif ${noLeida ? 'no-leida' : ''}">
-                    <h3>${n.titulo} ${noLeida ? '<span class="badge-noleida">Nueva</span>' : ''}
+                    <h3><i class="fa-solid ${noLeida ? 'fa-bell' : 'fa-bell-slash'}"></i> ${n.titulo} ${noLeida ? '<span class="badge-noleida">Nueva</span>' : ''}
                     </h3>
                     <p>${n.mensaje}</p>
                     <small>Cliente: ${n.nombre_cliente} ${n.apellido_cliente} · ${n.tipo}</small>
-                    ${noLeida ? `<br><button class="btn btn-blue" style="margin-top:8px" onclick="marcarLeida(${n.id_notificacion})">Marcar como leída</button>` : ''}
+                    ${noLeida ? `<br><button class="btn btn-blue" style="margin-top:8px" onclick="marcarLeida(${n.id_notificacion})"><i class="fa-solid fa-check"></i> Marcar como leída</button>` : ''}
                 </div>`;
         });
     });

@@ -2,15 +2,19 @@
    ubicacion.css — Página de Ubicación
    ================================================
    Estilos exclusivos para ubicacion.html.
-   Se carga junto a principal.css para mantener consistencia visual.
+   Se carga junto a principal.css y reutiliza sus variables
+   (ver docs/MODERNIZACION-VISUAL.md).
+
+   Tarjetas de contacto/reseñas con bordes metálicos suaves
+   y estrellas de calificación en CTA dorado.
 ================================================ */
 
 /* Reset básico de body para esta página */
 body {
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f4f3ea;
-    color: #333;
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 /* Links del navbar */
@@ -23,7 +27,7 @@ header nav ul {
 }
 
 header nav a {
-    color: white;
+    color: var(--color-light);
     text-decoration: none;
     font-weight: 500;
     margin: 0;
@@ -43,7 +47,7 @@ header nav a {
 
 #mapa-ubicacion h2 {
     text-align: center;
-    color: #333;
+    color: var(--color-heading);
     font-size: 2rem;
     margin-bottom: 30px;
     font-weight: 800;
@@ -70,12 +74,12 @@ header nav a {
     border: none;
 }
 
-/* Información de contacto debajo del mapa */
+/* Información de contacto debajo del mapa — borde metálico suave */
 .contact-info {
     background: white;
     padding: 30px 40px;
     border-radius: 12px;
-    border-left: 4px solid #ae9d81;
+    border-left: 4px solid var(--color-metal);
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -84,38 +88,38 @@ header nav a {
 
 .contact-info p {
     font-size: 15px;
-    color: #333;
+    color: var(--color-text);
     line-height: 1.6;
     margin: 0;
 }
 
 .contact-info strong {
-    color: #a67c52;
+    color: var(--color-metal-text);
     font-weight: 700;
 }
 
 .contact-info a {
-    color: #a67c52;
+    color: var(--color-metal-text);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
 .contact-info a:hover {
-    color: #8a6340;
+    color: var(--color-heading);
 }
 
 /* ── Sección de reseñas ──────────────────────────────────────*/
 #resenas {
     padding: 60px 0;
-    border-top: 2px solid #e0d5c5;
+    border-top: 2px solid var(--color-metal);
 }
 
 #resenas h2 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 40px;
-    color: #333;
+    color: var(--color-heading);
 }
 
 /* ── Carrusel de reseñas ─────────────────────────────────────*/
@@ -134,26 +138,26 @@ header nav a {
     flex: 1;
 }
 
-/* Card individual de reseña */
+/* Card individual de reseña — borde metálico suave */
 .resena-card {
     min-width: calc(33.33% - 14px);
     background: white;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    border-left: 4px solid #ae9d81;
+    border-left: 4px solid var(--color-metal);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     flex-shrink: 0;
 }
 
 .resena-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(166, 124, 82, 0.2);
+    box-shadow: 0 10px 25px rgba(240, 171, 6, 0.18);
 }
 
 .resena-card h4 {
     font-weight: 700;
-    color: #333;
+    color: var(--color-heading);
     margin-bottom: 4px;
     font-size: 15px;
 }
@@ -164,16 +168,16 @@ header nav a {
     margin-bottom: 8px;
 }
 
-/* Estrellas de calificación en las cards */
+/* Estrellas de calificación en las cards — CTA dorado */
 .resena-card .rating {
-    color: #f59e0b;
+    color: var(--color-cta);
     font-size: 16px;
     margin-bottom: 10px;
 }
 
 .resena-card p {
     font-size: 13px;
-    color: #555;
+    color: var(--color-text);
     line-height: 1.6;
     font-style: italic;
 }
@@ -181,7 +185,7 @@ header nav a {
 /* Botones prev/next del carrusel */
 .resena-prev,
 .resena-next {
-    background: #af9d81;
+    background: var(--color-metal);
     color: white;
     border: none;
     border-radius: 50%;
@@ -195,7 +199,7 @@ header nav a {
 
 .resena-prev:hover,
 .resena-next:hover {
-    background: #a67c52;
+    background: var(--color-heading);
 }
 
 /* Dots de navegación del carrusel */
@@ -216,24 +220,24 @@ header nav a {
 }
 
 .resenas-dots span.active {
-    background: #a67c52;
+    background: var(--color-cta);
 }
 
 /* ── Formulario de reseña ────────────────────────────────────*/
 .resena-form-container {
-    background: #faf8f5;
+    background: var(--color-surface);
     border-radius: 16px;
     padding: 40px;
     max-width: 600px;
     margin: 0 auto;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    border: 1px solid #e0d5c5;
+    border: 1px solid var(--color-metal);
 }
 
 .resena-form-container h3 {
     text-align: center;
     font-size: 1.4rem;
-    color: #333;
+    color: var(--color-heading);
     margin-bottom: 28px;
     font-weight: 700;
 }
@@ -249,7 +253,7 @@ header nav a {
 #form-resena .form-group label {
     font-size: 13px;
     font-weight: 600;
-    color: #555;
+    color: var(--color-text);
     margin-bottom: 6px;
 }
 
@@ -269,9 +273,10 @@ header nav a {
     line-height: 1;
 }
 
+/* Estrella activa/hover — CTA dorado */
 .estrella:hover,
 .estrella.activa {
-    color: #f59e0b;
+    color: var(--color-cta);
     transform: scale(1.15);
 }
 
@@ -279,12 +284,12 @@ header nav a {
 #comentario-texto {
     width: 100%;
     padding: 12px 14px;
-    border: 1.5px solid #d0c4b0;
+    border: 1.5px solid var(--color-metal);
     border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-size: 14px;
     background: white;
-    color: #333;
+    color: var(--color-text);
     resize: vertical;
     min-height: 110px;
     outline: none;
@@ -294,8 +299,8 @@ header nav a {
 }
 
 #comentario-texto:focus {
-    border-color: #a67c52;
-    box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.15);
+    border-color: var(--color-metal);
+    box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.2);
 }
 
 #comentario-texto::placeholder {
@@ -303,15 +308,15 @@ header nav a {
     font-style: italic;
 }
 
-/* Botón enviar */
+/* Botón enviar — CTA dorado */
 .submit-btn {
     width: 100%;
     padding: 14px;
-    background: #af9d81;
-    color: white;
+    background: var(--color-cta);
+    color: var(--color-heading);
     border: none;
     border-radius: 8px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -320,11 +325,11 @@ header nav a {
 }
 
 .submit-btn:hover {
-    background: #a67c52;
+    background: var(--color-cta-dark);
     transform: translateY(-2px);
 }
 
-/* Mensaje de éxito o error al enviar */
+/* Mensaje de éxito o error al enviar — colores semánticos, sin cambios */
 #resena-mensaje {
     margin-top: 12px;
     text-align: center;

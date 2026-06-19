@@ -52,13 +52,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const grid = document.getElementById('pets-grid');
         grid.innerHTML = '';
         if (data.mascotas.length === 0) {
-            grid.innerHTML = '<p style="color:#888; font-size:13px;">No tienes mascotas registradas.</p>';
+            grid.innerHTML = '<p style="color:var(--color-muted); font-size:13px;"><i class="fa-solid fa-paw"></i> No tienes mascotas registradas.</p>';
             return;
         }
         // Crear una tarjeta por cada mascota
         data.mascotas.forEach(m => {
             grid.innerHTML += `
                 <div class="pet-card">
+                    <div class="pet-avatar"><i class="fa-solid fa-paw"></i></div>
                     <div class="pet-name">${m.nombre}</div>
                     <div class="pet-breed">${m.especie} · ${m.edad} años · ${m.genero}</div>
                 </div>`;
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
         const tbody = document.getElementById('pagosBody');
         if (!data.ok || data.pagos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="2" class="empty-msg">Sin registros de pagos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="2" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Sin registros de pagos</td></tr>';
             return;
         }
         tbody.innerHTML = '';
@@ -99,24 +100,26 @@ function cargarCitas(id) {
     .then(data => {
         const tbody = document.getElementById('citasBody');
         if (!data.ok || data.citas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">No hay citas programadas.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-msg"><i class="fa-regular fa-calendar"></i> No hay citas programadas.</td></tr>';
             return;
         }
         tbody.innerHTML = '';
         data.citas.forEach(c => {
-            // Clase de badge según el estado de la cita
+            // Clase de badge e ícono según el estado de la cita
             const badgeClase = c.estado === 'Completada' ? 'badge-confirm' :
                                c.estado === 'Cancelada'  ? 'badge-cancel'  : 'badge-pending';
+            const badgeIcono = c.estado === 'Completada' ? 'fa-check' :
+                               c.estado === 'Cancelada'  ? 'fa-xmark'  : 'fa-clock';
             // Solo las citas pendientes tienen botón de cancelar
             const acciones = c.estado === 'Pendiente'
-                ? `<button class="btn-red" onclick="cancelarCita(${c.id_cita})">✕ Cancelar</button>`
+                ? `<button class="btn-red" onclick="cancelarCita(${c.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>`
                 : '';
             tbody.innerHTML += `
                 <tr>
                     <td>${c.fecha}</td>
                     <td>${c.mascota}</td>
                     <td>${c.nombre_servicio}</td>
-                    <td><span class="${badgeClase}">${c.estado}</span></td>
+                    <td><span class="${badgeClase}"><i class="fa-solid ${badgeIcono}"></i> ${c.estado}</span></td>
                     <td>${acciones}</td>
                 </tr>`;
         });

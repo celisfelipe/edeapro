@@ -89,7 +89,7 @@ function cargarResenas() {
 function renderizarResenas() {
     const track = document.getElementById('resenas-track');
     if (resenas.length === 0) {
-        track.innerHTML = '<p style="color:#888; text-align:center; width:100%;">Sé el primero en dejar una reseña.</p>';
+        track.innerHTML = '<p style="color:var(--color-muted); text-align:center; width:100%;">Sé el primero en dejar una reseña.</p>';
         return;
     }
 

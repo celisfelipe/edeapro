@@ -3,9 +3,13 @@
    ================================================
    Estilos de la página de perfil del cliente (perfil.html).
    Se carga junto a ../estilos/principal.css para usar
-   el mismo navbar y estilos globales del sitio.
+   el mismo navbar, estilos globales y variables de marca
+   (ver docs/MODERNIZACION-VISUAL.md).
 
    Secciones: Mi Perfil, Mis Mascotas, Citas, Pagos, Modales.
+   Los colores de estado (verde/amarillo/rojo en badges y botones
+   de guardar/cancelar) no forman parte de la identidad visual y
+   se mantienen sin cambios.
 ================================================ */
 
 * {
@@ -15,9 +19,9 @@
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f4f3ea;
-  color: #1a1a1a;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 /* PAGE */
@@ -32,20 +36,26 @@ body {
 }
 
 /* CARD */
-/* Tarjeta blanca con sombra que agrupa cada sección */
+/* Tarjeta blanca con sombra que agrupa cada sección, con acento metálico */
 .card {
   background: #ffffff;
   border-radius: 12px;
-  border: 0.5px solid #e2d4c2;
-  border-top: 3px solid #ae9d81;
+  border: 0.5px solid var(--color-metal);
+  border-top: 3px solid var(--color-metal);
   padding: 22px 28px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
 }
 
 /* Título de cada sección del perfil */
 .card-title {
   font-size: 17px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-heading);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -81,28 +91,28 @@ body {
 
 .field-group label {
   font-size: 13px;
-  color: #555;
+  color: var(--color-text);
 }
 
 .field-group input {
   height: 36px;
-  border: 1px solid #c5dce8;
+  border: 1px solid var(--color-metal);
   border-radius: 8px;
   padding: 0 12px;
   font-size: 13px;
-  color: #1a1a1a;
+  color: var(--color-heading);
   background: #fff;
   outline: none;
   transition: border-color 0.2s;
 }
 
 .field-group input:focus {
-  border-color: #ae9d81;
+  border-color: var(--color-metal);
   box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.15);
 }
 
 /* BOTONES */
-/* Botón verde: guardar cambios del perfil */
+/* Botón verde: guardar cambios del perfil — semántico, sin cambios */
 .btn-green {
   background: #22c55e;
   color: white;
@@ -122,8 +132,9 @@ body {
   background: #16a34a;
 }
 
+/* Botón secundario (acento metálico) */
 .btn-blue {
-  background: #ae9d81;
+  background: var(--color-metal);
   color: white;
   border: none;
   border-radius: 8px;
@@ -137,12 +148,12 @@ body {
 }
 
 .btn-blue:hover {
-  background: #2596cc;
+  background: var(--color-metal-text);
 }
 
-/* Botón naranja: cancelar en modal */
+/* Botón cancelar en modal (acento metálico) */
 .btn-orange {
-  background: #ae9d81;
+  background: var(--color-metal);
   color: white;
   border: none;
   border-radius: 6px;
@@ -157,10 +168,10 @@ body {
 }
 
 .btn-orange:hover {
-  background: #d97706;
+  background: var(--color-metal-text);
 }
 
-/* Botón rojo: cancelar cita */
+/* Botón rojo: cancelar cita — semántico, sin cambios */
 .btn-red {
   background: #ef4444;
   color: white;
@@ -189,53 +200,77 @@ body {
 
 /* Tarjeta individual de cada mascota */
 .pet-card {
-  border: 0.5px solid #d0e8f5;
+  border: 0.5px solid var(--color-metal);
   border-radius: 10px;
   padding: 18px;
   text-align: center;
-  background: #faf8f5;
+  background: var(--color-surface);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.pet-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+/* Avatar circular con ícono de pata */
+.pet-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(240, 171, 6, 0.18);
+  color: var(--color-cta-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin: 0 auto 8px;
 }
 
 /* Nombre de la mascota en la tarjeta */
 .pet-name {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-heading);
   margin-bottom: 4px;
 }
 
 /* Especie, edad y género de la mascota */
 .pet-breed {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text);
   margin-bottom: 12px;
 }
 
 /* CITAS */
-/* Fila de botones de filtro (Día / Semana / Mes) */
+/* Grupo segmentado de filtro (Día / Semana / Mes) */
 .filter-tabs {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   margin-bottom: 14px;
+  background: var(--color-surface);
+  border-radius: 8px;
+  padding: 4px;
+  width: fit-content;
 }
 
 /* Botón de tab individual */
 .tab {
-  border: 1px solid #c5dce8;
-  background: #fff;
+  border: none;
+  background: transparent;
   border-radius: 6px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  color: #1a1a1a;
+  color: var(--color-text);
   transition: background 0.2s, color 0.2s;
 }
 
-/* Tab activo: fondo oscuro */
+/* Tab activo — teal info, igual que los filtros del resto del sitio */
 .tab.active {
-  background: #ae9d81;
-  color: white;
-  border-color: #ae9d81;
+  background: var(--color-info);
+  color: var(--color-heading);
 }
 
 /* Tabla de citas programadas */
@@ -247,20 +282,20 @@ body {
 .appts-table th {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-text);
   text-align: left;
   padding: 8px 0;
-  border-bottom: 1px solid #d0e8f5;
+  border-bottom: 1px solid rgba(174, 157, 129, 0.3);
 }
 
 .appts-table td {
   font-size: 13px;
-  color: #1a1a1a;
+  color: var(--color-heading);
   padding: 12px 0;
-  border-bottom: 0.5px solid #e8f4fb;
+  border-bottom: 0.5px solid rgba(174, 157, 129, 0.15);
 }
 
-/* Badge verde: cita Completada */
+/* Badge verde: cita Completada — semántico, sin cambios */
 .badge-confirm {
   background: #22c55e;
   color: white;
@@ -268,9 +303,12 @@ body {
   padding: 4px 14px;
   font-size: 12px;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-/* Badge amarillo: cita Pendiente */
+/* Badge amarillo: cita Pendiente — semántico, sin cambios */
 .badge-pending {
   background: #f59e0b;
   color: white;
@@ -278,9 +316,12 @@ body {
   padding: 4px 14px;
   font-size: 12px;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-/* Badge rojo: cita Cancelada */
+/* Badge rojo: cita Cancelada — semántico, sin cambios */
 .badge-cancel {
   background: #ef4444;
   color: white;
@@ -288,6 +329,9 @@ body {
   padding: 4px 14px;
   font-size: 12px;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 /* HISTORIAL PAGOS */
@@ -300,15 +344,15 @@ body {
 .payments-table th {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-text);
   text-align: left;
   padding: 8px 0;
-  border-bottom: 1px solid #d0e8f5;
+  border-bottom: 1px solid rgba(174, 157, 129, 0.3);
 }
 
 .payments-table td {
   font-size: 13px;
-  color: #888;
+  color: var(--color-text);
   padding: 10px 0;
 }
 
@@ -317,6 +361,11 @@ body {
   text-align: center;
   padding: 20px 0 !important;
   font-style: italic;
+  color: var(--color-metal-text);
+}
+
+.empty-msg i {
+  margin-right: 6px;
 }
 
 /* ── MODALES ─────────────────────────────────────── */
@@ -355,12 +404,12 @@ body {
 .modal h3 {
     margin-bottom: 14px;
     font-size: 16px;
-    color: #1a1a1a;
+    color: var(--color-heading);
 }
 
 .modal p {
     font-size: 14px;
-    color: #555;
+    color: var(--color-text);
     margin-bottom: 20px;
     line-height: 1.6;
 }

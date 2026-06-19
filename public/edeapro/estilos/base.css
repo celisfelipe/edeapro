@@ -4,18 +4,26 @@
    Resetea márgenes, paddings y define la tipografía
    base para todas las páginas del sitio público.
    Se carga en la mayoría de páginas junto a principal.css.
+
+   Nota: ninguna página actual incluye este archivo directamente
+   (principal.css ya trae su propio reset), se actualiza solo
+   por consistencia con la tipografía Outfit/Inter.
 ================================================ */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
 }
 
 body {
     background-color: #f4f3ea;
-    color: #333;
+    color: #333333;
 }
 
 a {

@@ -2,15 +2,16 @@
    nosotros.css — Página Nosotros
    ================================================
    Estilos exclusivos para nosotros.html.
-   Se carga junto a principal.css para mantener consistencia visual.
+   Se carga junto a principal.css y reutiliza sus variables
+   (ver docs/MODERNIZACION-VISUAL.md).
 ================================================ */
 
 /* Reset básico */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    background: #f4f3ea;
+    font-family: var(--font-body);
+    background: var(--color-bg);
 }
 
 /* ── Sección del equipo ──────────────────────────────────────*/
@@ -19,12 +20,12 @@ body {
     padding: 60px 20px;
 }
 
-/* Título con línea decorativa café debajo */
+/* Título con línea decorativa dorada debajo */
 .titulo {
     font-size: 2.3rem;
     font-weight: 800;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--color-heading);
 }
 
 .titulo::after {
@@ -32,7 +33,7 @@ body {
     display: block;
     width: 60px;
     height: 3px;
-    background: #a67c52;
+    background: var(--color-cta);
     margin: 12px auto 40px;
     border-radius: 2px;
 }
@@ -46,26 +47,26 @@ body {
     margin: auto;
 }
 
-/* Card individual */
+/* Card individual — más redondeada, sombra suave */
 .card {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     transition: transform 0.35s ease, box-shadow 0.35s ease;
     overflow: hidden;
     padding-bottom: 20px;
     position: relative;
 }
 
-/* Borde superior café que aparece deslizándose al hacer hover */
+/* Borde superior con degradado metal→dorado que aparece al hacer hover */
 .card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: #a67c52;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-metal), var(--color-cta));
     transform: scaleX(0);
     transition: transform 0.35s ease;
 }
@@ -77,7 +78,7 @@ body {
 /* Elevación con sombra dorada al hacer hover */
 .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 16px 32px rgba(166, 124, 82, 0.2);
+    box-shadow: 0 16px 32px rgba(240, 171, 6, 0.18);
 }
 
 /* Foto con zoom suave al hacer hover */
@@ -98,14 +99,14 @@ body {
     margin: 15px 15px 5px;
     font-weight: 700;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--color-heading);
 }
 
-/* Badge del cargo con estilo pill café */
+/* Badge del cargo con estilo pill metálico */
 .cargo {
     display: inline-block;
-    background: #f4ede4;
-    color: #a67c52;
+    background: var(--color-surface);
+    color: var(--color-metal-text);
     font-size: 0.78rem;
     font-weight: 700;
     padding: 3px 12px;
@@ -119,17 +120,17 @@ body {
 .texto {
     padding: 0 15px;
     font-size: 0.88rem;
-    color: #555;
+    color: var(--color-text);
     line-height: 1.6;
     text-align: justify;
 }
 
 /* ── Sección Nuestro Presente ────────────────────────────────*/
-/* Fondo crema con bordes café — consistente con la paleta del sitio */
+/* Fondo de sección (gris claro) con bordes metálicos */
 .nuestro-presente {
-    background: #f4ede4;
-    border-top: 2px solid #e0d5c5;
-    border-bottom: 2px solid #e0d5c5;
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-metal);
+    border-bottom: 2px solid var(--color-metal);
     padding: 70px 20px;
     text-align: center;
     margin-top: 60px;
@@ -138,14 +139,14 @@ body {
 .nuestro-presente h2 {
     font-size: 2rem;
     font-weight: 800;
-    color: #333;
+    color: var(--color-heading);
     margin-bottom: 16px;
 }
 
 .nuestro-presente p {
     max-width: 600px;
     margin: 0 auto;
-    color: #666;
+    color: var(--color-text);
     line-height: 1.8;
     font-size: 15px;
 }

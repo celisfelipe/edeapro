@@ -43,16 +43,18 @@ function cargarServicios() {
         }
         tbody.innerHTML = '';
         data.citas.forEach(c => {
-            // Clase de color según el estado de la cita
+            // Clase de color e ícono según el estado de la cita
             const estado = c.estado === 'Completada' ? 'status-green' :
                            c.estado === 'Pendiente'  ? 'status-yellow' : 'status-red';
+            const iconoEstado = c.estado === 'Completada' ? 'fa-check' :
+                           c.estado === 'Pendiente'  ? 'fa-clock' : 'fa-xmark';
             tbody.innerHTML += `
                 <tr>
                     <td>${c.nombre_cliente} ${c.apellido_cliente}</td>
                     <td>${c.nombre_servicio}</td>
                     <td>${c.fecha}</td>
                     <td>${c.hora}</td>
-                    <td class="${estado}">${c.estado}</td>
+                    <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${c.estado}</td>
                 </tr>`;
         });
     });

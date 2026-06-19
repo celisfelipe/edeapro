@@ -1,10 +1,17 @@
 /* ================================================
    darkmode.css — Variables de Modo Oscuro
    ================================================
-   Define las variables CSS que se sobreescriben cuando
+   Define los estilos que se sobreescriben cuando
    el <html> tiene la clase "dark-mode".
    Se activa desde darkmode.js según la preferencia del usuario.
    La preferencia se guarda en localStorage con la key "darkMode".
+
+   Modernización (ver docs/MODERNIZACION-VISUAL.md):
+     Fondo de página:        #050505
+     Header / Footer:        #000000
+     Tarjetas / superficies:  #1a1a1a (y #111111 para secciones)
+     Bordes:                  #ae9d81 (metal)
+     Acentos interactivos:    #00a7b5 (teal), #f0ab06 (dorado), #7671a6 (púrpura)
 ================================================ */
 
 /* ============================================
@@ -14,18 +21,13 @@
    ============================================ */
 
 /* Fondo instantáneo antes de que cargue el body */
-/* Variables del modo oscuro — sobreescriben las de :root */
 html.dark-mode {
-    background: #0f0f0f;
+    background: #050505;
 }
 
 /* ===== GENERAL ===== */
 html.dark-mode body {
-    background-image: url('../imagenes/logo/fondo2.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: #050505;
     color: #ffffff;
 }
 
@@ -40,22 +42,20 @@ html.dark-mode .logo img {
 }
 
 html.dark-mode header nav a {
-    color: #d2b48c;
+    color: var(--color-info);
 }
 
 /* ===== LINKS Y BOTONES ===== */
 html.dark-mode a,
-html.dark-mode a.btn-reserve,
 html.dark-mode .cta-card {
-    color: #d2b48c;
+    color: var(--color-cta);
 }
 
 html.dark-mode nav a,
 html.dark-mode .btn-filtro,
 html.dark-mode .btn-login,
-html.dark-mode .hero a,
 html.dark-mode .footer-links a {
-    color: #d2b48c;
+    color: var(--color-info);
 }
 
 /* ===== CARDS INICIO (service-card) ===== */
@@ -63,6 +63,7 @@ html.dark-mode .footer-links a {
 html.dark-mode .service-card {
     background-color: #1a1a1a;
     color: #ffffff;
+    border: 1px solid rgba(174, 157, 129, 0.35);
 }
 
 html.dark-mode .service-card::after {
@@ -70,7 +71,7 @@ html.dark-mode .service-card::after {
 }
 
 html.dark-mode .service-card .card-content h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .service-card .card-content p {
@@ -78,25 +79,27 @@ html.dark-mode .service-card .card-content p {
 }
 
 html.dark-mode .service-card h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 /* ===== CARDS SERVICIOS (service) ===== */
 html.dark-mode .service {
     background-color: #1a1a1a;
     color: #ffffff;
+    border: 1px solid rgba(174, 157, 129, 0.35);
 }
 
 html.dark-mode .service h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .price {
-    color: #d2b48c;
+    color: var(--color-cta);
 }
 
 /* Hero en modo oscuro */
 html.dark-mode .hero {
+    background: #111111;
     color: #ffffff;
 }
 
@@ -113,26 +116,33 @@ html.dark-mode footer {
 }
 
 html.dark-mode .footer-links a {
-    color: #d2b48c;
+    color: var(--color-info);
+}
+
+html.dark-mode .social-links a {
+    color: var(--color-cta);
+    border-color: var(--color-cta);
 }
 
 /* ===== NOSOTROS ===== */
 html.dark-mode .titulo,
 html.dark-mode .nuestro-presente h2 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .card {
     background-color: #1a1a1a;
     color: #ffffff;
+    border-color: rgba(174, 157, 129, 0.35);
 }
 
 html.dark-mode .card h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .cargo {
-    color: #d2b48c;
+    color: var(--color-metal);
+    background: #2a2a2a;
 }
 
 html.dark-mode .texto {
@@ -141,22 +151,28 @@ html.dark-mode .texto {
 
 html.dark-mode .nuestro-presente {
     background: #111111;
+    border-color: var(--color-metal);
 }
 
 html.dark-mode .nuestro-presente p {
     color: #ffffff;
 }
 
+/* Botón en la sección Nuestro Presente — CTA dorado, igual que en modo claro */
 html.dark-mode .nuestro-presente button {
-    background: #d2b48c;
-    color: #000;
+    background: var(--color-cta);
+    color: #050505;
 }
 
 /* ===== UBICACION ===== */
 html.dark-mode #mapa-ubicacion h2,
 html.dark-mode #resenas h2,
 html.dark-mode .resena-form-container h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
+}
+
+html.dark-mode #resenas {
+    background: #111111;
 }
 
 html.dark-mode .map-responsive {
@@ -166,7 +182,7 @@ html.dark-mode .map-responsive {
 
 html.dark-mode .contact-info {
     background: #111111;
-    border-left-color: #d2b48c;
+    border-left-color: var(--color-metal);
 }
 
 html.dark-mode .contact-info p,
@@ -176,21 +192,21 @@ html.dark-mode .contact-info strong {
 }
 
 html.dark-mode .contact-info a:hover {
-    color: #ffbb00;
+    color: var(--color-cta);
 }
 
 html.dark-mode .resena-card {
     background-color: #1a1a1a;
-    border-left-color: #d2b48c;
+    border-left-color: var(--color-metal);
     color: #ffffff;
 }
 
 html.dark-mode .resena-card h4 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .rating {
-    color: #ffbb00;
+    color: var(--color-cta);
 }
 
 html.dark-mode .resena-card p {
@@ -199,37 +215,37 @@ html.dark-mode .resena-card p {
 
 html.dark-mode .resena-form-container {
     background: #111111;
-    border: 1px solid #444;
+    border: 1px solid rgba(174, 157, 129, 0.4);
 }
 
 html.dark-mode .resena-form label {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .resena-form input,
 html.dark-mode .resena-form select,
 html.dark-mode .resena-form textarea {
     background-color: #1a1a1a;
-    border: 1px solid #444;
+    border: 1px solid rgba(174, 157, 129, 0.4);
     color: #ffffff;
 }
 
 html.dark-mode .resena-form input:focus,
 html.dark-mode .resena-form select:focus,
 html.dark-mode .resena-form textarea:focus {
-    border-color: #d2b48c;
-    box-shadow: 0 0 0 3px rgba(210, 180, 140, 0.2);
+    border-color: var(--color-metal);
+    box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.25);
     background-color: #222;
 }
 
+/* Botón enviar reseña — CTA dorado, igual que en modo claro */
 html.dark-mode .submit-btn {
-    background: linear-gradient(135deg, #d2b48c 0%, #ffbb00 100%);
-    color: #000;
+    background: var(--color-cta);
+    color: #050505;
 }
 
 html.dark-mode .submit-btn:hover {
-    background: linear-gradient(135deg, #ffffff 0%, #d2b48c 100%);
-    color: #000;
+    background: var(--color-cta-dark);
 }
 
 html.dark-mode .message.success {
@@ -243,7 +259,8 @@ html.dark-mode .auth-wrapper {
 }
 
 html.dark-mode .welcome-panel {
-    background: linear-gradient(135deg, #3d2b1a, #1a1208);
+    background: linear-gradient(135deg, #1a1208, #050505);
+    border-right-color: var(--color-metal);
 }
 
 html.dark-mode .forms-panel {
@@ -251,27 +268,27 @@ html.dark-mode .forms-panel {
 }
 
 html.dark-mode .form-box h2 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .subtitle {
-    color: #af9d81;
+    color: var(--color-metal);
 }
 
 html.dark-mode .input-group label {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .input-group input,
 html.dark-mode .input-group select {
     background: #2a2a2a;
-    border-color: #3d3d3d;
+    border-color: rgba(174, 157, 129, 0.4);
     color: #ffffff;
 }
 
 html.dark-mode .input-group input:focus,
 html.dark-mode .input-group select:focus {
-    border-color: #c0733a;
+    border-color: var(--color-metal);
 }
 
 html.dark-mode .mascota-section {
@@ -279,18 +296,18 @@ html.dark-mode .mascota-section {
 }
 
 html.dark-mode .mascota-section h3 {
-    color: #d2b48c;
+    color: var(--color-metal);
 }
 
 html.dark-mode .mascota-item {
     background: #1a1a1a;
-    border-color: #3d3d3d;
+    border-color: rgba(174, 157, 129, 0.4);
 }
 
 html.dark-mode .mascota-titulo {
-    color: #c0733a;
+    color: var(--color-metal);
 }
 
 html.dark-mode .switch-text {
-    color: #af9d81;
+    color: var(--color-metal);
 }

@@ -4,13 +4,13 @@
    Estilos del panel admin: sidebar, header, tablas,
    tarjetas y sistema de modales.
 
-   Paleta del panel admin:
-     Fondo sidebar:   #2f3e4e  (azul oscuro)
-     Fondo general:   #f5f5f5  (gris claro)
-     Botón primary:   #2f3e4e
-     Status verde:    #28a745
-     Status amarillo: #ffc107
-     Status rojo:     #dc3545
+   Paleta del panel admin (variables definidas en base.css,
+   ver docs/MODERNIZACION-VISUAL.md):
+     Sidebar:               #050505 (oscuro), enlace activo en teal info
+     Fondo general:          #f4f3ea
+     Encabezados de tabla:   #333333 con texto #f4f3ea
+     Acentos / bordes:       #ae9d81 (metal)
+     Status verde/amarillo/rojo: sin cambios (semánticos)
 
    Incluye los estilos de:
      - .modal-overlay / .modal  → sistema de modales
@@ -24,11 +24,11 @@
 
 
 /* SIDEBAR */
-/* Sidebar izquierdo: menú de navegación del panel admin */
+/* Sidebar izquierdo: menú de navegación del panel admin — oscuro premium */
 .sidebar {
     width: 230px;
-    background: #333333;
-    color: white;
+    background: var(--color-dark-surface);
+    color: var(--color-light);
     height: 100vh;
     padding: 20px;
     position: fixed;
@@ -37,7 +37,6 @@
 /* Título del sidebar (nombre del rol) */
 .sidebar h2 {
     margin-bottom: 20px;
-    font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     letter-spacing: 1px;
 }
@@ -60,12 +59,18 @@
 .sidebar a {
     display: block;
     padding: 12px;
-    color: white;
+    color: var(--color-light);
     text-decoration: none;
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 600;
     border-radius: 5px;
+}
+
+/* Elemento activo del sidebar — teal info (lista para usarse si se marca
+   la página actual con class="active" en el link correspondiente) */
+.sidebar a.active {
+    background: var(--color-info);
+    color: var(--color-heading);
 }
 
 /* CONTENIDO */
@@ -74,7 +79,7 @@
     margin-left: 250px;
     padding: 30px;
     width: 100%;
-    background: #f4f3ea;
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
@@ -91,35 +96,58 @@
 }
 
 .header h1 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 22px;
     font-weight: 800;
-    color: #333333;
+    color: var(--color-heading);
 }
 
 .header p {
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
-    color: #ae9d81;
+    color: var(--color-metal-text);
     font-weight: 600;
 }
 
 /* TARJETAS */
-/* Tarjeta blanca que envuelve cada sección de contenido */
+/* Tarjeta blanca que envuelve cada sección de contenido — acento metálico */
 .card {
     background: white;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border-top: 3px solid #ae9d81;
+    border-top: 3px solid var(--color-metal);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+/* Buscador con ícono de lupa */
+.search-wrap {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.search-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-metal-text);
+    font-size: 13px;
+}
+
+.search-wrap input {
+    width: 100%;
+    padding-left: 34px;
 }
 
 .card h2 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 700;
-    color: #333333;
+    color: var(--color-heading);
     margin-bottom: 15px;
 }
 
@@ -131,12 +159,12 @@ table {
     margin-top: 10px;
 }
 
+/* Encabezados en gris carbón con texto crema */
 table th {
-    background: #333333;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-light);
     padding: 10px;
     text-align: left;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
     font-weight: 600;
 }
@@ -144,13 +172,12 @@ table th {
 table td {
     padding: 10px;
     border-bottom: 1px solid #f0ece6;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
-    color: #333333;
+    color: var(--color-text);
 }
 
 table tr:hover {
-    background: #faf8f5;
+    background: var(--color-surface);
 }
 
 /* BOTONES */
@@ -160,7 +187,6 @@ table tr:hover {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 600;
     transition: opacity 0.2s;
@@ -168,45 +194,46 @@ table tr:hover {
 
 .btn:hover { opacity: 0.85; }
 
-/* Botón azul: acciones de edición o detalle */
-.btn-blue { background: #ae9d81; color: white; }
-/* Botón verde: acciones de confirmación o agregar */
+/* Botón metálico: acciones de edición o detalle */
+.btn-blue { background: var(--color-metal); color: white; }
+/* Botón verde: acciones de confirmación o agregar — semántico, sin cambios */
 .btn-green { background: #7eb56a; color: white; }
-/* Botón rojo: acciones destructivas (cancelar, eliminar) */
+/* Botón rojo: acciones destructivas (cancelar, eliminar) — semántico, sin cambios */
 .btn-red { background: #dc3545; color: white; }
+/* Botón amarillo — estado/acción pendiente, semántico, sin cambios */
 .btn-yellow { background: #e8c56a; color: #333333; }
 
-/* Badge verde: estado Completada */
+/* Badge verde: estado Completada — semántico, sin cambios */
 .status-green { color: #7eb56a; font-weight: 700; }
-/* Badge amarillo: estado Pendiente */
+/* Badge amarillo: estado Pendiente — semántico, sin cambios */
 .status-yellow { color: #e8c56a; font-weight: 700; }
-/* Badge rojo: estado Cancelada */
+/* Badge rojo: estado Cancelada — semántico, sin cambios */
 .status-red { color: #dc3545; font-weight: 700; }
 
 /* ACORDEON */
 /* Contenedor de cada categoría de servicio */
-.acordeon { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e2d4c2; }
-/* Barra clickeable que abre/cierra el acordeón */
-.acordeon-header { background: #333333; color: white; padding: 14px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-weight: 600; }
-.acordeon-header:hover { background: #444444; }
+.acordeon { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(174, 157, 129, 0.35); }
+/* Barra clickeable que abre/cierra el acordeón — oscura premium */
+.acordeon-header { background: var(--color-dark-surface); color: var(--color-light); padding: 14px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+.acordeon-header:hover { background: #3a2f24; }
 /* Contenido del acordeón (tabla de razas) */
 .acordeon-body { padding: 0 10px 10px; background: white; }
-.badge { background: #ae9d81; color: white; padding: 3px 10px; border-radius: 99px; font-size: 12px; }
-.flecha { font-size: 12px; }
+/* Badge contador — CTA dorado para resaltar sobre el header oscuro */
+.badge { background: var(--color-cta); color: var(--color-heading); padding: 3px 10px; border-radius: 99px; font-size: 12px; }
+.flecha { font-size: 12px; display: inline-block; transition: transform 0.2s ease; }
 
 /* INPUT / SELECT */
 input, select {
     padding: 8px 12px;
-    border: 1.5px solid #e2d4c2;
+    border: 1.5px solid var(--color-metal);
     border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
-    color: #333333;
+    color: var(--color-text);
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: #ae9d81;
+    border-color: var(--color-metal);
 }
 
 /* ── MODALES ─────────────────────────────────────── */
@@ -246,7 +273,7 @@ input:focus, select:focus {
 .modal h3 {
     margin-bottom: 18px;
     font-size: 17px;
-    color: #2f3e4e;
+    color: var(--color-heading);
 }
 
 .modal p {
@@ -284,17 +311,18 @@ input:focus, select:focus {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
-    font-family: 'Montserrat', sans-serif;
 }
 
 .modal-form-group input:focus,
 .modal-form-group select:focus {
     outline: none;
-    border-color: #2f3e4e;
-    box-shadow: 0 0 0 3px rgba(47,62,78,0.12);
+    border-color: var(--color-metal);
+    box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.2);
 }
 
-#modal-confirmar .modal h3 { color: #2f3e4e; }
+/* Título del modal de confirmación — oscuro (informativo, no es éxito ni error) */
+#modal-confirmar .modal h3 { color: var(--color-heading); }
+/* Modales de éxito/error — colores semánticos, sin cambios */
 #modal-exito .modal h3     { color: #28a745; }
 #modal-error .modal h3     { color: #dc3545; }
 
@@ -317,21 +345,39 @@ input:focus, select:focus {
     min-width: 160px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border-top: 3px solid #ae9d81;
+    border-top: 3px solid var(--color-metal);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+/* Chip circular de ícono encima del número */
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-cta-soft, rgba(240, 171, 6, 0.18));
+    color: var(--color-cta-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: 0 auto 10px;
 }
 
 .stat-card h3 {
     font-size: 28px;
     font-weight: 800;
-    color: #333333;
-    font-family: 'Montserrat', sans-serif;
+    color: var(--color-heading);
 }
 
 .stat-card p {
     font-size: 13px;
-    color: #888;
+    color: var(--color-metal-text);
     margin-top: 4px;
-    font-family: 'Montserrat', sans-serif;
 }
 
 /* ── Horarios — grilla de citas del día ──────────────────────
@@ -350,8 +396,8 @@ input:focus, select:focus {
 }
 
 .horario-table th {
-    background: #ae9d81;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-light);
     padding: 10px;
     text-align: center;
 }
@@ -364,16 +410,16 @@ input:focus, select:focus {
     min-width: 150px;
 }
 
-/* Columna de hora en la grilla (fondo crema) */
+/* Columna de hora en la grilla */
 .hora-col {
-    background: #f4f3ea;
+    background: var(--color-surface);
     font-weight: bold;
     width: 80px;
 }
 
 /* Bloque de cita dentro de un slot de la grilla */
 .cita-bloque {
-    background: #ae9d81;
+    background: var(--color-metal);
     color: white;
     border-radius: 6px;
     padding: 6px;
@@ -381,7 +427,7 @@ input:focus, select:focus {
     margin: 2px;
 }
 
-/* Cita completada: color verde en la grilla */
+/* Cita completada: color verde en la grilla — semántico, sin cambios */
 .cita-bloque.completada { background: #7eb56a; }
 
 /* Texto "Libre" cuando no hay cita en ese slot */
@@ -392,31 +438,31 @@ input:focus, select:focus {
 
 /* ── Notificaciones ──────────────────────────────────────────
    Usadas en notificaciones.html */
-/* Tarjeta de notificación con borde izquierdo de color */
+/* Tarjeta de notificación con borde izquierdo metálico (ya leída) */
 .notif {
     background: #f9f9f9;
-    border-left: 4px solid #ae9d81;
+    border-left: 4px solid var(--color-metal);
     border-radius: 6px;
     padding: 14px 18px;
     margin-bottom: 12px;
 }
 
-/* Notificación no leída: fondo más claro y borde naranja */
+/* Notificación no leída: fondo dorado muy suave y borde CTA dorado */
 .notif.no-leida {
-    background: #fffbf5;
-    border-left-color: #e8a94f;
+    background: var(--color-cta-soft);
+    border-left-color: var(--color-cta);
 }
 
 .notif h3 {
     font-size: 15px;
     font-weight: 700;
-    color: #333;
+    color: var(--color-heading);
     margin-bottom: 4px;
 }
 
 .notif p {
     font-size: 13px;
-    color: #555;
+    color: var(--color-text);
     margin-bottom: 4px;
 }
 
@@ -425,10 +471,10 @@ input:focus, select:focus {
     color: #999;
 }
 
-/* Etiqueta "Nueva" en las notificaciones no leídas */
+/* Etiqueta "Nueva" en las notificaciones no leídas — CTA dorado */
 .badge-noleida {
-    background: #e8a94f;
-    color: white;
+    background: var(--color-cta);
+    color: var(--color-heading);
     font-size: 11px;
     padding: 2px 8px;
     border-radius: 99px;

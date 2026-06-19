@@ -5,28 +5,33 @@
     <title>Horarios - Administrador</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
     <div class="sidebar">
         <h2>Administrador</h2>
         <ul>
-            <li><a href="inicio.html">Citas</a></li>
-            <li><a href="horarios.html">Horarios / Disponibilidad</a></li>
-            <li><a href="clientes.html">Clientes</a></li>
-            <li><a href="servicios.html">Servicios</a></li>
-            <li><a href="empleados.html">Empleados</a></li>
-            <li><a href="notificaciones.html">Notificaciones</a></li>
-            <li><a href="estadisticas.html">Estadísticas</a></li>
-            <li><a href="pagos.html">Pagos</a></li>
+            <li><a href="inicio.html"><i class="fa-solid fa-calendar-check"></i><span class="label">Citas</span></a></li>
+            <li><a href="horarios.html" class="active"><i class="fa-solid fa-clock"></i><span class="label">Horarios / Disponibilidad</span></a></li>
+            <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span class="label">Clientes</span></a></li>
+            <li><a href="servicios.html"><i class="fa-solid fa-scissors"></i><span class="label">Servicios</span></a></li>
+            <li><a href="empleados.html"><i class="fa-solid fa-user-tie"></i><span class="label">Empleados</span></a></li>
+            <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
+            <li><a href="estadisticas.html"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
+            <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
         </ul>
     </div>
+    <div class="sidebar-overlay"></div>
 
     <div class="main">
 
         <div class="header">
-            <h1>Horarios</h1>
+            <div class="header-title">
+                <button class="hamburger-btn" id="sidebarToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
+                <h1>Horarios</h1>
+            </div>
             <p id="nombre-admin">Cargando...</p>
             <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
@@ -34,9 +39,9 @@
         <!-- Selector de fecha y grilla de horarios -->
         <div class="card">
             <div class="fecha-selector">
-                <label><strong>Ver horarios del día:</strong></label>
+                <label><strong><i class="fa-solid fa-calendar-days"></i> Ver horarios del día:</strong></label>
                 <input type="date" id="fecha-selector">
-                <button class="btn btn-blue" onclick="cargarHorarios()">Ver</button>
+                <button class="btn btn-blue" onclick="cargarHorarios()"><i class="fa-solid fa-eye"></i> Ver</button>
             </div>
             <div id="contenedor-horarios">
                 <p>Selecciona una fecha para ver los horarios.</p>
@@ -45,7 +50,7 @@
 
         <!-- Tabla de disponibilidad de estilistas -->
         <div class="card">
-            <h2>Disponibilidad de Estilistas</h2>
+            <h2><i class="fa-solid fa-user-clock"></i> Disponibilidad de Estilistas</h2>
             <br>
             <table>
                 <tr>
@@ -63,5 +68,6 @@
 
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/horarios.js"></script>
+    <script src="../../scripts/sidebar-toggle.js"></script>
 </body>
 </html>

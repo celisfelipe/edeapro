@@ -7,7 +7,8 @@
     <title>Clientes - Empleado</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -15,22 +16,29 @@
     <div class="sidebar">
         <h2>Empleado</h2>
         <ul>
-            <li><a href="inicio.html">Servicios</a></li>
-            <li><a href="clientes.html">Clientes</a></li>
-            <li><a href="disponibilidad.html">Disponibilidad</a></li>
+            <li><a href="inicio.html"><i class="fa-solid fa-scissors"></i><span class="label">Servicios</span></a></li>
+            <li><a href="clientes.html" class="active"><i class="fa-solid fa-users"></i><span class="label">Clientes</span></a></li>
+            <li><a href="disponibilidad.html"><i class="fa-solid fa-calendar-days"></i><span class="label">Disponibilidad</span></a></li>
         </ul>
     </div>
+    <div class="sidebar-overlay"></div>
 
     <div class="main">
 
         <div class="header">
-            <h1>Clientes</h1>
+            <div class="header-title">
+                <button class="hamburger-btn" id="sidebarToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
+                <h1>Clientes</h1>
+            </div>
             <p id="nombre-empleado">Cargando...</p>
             <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
         <div class="card">
-            <input type="text" id="buscador" placeholder="Buscar por nombre, teléfono o correo">
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="buscador" placeholder="Buscar por nombre, teléfono o correo">
+            </div>
             <table>
                 <tr>
                     <th>Nombre</th>
@@ -47,6 +55,7 @@
     
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/clientes.js"></script>
+    <script src="../../scripts/sidebar-toggle.js"></script>
 </body>
 
 </html>

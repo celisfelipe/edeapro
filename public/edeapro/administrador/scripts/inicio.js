@@ -36,9 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         tbody.innerHTML = '';
         data.citas.forEach(cita => {
-            // Asignar clase de color según el estado de la cita
+            // Asignar clase de color e ícono según el estado de la cita
             const estado = cita.estado === 'Completada' ? 'status-green' :
                            cita.estado === 'Pendiente'  ? 'status-yellow' : 'status-red';
+            const iconoEstado = cita.estado === 'Completada' ? 'fa-check' :
+                           cita.estado === 'Pendiente'  ? 'fa-clock' : 'fa-xmark';
             tbody.innerHTML += `
                 <tr>
                     <td>${cita.fecha}</td>
@@ -47,10 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${cita.mascota}</td>
                     <td>${cita.nombre_servicio}</td>
                     <td>${cita.nombre_estilista}</td>
-                    <td class="${estado}">${cita.estado}</td>
+                    <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${cita.estado}</td>
                     <td>
-                        <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})">Cancelar</button>
-                        <button class="btn btn-blue">Detalles</button>
+                        <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                        <button class="btn btn-blue"><i class="fa-solid fa-eye"></i> Detalles</button>
                     </td>
                 </tr>`;
         });

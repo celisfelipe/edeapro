@@ -46,6 +46,26 @@ document.addEventListener('DOMContentLoaded', function () {
     loginLink.style.visibility = 'visible';
 });
 
+/* ── Menú hamburguesa (móvil/tablet) ──────────────────────────
+   Muestra/oculta los links del nav en pantallas chicas.
+   No afecta el comportamiento en escritorio. */
+document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('header');
+    const hamburger = document.querySelector('.nav-hamburger');
+    if (!header || !hamburger) return;
+
+    hamburger.addEventListener('click', function () {
+        header.classList.toggle('nav-open');
+    });
+
+    // Cerrar el menú al elegir un link (evita que quede abierto al navegar)
+    header.querySelectorAll('nav a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            header.classList.remove('nav-open');
+        });
+    });
+});
+
 /**
  * verificarSesionAgenda()
  * Verifica si hay sesión de cliente antes de ir a la agenda.

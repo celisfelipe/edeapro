@@ -3,23 +3,38 @@
    ================================================
    Estilos del formulario de inicio de sesión y registro
    en login.html. Usa Bootstrap 5 como base y sobreescribe
-   con la paleta café/dorado del proyecto.
+   con la paleta de marca del proyecto (ver
+   docs/MODERNIZACION-VISUAL.md).
 
-   Diseño: pantalla dividida (izquierda: logo, derecha: form).
-   Incluye estilos para mostrar/ocultar contraseña,
-   spinner de carga y mensajes de error/éxito.
+   Diseño: pantalla dividida (izquierda: panel oscuro con
+   degradado #050505→#333333 y detalles metálicos, derecha:
+   formulario sobre panel #f4f4f4).
+   Página standalone: no carga principal.css, por eso define
+   sus propias variables de color.
 ================================================ */
+
+:root {
+    --color-bg: #f4f3ea;
+    --color-surface: #f4f4f4;
+    --color-metal: #ae9d81;
+    --color-metal-text: #8B6F4E;
+    --color-text: #333333;
+    --color-heading: #050505;
+    --color-dark-surface: #2A211A;
+    --color-cta: #f0ab06;
+    --color-cta-dark: #d69a05;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
     min-height: 100vh;
-    background: #ae9d81;
+    background: var(--color-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,10 +51,10 @@ body {
     box-shadow: 0 25px 60px rgba(0,0,0,0.4);
 }
 
-/* PANEL IZQUIERDO */
+/* PANEL IZQUIERDO — degradado oscuro con detalle metálico */
 .welcome-panel {
     width: 40%;
-    background: linear-gradient(135deg, #ae9d81, #7a6a56);
+    background: linear-gradient(135deg, var(--color-dark-surface), #3d342a);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,6 +62,21 @@ body {
     padding: 40px;
     text-align: center;
     color: white;
+    position: relative;
+    border-right: 2px solid var(--color-metal);
+    overflow: hidden;
+}
+
+/* Resplandor metálico decorativo */
+.welcome-panel::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, rgba(174,157,129,0.25) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .welcome-panel .logo {
@@ -55,25 +85,34 @@ body {
     object-fit: contain;
     margin-bottom: 20px;
     filter: brightness(0) invert(1);
+    position: relative;
+    z-index: 1;
 }
 
 .welcome-panel h1 {
+    font-family: 'Outfit', sans-serif;
     font-size: 24px;
     font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
 }
 
 .welcome-panel p {
     font-size: 14px;
     opacity: 0.85;
     line-height: 1.6;
+    position: relative;
+    z-index: 1;
 }
 
 .welcome-panel .paws {
     font-size: 40px;
     margin-top: 20px;
     animation: float 3s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes float {
@@ -81,10 +120,10 @@ body {
     50% { transform: translateY(-10px); }
 }
 
-/* PANEL DERECHO */
+/* PANEL DERECHO — formulario sobre panel claro */
 .forms-panel {
     width: 60%;
-    background: #f4f3ea;
+    background: var(--color-surface);
     position: relative;
     overflow: hidden;
 }
@@ -112,15 +151,16 @@ body {
 }
 
 .form-box h2 {
+    font-family: 'Outfit', sans-serif;
     font-size: 26px;
     font-weight: 800;
-    color: #333333;
+    color: var(--color-heading);
     margin-bottom: 5px;
 }
 
 .subtitle {
     font-size: 13px;
-    color: #7a6352;
+    color: var(--color-metal-text);
     margin-bottom: 25px;
 }
 
@@ -133,7 +173,7 @@ body {
     display: block;
     font-size: 12px;
     font-weight: 600;
-    color: #333333;
+    color: var(--color-heading);
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -143,19 +183,20 @@ body {
 .input-group select {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid #e2d4c2;
+    border: 1.5px solid var(--color-metal);
     border-radius: 8px;
     font-size: 14px;
     background: white;
-    color: #333333;
-    transition: border-color 0.2s;
-    font-family: 'Montserrat', sans-serif;
+    color: var(--color-heading);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: 'Inter', sans-serif;
 }
 
 .input-group input:focus,
 .input-group select:focus {
     outline: none;
-    border-color: #c0733a;
+    border-color: var(--color-metal);
+    box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.25);
 }
 
 .password-wrap {
@@ -173,7 +214,7 @@ body {
     position: absolute;
     right: 10px;
     cursor: pointer;
-    color: #7a6352;
+    color: var(--color-metal-text);
     width: 20px;
     height: 20px;
     user-select: none;
@@ -187,37 +228,39 @@ body {
 }
 
 .mascota-section {
-    background: #f5ece0;
+    background: white;
     border-radius: 10px;
     padding: 15px;
     margin: 15px 0;
+    border: 1px solid var(--color-metal);
 }
 
 .mascota-section h3 {
     font-size: 14px;
-    color: #3d2b1a;
+    color: var(--color-heading);
     margin-bottom: 12px;
     font-weight: 700;
 }
 
+/* Botón principal — CTA dorado */
 .btn-primary {
     width: 100%;
     padding: 11px;
-    background: #ae9d81;
-    color: white;
+    background: var(--color-cta);
+    color: var(--color-heading);
     border: none;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin-top: 8px;
     flex-shrink: 0;
 }
 
 .btn-primary:hover {
-    background: #9a8a6e;
+    background: var(--color-cta-dark);
 }
 
 /* Mensaje de error o éxito debajo del formulario */
@@ -229,14 +272,14 @@ body {
     display: none;
 }
 
-/* Mensaje de error: texto rojo */
+/* Mensaje de error: colores semánticos, sin cambios */
 .mensaje.error {
     background: #fde8e8;
     color: #c0392b;
     display: block;
 }
 
-/* Mensaje de éxito: texto verde */
+/* Mensaje de éxito: colores semánticos, sin cambios */
 .mensaje.success {
     background: #e8f5e9;
     color: #27ae60;
@@ -246,12 +289,12 @@ body {
 .switch-text {
     text-align: center;
     font-size: 13px;
-    color: #7a6352;
+    color: var(--color-metal-text);
     margin-top: 15px;
 }
 
 .switch-text span {
-    color: #ae9d81;
+    color: var(--color-heading);
     font-weight: 700;
     cursor: pointer;
     text-decoration: underline;
@@ -264,8 +307,9 @@ body {
     margin-bottom: 12px;
 }
 
+/* Botón secundario: agregar mascota */
 .btn-agregar {
-    background: #ae9d81;
+    background: var(--color-metal);
     color: white;
     border: none;
     padding: 6px 12px;
@@ -273,7 +317,7 @@ body {
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Bloque de campos de una mascota en el registro */
@@ -282,18 +326,18 @@ body {
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 10px;
-    border: 1.5px solid #e2d4c2;
+    border: 1.5px solid var(--color-metal);
     position: relative;
 }
 
 .mascota-titulo {
     font-size: 12px;
     font-weight: 700;
-    color: #ae9d81;
+    color: var(--color-metal-text);
     margin-bottom: 10px;
 }
 
-/* Botón ✕ para quitar una mascota del formulario */
+/* Botón ✕ para quitar una mascota del formulario — rojo semántico, sin cambios */
 .btn-quitar {
     position: absolute;
     top: 10px;
@@ -314,7 +358,7 @@ body {
 /* Botón volver al inicio desde el login */
 .btn-volver-login {
     display: inline-block;
-    color: #a67c52;
+    color: var(--color-heading);
     text-decoration: none;
     font-size: 13px;
     font-weight: 600;
@@ -323,7 +367,7 @@ body {
 }
 
 .btn-volver-login:hover {
-    color: #8a6340;
+    color: var(--color-metal-text);
 }
 
 @media (max-width: 640px) {
@@ -332,5 +376,3 @@ body {
     .forms-panel { width: 100%; min-height: 500px; }
     .form-grid { grid-template-columns: 1fr; }
 }
-
-

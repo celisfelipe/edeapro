@@ -4,11 +4,23 @@
    Estilos del sitio público: navbar, hero, carrusel,
    secciones de servicios, footer y páginas internas.
 
-   Paleta de colores:
-     --primary:   #af9d81  (café dorado principal)
-     --secondary: #a67c52  (café oscuro)
-     --white:     #f4f3ea  (crema / fondo)
-     --text:      #000
+   Paleta de marca (manual de colores original — ver
+   docs/MODERNIZACION-VISUAL.md):
+     --color-bg / --color-bg-main   : #f4f3ea  (fondo base cálido)
+     --color-surface                : #f4f4f4  (paneles / secciones)
+     --color-metal                  : #ae9d81  (acento metálico — bordes, activos)
+     --color-text                   : #333333  (texto secundario)
+     --color-heading / --color-primary / --color-dark : #050505 (texto/encabezados principales, header y footer)
+     --color-cta / --color-secondary: #f0ab06  (CTA / estado activo / estrellas)
+     --color-info                   : #00a7b5  (filtros/tabs activos, badges info)
+     --color-success                : #7eb56a  (éxito, sin cambios semánticos)
+     --color-special                : #7671a6  (notificaciones especiales, decorativo)
+
+   Tipografía: Outfit (encabezados) + Inter (texto), vía Google Fonts
+   (enlace en el <head> de cada página).
+
+   Las tarjetas (.card, .service-card, .modal, etc.) se mantienen en
+   blanco puro para distinguirse del fondo cálido y dar elevación.
 
    Se carga en: inicio.html, nosotros.html, ubicacion.html,
    perrocorto.html, perrolargo.html, gatos.html,
@@ -18,12 +30,37 @@
 /* ===============================
    VARIABLES
 ================================*/
-/* Variables de color del sitio — paleta café/dorado */
 :root {
-    --primary: #af9d81;
-    --secondary: #a67c52;
-    --text: #000;
-    --white: #f4f3ea;
+    --color-bg: #f4f3ea;
+    --color-bg-main: #f4f3ea;
+    --color-surface: #f4f4f4;
+    --color-metal: #ae9d81;
+    --color-metal-text: #8B6F4E;
+    --color-text: #333333;
+    --color-heading: #050505;
+    --color-primary: #050505;
+    --color-dark: #050505;
+    --color-dark-surface: #2A211A;
+    --color-light: #f4f3ea;
+    --color-cta: #f0ab06;
+    --color-cta-dark: #d69a05;
+    --color-secondary: #f0ab06;
+    --color-info: #00a7b5;
+    --color-success: #7eb56a;
+    --color-special: #7671a6;
+    --color-muted: #8B6F4E;
+
+    --shadow: 0 6px 18px rgba(5, 5, 5, 0.08);
+    --shadow-elevated: 0 14px 34px rgba(5, 5, 5, 0.12);
+    --shadow-glow: 0 0 0 4px rgba(240, 171, 6, 0.28);
+    --transition: all 0.3s ease;
+    --transition-fast: all 0.2s ease;
+    --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
 }
 /* ===============================
    RESET
@@ -36,22 +73,31 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    background: #f4f3ea;
-    color: var(--text);
+    font-family: var(--font-body);
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
 }
 
 /* ===============================
    HEADER
 ================================*/
-/* Header principal con logo y navbar */
+/* Header principal con logo y navbar — glassmorphism sobre fondo oscuro */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 50px;
-    background: var(--primary);
-    
+    background: rgba(42, 33, 26, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(174, 157, 129, 0.25);
 }
 
 /* Contenedor del logo en el header */
@@ -75,12 +121,30 @@ nav ul {
     display: flex;
     list-style: none;
     gap: 30px;
-    
+
+}
+
+/* Botón hamburguesa — solo visible en móvil/tablet (ver media query) */
+.nav-hamburger {
+    display: none;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: var(--color-light);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.nav-hamburger:hover {
+    background: rgba(174, 157, 129, 0.18);
 }
 
 nav a {
     text-decoration: none;
-    color: white;
+    color: var(--color-light);
     font-weight: 500;
     position: relative;
     padding: 6px 0;
@@ -88,10 +152,10 @@ nav a {
 }
 
 nav a:hover {
-    color: white;
+    color: var(--color-light);
 }
 
-/* Línea café que se desliza de izquierda a derecha al hacer hover */
+/* Línea metálica que se desliza de izquierda a derecha al hacer hover */
 nav a::after {
     content: '';
     position: absolute;
@@ -99,7 +163,7 @@ nav a::after {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #f4f3ea;
+    background-color: var(--color-metal);
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -110,10 +174,10 @@ nav a:hover::after {
     transform-origin: left;
 }
 
-/* Botón de inicio de sesión / Mi perfil en el navbar */
+/* Botón de inicio de sesión / Mi perfil en el navbar — CTA dorado */
 .login {
-    background: #c8a27a;
-    color: white;
+    background: var(--color-cta);
+    color: var(--color-heading);
     padding: 8px 15px;
     border-radius: 5px;
 }
@@ -189,9 +253,8 @@ nav a:hover::after {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* Degradado más suave que el negro plano */
-    background: linear-gradient(to bottom, rgba(43,38,34,0.2) 0%, rgba(43,38,34,0.6) 100%);
-    color: white;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.7) 100%);
+    color: var(--color-light);
     text-align: center;
     padding: 20px;
 }
@@ -228,18 +291,25 @@ nav a:hover::after {
     transform: translateY(0);
 }
 
-/* Botones del carrusel */
+/* Botones del carrusel — cristal sobre la imagen */
 .carrusel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, .5);
-    border: none;
+    background: rgba(42, 33, 26, .5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.15);
     color: white;
     font-size: 28px;
     padding: 10px 15px;
     cursor: pointer;
     z-index: 2;
+    transition: var(--transition-fast);
+}
+
+.carrusel-control:hover {
+    background: rgba(240, 171, 6, .85);
 }
 
 .prev {
@@ -262,7 +332,7 @@ nav a:hover::after {
 .dot {
     width: 12px;
     height: 12px;
-    background: #ccc;
+    background: rgba(255,255,255,0.5);
     border-radius: 50%;
     display: inline-block;
     margin: 0 5px;
@@ -270,7 +340,7 @@ nav a:hover::after {
 }
 
 .dot.active {
-    background: var(--color-secondary);
+    background: var(--color-cta);
 }
 
 /* ===============================
@@ -283,8 +353,8 @@ nav a:hover::after {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    color: #fff;
-    background: #000;
+    color: var(--color-light);
+    background: var(--color-dark-surface);
     font-size: 30px;
 }
 
@@ -344,7 +414,7 @@ nav a:hover::after {
 
 .featured-image:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 50px rgba(5, 5, 5, 0.18);
 }
 
 .featured-image img {
@@ -354,26 +424,27 @@ nav a:hover::after {
     display: block;
 }
 
+/* Botón principal de agendamiento — CTA dorado */
 .btn-reserve {
     display: inline-block;
     padding: 14px 32px;
-    background: var(--color-secondary);
-    color: #000;
+    background: var(--color-cta);
+    color: var(--color-heading);
     text-decoration: none;
     border-radius: 8px;
     font-weight: 700;
     font-size: 1rem;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(240, 171, 6, 0.35);
     border: none;
     cursor: pointer;
 }
 
 .btn-reserve:hover {
-    background: var(--color-primary);
-    color: #f59e0b;
+    background: var(--color-dark-surface);
+    color: var(--color-cta);
     transform: translateX(2px);
-    box-shadow: 0 4px 12px rgba(3, 105, 161, 0.3);
+    box-shadow: 0 4px 12px rgba(5, 5, 5, 0.3);
 }
 
 /* ============================================
@@ -430,15 +501,16 @@ nav a:hover::after {
     100% { background-position: 400% 0%; }
 }
 
-/* Tarjeta individual de servicio */
+/* Tarjeta individual de servicio — blanca, con borde animado metal+dorado */
 .service-card {
     position: relative;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 16px;
     background: white;
     flex: 1;
     transition: transform 0.3s ease;
     z-index: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
 .service-card:hover {
@@ -452,8 +524,8 @@ nav a:hover::after {
     left: -2px;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    border-radius: 12px;
-    background: linear-gradient(90deg, #ae9d81, #f4f3ea, #7a6a56, #ae9d81);
+    border-radius: 18px;
+    background: linear-gradient(90deg, var(--color-metal), var(--color-cta), var(--color-metal));
     background-size: 400% 400%;
     animation: animate-border 3s linear infinite;
     z-index: 1;
@@ -467,7 +539,7 @@ nav a:hover::after {
     left: 2px;
     width: calc(100% - 4px);
     height: calc(100% - 4px);
-    border-radius: 9px;
+    border-radius: 15px;
     background: white;
     z-index: 2;
 }
@@ -505,7 +577,7 @@ nav a:hover::after {
 .divider-line {
     width: 80%;
     height: 2px;
-    background: #e5e7eb;
+    background: rgba(174, 157, 129, 0.4);
     margin: 80px auto;
 }
 
@@ -577,7 +649,7 @@ nav a:hover::after {
 
 .feature-content h3 {
     font-size: 1.6rem;
-    color: var(--color-primary);
+    color: var(--color-heading);
     margin-bottom: 14px;
     font-weight: 700;
 }
@@ -597,11 +669,11 @@ nav a:hover::after {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--color-primary);
+    color: var(--color-heading);
     font-weight: 700;
     text-decoration: none;
     padding: 8px 14px;
-    border: 1.5px solid var(--color-primary);
+    border: 1.5px solid var(--color-metal);
     border-radius: 8px;
     transition: var(--transition);
     background: transparent;
@@ -616,10 +688,11 @@ nav a:hover::after {
 }
 
 .cta-card:hover {
-    background: var(--color-primary);
-    color: #f59e0b;
+    background: var(--color-dark-surface);
+    color: var(--color-cta);
+    border-color: var(--color-dark-surface);
     transform: translateX(2px);
-    box-shadow: 0 4px 12px rgba(3, 105, 161, 0.3);
+    box-shadow: 0 4px 12px rgba(5, 5, 5, 0.3);
 }
 
 .cta-card:hover::after {
@@ -630,12 +703,12 @@ nav a:hover::after {
    FOOTER
 ================================*/
 footer {
-    background: #af9d81;
-    color: #ffffff;
+    background: var(--color-dark-surface);
+    color: var(--color-light);
     padding: 52px 32px 28px;
     position: relative;
     overflow: hidden;
-    border-top: 2px solid rgba(255, 163, 4, 0.2);
+    border-top: 2px solid rgba(240, 171, 6, 0.25);
 }
 
 footer::before {
@@ -645,7 +718,7 @@ footer::before {
     left: 0;
     width: 100%;
     height: 2px;
-    background: #ae9d81;
+    background: var(--color-metal);
 }
 
 .footer-container {
@@ -667,7 +740,7 @@ footer::before {
 
 .footer-col h3 {
     font-size: 1.05rem;
-    color: #f4f3ea;
+    color: var(--color-light);
     margin-bottom: 16px;
     font-weight: var(--font-weight-bold);
     letter-spacing: 0.2px;
@@ -701,7 +774,7 @@ footer::before {
 }
 
 .footer-links a:hover {
-    color: var(--color-secondary);
+    color: var(--color-cta);
 }
 
 .footer-info {
@@ -723,8 +796,9 @@ footer::before {
     gap: 12px;
 }
 
+/* Iconos sociales en el footer — CTA dorado */
 .social-links a {
-    color: var(--color-secondary);
+    color: var(--color-cta);
     text-decoration: none;
     font-size: 1.1rem;
     width: 40px;
@@ -732,7 +806,7 @@ footer::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid var(--color-secondary);
+    border: 1.5px solid var(--color-cta);
     border-radius: 8px;
     transition: var(--transition-smooth);
     background: transparent;
@@ -740,8 +814,8 @@ footer::before {
 }
 
 .social-links a:hover {
-    background: var(--color-secondary);
-    color: var(--color-dark);
+    background: var(--color-cta);
+    color: var(--color-heading);
     transform: translateY(-2px);
     box-shadow: var(--shadow-glow);
 }
@@ -750,7 +824,7 @@ footer::before {
     text-align: center;
     padding-top: 24px;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(244, 243, 234, 0.6);
     font-weight: var(--font-weight-regular);
     position: relative;
     z-index: 1;
@@ -807,14 +881,45 @@ footer::before {
 @media (max-width:768px) {
 
     header {
-        flex-direction: column;
-        gap: 10px;
+        padding: 12px 16px;
+    }
+
+    .logo {
+        width: 90px;
+        flex-shrink: 0;
+    }
+
+    .toggle-container {
+        flex-shrink: 0;
+    }
+
+    .nav-hamburger {
+        display: block;
+    }
+
+    /* nav sale del flujo flex del header (para no competir por espacio con
+       el logo/hamburguesa) y su menú se despliega como panel flotante
+       debajo, anclado al header */
+    nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
     }
 
     nav ul {
+        display: none;
         flex-direction: column;
         align-items: center;
         gap: 10px;
+        width: 100%;
+        padding: 14px 0;
+        background: var(--color-dark-surface);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    header.nav-open nav ul {
+        display: flex;
     }
 
     #carrusel-hero {
@@ -871,17 +976,15 @@ footer::before {
 /* ===== MODO OSCURO ===== */
 
 /* Contenedor del toggle al lado del logo */
-/* Contenedor del toggle de modo oscuro */
 .toggle-container {
     display: flex;
     align-items: center;
 }
 
-/* Toggle */
 /* Toggle switch de modo oscuro */
 .toggle {
     position: relative;
-    height: 50px;  /* más pequeño que el que tenías */
+    height: 50px;
     width: 50px;
     cursor: pointer;
 }
@@ -944,12 +1047,11 @@ footer::before {
     color: #fff;
 }
 
-/* ── Sección de estadísticas ─────────────────────────────────
-   Barra con fondo crema y números grandes en café */
+/* ── Sección de estadísticas ───────────────────────────────── */
 .stats-section {
-    background: #f4f3ea;
-    border-top: 2px solid #ae9d81;
-    border-bottom: 2px solid #ae9d81;
+    background: var(--color-bg);
+    border-top: 2px solid var(--color-metal);
+    border-bottom: 2px solid var(--color-metal);
     padding: 50px 40px;
     display: flex;
     justify-content: center;
@@ -959,23 +1061,22 @@ footer::before {
 
 .stat-item {
     text-align: center;
-    color: #a67c52;
+    color: var(--color-heading);
 }
 
 .stat-number {
     font-size: 52px;
     font-weight: 800;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-heading);
     display: block;
     line-height: 1;
 }
 
 .stat-label {
     font-size: 13px;
-    color: #888;
+    color: var(--color-muted);
     margin-top: 6px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     letter-spacing: 1px;
     text-transform: uppercase;
 }
-

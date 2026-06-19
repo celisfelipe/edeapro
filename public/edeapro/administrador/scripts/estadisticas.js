@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Citas',
                     data: data.servicios.map(s => s.total),
-                    backgroundColor: '#2f3e4e'
+                    backgroundColor: '#ae9d81'
                 }]
             }
         });

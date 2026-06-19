@@ -56,9 +56,9 @@ function cargarServicios() {
             contenedor.innerHTML += `
                 <div class="acordeon">
                     <div class="acordeon-header" onclick="toggleAcordeon('${id}')">
-                        <span>📋 ${cat}</span>
+                        <span><i class="fa-solid fa-paw"></i> ${cat}</span>
                         <span class="badge">${razas.length} razas</span>
-                        <span class="flecha" id="flecha-${id}">▶</span>
+                        <span class="flecha" id="flecha-${id}"><i class="fa-solid fa-chevron-down"></i></span>
                     </div>
                     <div class="acordeon-body" id="body-${id}" style="display:none">
                         <table>
@@ -74,7 +74,7 @@ function cargarServicios() {
                                     <td>${s.duracion}</td>
                                     <td>$${Number(s.precio).toLocaleString('es-CO')}</td>
                                     <td>
-                                        <button class="btn btn-blue" onclick="editarServicio(${s.id_raza}, ${s.id_servicio}, '${s.duracion}', ${s.precio})">Editar</button>
+                                        <button class="btn btn-blue" onclick="editarServicio(${s.id_raza}, ${s.id_servicio}, '${s.duracion}', ${s.precio})"><i class="fa-solid fa-pen"></i> Editar</button>
                                     </td>
                                 </tr>`).join('')}
                         </table>
@@ -93,10 +93,10 @@ function toggleAcordeon(id) {
     const flecha = document.getElementById('flecha-' + id);
     if (body.style.display === 'none') {
         body.style.display = 'block';
-        flecha.textContent = '▼';
+        flecha.style.transform = 'rotate(180deg)';
     } else {
         body.style.display = 'none';
-        flecha.textContent = '▶';
+        flecha.style.transform = 'rotate(0deg)';
     }
 }
 

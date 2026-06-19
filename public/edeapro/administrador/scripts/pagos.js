@@ -47,7 +47,7 @@ function cargarPagos() {
                     <td>${p.nombre_cliente} ${p.apellido_cliente}</td>
                     <td>${p.nombre_servicio}</td>
                     <td>${p.metodo_pago}</td>
-                    <td class="status-green">${p.estado_pago}</td>
+                    <td class="status-green"><i class="fa-solid fa-check"></i> ${p.estado_pago}</td>
                 </tr>`;
         });
     });
@@ -84,7 +84,7 @@ function cargarCitasSinPago() {
                             <option value="Tarjeta de crédito">Tarjeta de crédito</option>
                             <option value="Transferencia">Transferencia</option>
                         </select>
-                        <button class="btn btn-green" onclick="registrarPago(${c.id_cita})">Registrar pago</button>
+                        <button class="btn btn-green" onclick="registrarPago(${c.id_cita})"><i class="fa-solid fa-check"></i> Registrar pago</button>
                     </td>
                 </tr>`;
         });

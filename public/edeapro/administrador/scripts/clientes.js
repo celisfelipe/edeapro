@@ -71,8 +71,8 @@ function mostrarClientes(clientes) {
                 <td>${c.telefono}</td>
                 <td>${c.correo}</td>
                 <td>
-                    <button class="btn btn-blue" onclick="editarCliente(${c.id_cliente}, '${c.nombre}', '${c.apellido}', '${c.telefono}', '${c.correo}')">Editar</button>
-                    <button class="btn btn-red" onclick="eliminarCliente(${c.id_cliente})">Eliminar</button>
+                    <button class="btn btn-blue" onclick="editarCliente(${c.id_cliente}, '${c.nombre}', '${c.apellido}', '${c.telefono}', '${c.correo}')"><i class="fa-solid fa-pen"></i> Editar</button>
+                    <button class="btn btn-red" onclick="eliminarCliente(${c.id_cliente})"><i class="fa-solid fa-trash"></i> Eliminar</button>
                 </td>
             </tr>`;
     });

@@ -4,17 +4,22 @@
    Estilos del panel del empleado: sidebar, header,
    tablas y grilla de horarios.
 
-   Basado en el panel admin con ajustes de color.
+   Basado en el panel admin, misma paleta de marca (variables
+   definidas en base.css, ver docs/MODERNIZACION-VISUAL.md):
+   sidebar oscuro #050505, enlace activo en teal info, encabezados
+   de tabla #333333 con texto #f4f3ea, acentos en metal #ae9d81.
+   Status verde/amarillo/rojo: sin cambios (semánticos).
+
    Se carga en todas las páginas del empleado.
 ================================================ */
 
 
 /* SIDEBAR */
-/* Sidebar izquierdo: menú de navegación del panel empleado */
+/* Sidebar izquierdo: menú de navegación del panel empleado — oscuro premium */
 .sidebar {
     width: 230px;
-    background: #ae9d81;
-    color: white;
+    background: var(--color-dark-surface);
+    color: var(--color-light);
     height: 100vh;
     padding: 20px;
     position: fixed;
@@ -23,7 +28,6 @@
 /* Título del sidebar */
 .sidebar h2 {
     margin-bottom: 20px;
-    font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     letter-spacing: 1px;
 }
@@ -40,18 +44,24 @@
 }
 
 .sidebar ul li:hover {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
 }
 
 .sidebar a {
     display: block;
     padding: 12px;
-    color: white;
+    color: var(--color-light);
     text-decoration: none;
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 600;
     border-radius: 5px;
+}
+
+/* Elemento activo del sidebar — teal info (lista para usarse si se marca
+   la página actual con class="active" en el link correspondiente) */
+.sidebar a.active {
+    background: var(--color-info);
+    color: var(--color-heading);
 }
 
 /* CONTENIDO */
@@ -60,7 +70,7 @@
     margin-left: 250px;
     padding: 30px;
     width: 100%;
-    background: #f4f3ea;
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
@@ -77,35 +87,58 @@
 }
 
 .header h1 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 22px;
     font-weight: 800;
-    color: #333333;
+    color: var(--color-heading);
 }
 
 .header p {
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
-    color: #ae9d81;
+    color: var(--color-metal-text);
     font-weight: 600;
 }
 
 /* TARJETAS */
-/* Tarjeta blanca que envuelve cada sección */
+/* Tarjeta blanca que envuelve cada sección — acento metálico */
 .card {
     background: white;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border-top: 3px solid #ae9d81;
+    border-top: 3px solid var(--color-metal);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+/* Buscador con ícono de lupa */
+.search-wrap {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.search-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-metal-text);
+    font-size: 13px;
+}
+
+.search-wrap input {
+    width: 100%;
+    padding-left: 34px;
 }
 
 .card h2 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 700;
-    color: #333333;
+    color: var(--color-heading);
     margin-bottom: 15px;
 }
 
@@ -117,12 +150,12 @@ table {
     margin-top: 10px;
 }
 
+/* Encabezados en gris carbón con texto crema */
 table th {
-    background: #ae9d81;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-light);
     padding: 10px;
     text-align: left;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
     font-weight: 600;
 }
@@ -130,13 +163,12 @@ table th {
 table td {
     padding: 10px;
     border-bottom: 1px solid #f0ece6;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
-    color: #333333;
+    color: var(--color-text);
 }
 
 table tr:hover {
-    background: #faf8f5;
+    background: var(--color-surface);
 }
 
 /* BOTONES */
@@ -146,7 +178,6 @@ table tr:hover {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 600;
     transition: opacity 0.2s;
@@ -154,34 +185,34 @@ table tr:hover {
 
 .btn:hover { opacity: 0.85; }
 
-/* Botón azul: acciones secundarias */
-.btn-blue { background: #ae9d81; color: white; }
-/* Botón verde: acciones de confirmación */
+/* Botón metálico: acciones secundarias */
+.btn-blue { background: var(--color-metal); color: white; }
+/* Botón verde: acciones de confirmación — semántico, sin cambios */
 .btn-green { background: #7eb56a; color: white; }
-/* Botón rojo: cerrar sesión */
+/* Botón rojo: cerrar sesión — semántico, sin cambios */
 .btn-red { background: #dc3545; color: white; }
+/* Botón amarillo — estado/acción pendiente, semántico, sin cambios */
 .btn-yellow { background: #e8c56a; color: #333333; }
 
-/* Badge verde: estado Completada */
+/* Badge verde: estado Completada — semántico, sin cambios */
 .status-green { color: #7eb56a; font-weight: 700; }
-/* Badge amarillo: estado Pendiente */
+/* Badge amarillo: estado Pendiente — semántico, sin cambios */
 .status-yellow { color: #e8c56a; font-weight: 700; }
-/* Badge rojo: estado Cancelada */
+/* Badge rojo: estado Cancelada — semántico, sin cambios */
 .status-red { color: #dc3545; font-weight: 700; }
 
 /* INPUT / SELECT */
 input, select {
     padding: 8px 12px;
-    border: 1.5px solid #e2d4c2;
+    border: 1.5px solid var(--color-metal);
     border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
-    color: #333333;
+    color: var(--color-text);
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: #ae9d81;
+    border-color: var(--color-metal);
 }
 
 /* ── Disponibilidad — grilla de horarios del empleado ────────
@@ -201,8 +232,8 @@ input:focus, select:focus {
 }
 
 .horario-table th {
-    background: #ae9d81;
-    color: white;
+    background: var(--color-text);
+    color: var(--color-light);
     padding: 10px;
     text-align: center;
 }
@@ -217,14 +248,14 @@ input:focus, select:focus {
 
 /* Columna de hora en la grilla */
 .hora-col {
-    background: #f4f3ea;
+    background: var(--color-surface);
     font-weight: bold;
     width: 80px;
 }
 
 /* Bloque de cita en la grilla */
 .cita-bloque {
-    background: #ae9d81;
+    background: var(--color-metal);
     color: white;
     border-radius: 6px;
     padding: 6px;
@@ -232,7 +263,7 @@ input:focus, select:focus {
     margin: 2px;
 }
 
-/* Cita completada en verde */
+/* Cita completada en verde — semántico, sin cambios */
 .cita-bloque.completada { background: #7eb56a; }
 
 /* Slot libre en la grilla */

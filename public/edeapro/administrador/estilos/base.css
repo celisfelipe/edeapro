@@ -4,24 +4,154 @@
    Resetea estilos base para el panel admin.
    Se carga en todas las páginas del administrador,
    siempre antes que principal.css.
+
+   Define las variables de marca usadas en todo el panel admin
+   (ver docs/MODERNIZACION-VISUAL.md). Los colores de estado
+   (verde/amarillo/rojo) no forman parte de la identidad visual
+   y se mantienen sin cambios en principal.css.
 ================================================ */
+
+:root {
+    --color-bg: #f4f3ea;
+    --color-surface: #f4f4f4;
+    --color-metal: #ae9d81;
+    --color-metal-text: #8B6F4E;
+    --color-text: #333333;
+    --color-heading: #050505;
+    --color-dark-surface: #2A211A;
+    --color-light: #f4f3ea;
+    --color-cta: #f0ab06;
+    --color-cta-dark: #d69a05;
+    --color-info: #00a7b5;
+    --color-success: #7eb56a;
+    --color-special: #7671a6;
+    --color-cta-soft: #fff3d6;
+}
 
 /* Reset general: quitar márgenes y paddings por defecto del navegador */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
 }
 
 /* El body usa flex para colocar el sidebar a la izquierda y el main a la derecha */
 body {
     display: flex;
-    background: #f4f6f9;
+    background: var(--color-bg);
 }
 
 /* Quitar subrayado de los links del sidebar */
 a {
     text-decoration: none;
     color: inherit;
+}
+
+/* ================================================
+   SIDEBAR: íconos, colapso en escritorio y panel móvil
+   ================================================ */
+.sidebar, .main {
+    transition: width 0.25s ease, margin-left 0.25s ease;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar a i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+}
+
+.hamburger-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-heading);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-right: 14px;
+    transition: background 0.2s;
+}
+
+.hamburger-btn:hover {
+    background: rgba(174, 157, 129, 0.18);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 150;
+}
+
+/* Escritorio colapsado: franja solo con íconos */
+body.sidebar-collapsed .sidebar {
+    width: 70px;
+    padding: 20px 12px;
+}
+
+body.sidebar-collapsed .sidebar h2,
+body.sidebar-collapsed .sidebar a .label {
+    display: none;
+}
+
+body.sidebar-collapsed .sidebar a {
+    justify-content: center;
+}
+
+body.sidebar-collapsed .main {
+    margin-left: 110px;
+}
+
+/* Móvil/tablet: sidebar fuera de pantalla, el hamburguesa lo despliega */
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 230px;
+        padding: 20px;
+        transform: translateX(-100%);
+        z-index: 200;
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar h2,
+    .sidebar a .label {
+        display: block;
+    }
+
+    .sidebar a {
+        justify-content: flex-start;
+    }
+
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    body.sidebar-open .sidebar-overlay {
+        display: block;
+    }
+
+    .main {
+        margin-left: 0;
+    }
 }

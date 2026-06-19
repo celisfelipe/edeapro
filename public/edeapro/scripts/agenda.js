@@ -107,7 +107,7 @@ function renderStep1(){
           </div>
           <div class="svc-check">
             <svg width="12" height="12" viewBox="0 0 12 12">
-              <polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <polyline points="2,6 5,9 10,3" stroke="#050505" stroke-width="2.5" fill="none" stroke-linecap="round"/>
             </svg>
           </div>
         </div>`;
@@ -122,7 +122,7 @@ function renderStep1(){
           </div>
           <div class="svc-check">
             <svg width="12" height="12" viewBox="0 0 12 12">
-              <polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <polyline points="2,6 5,9 10,3" stroke="#050505" stroke-width="2.5" fill="none" stroke-linecap="round"/>
             </svg>
           </div>
         </div>`;
@@ -175,7 +175,7 @@ function renderStep1(){
 function renderStep2(){
   // Si no hay peluqueros disponibles, mostramos un aviso
   const listHtml = GROOMERS.length === 0 
-    ? `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">No hay peluqueros disponibles con los criterios actuales.</div>`
+    ? `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--muted);">No hay peluqueros disponibles con los criterios actuales.</div>`
     : GROOMERS.map(g=>`
         <div class="grm-tile ${S.groomer===g.id?"picked":""}" data-gid="${g.id}">
           <div class="grm-av">${g.init}</div>
