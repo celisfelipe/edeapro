@@ -53,17 +53,23 @@ document.addEventListener('DOMContentLoaded', function () {
         grid.innerHTML = '';
         if (data.mascotas.length === 0) {
             grid.innerHTML = '<p style="color:var(--color-muted); font-size:13px;"><i class="fa-solid fa-paw"></i> No tienes mascotas registradas.</p>';
-            return;
+        } else {
+            // Crear una tarjeta por cada mascota
+            data.mascotas.forEach(m => {
+                grid.innerHTML += `
+                    <div class="pet-card">
+                        <div class="pet-avatar"><i class="fa-solid fa-paw"></i></div>
+                        <div class="pet-name">${m.nombre}</div>
+                        <div class="pet-breed">${m.especie} · ${m.edad} años · ${m.genero}</div>
+                    </div>`;
+            });
         }
-        // Crear una tarjeta por cada mascota
-        data.mascotas.forEach(m => {
-            grid.innerHTML += `
-                <div class="pet-card">
-                    <div class="pet-avatar"><i class="fa-solid fa-paw"></i></div>
-                    <div class="pet-name">${m.nombre}</div>
-                    <div class="pet-breed">${m.especie} · ${m.edad} años · ${m.genero}</div>
-                </div>`;
-        });
+        // Tarjeta para añadir una nueva mascota (visual — sin función todavía)
+        grid.innerHTML += `
+            <div class="pet-card pet-card-add">
+                <div class="pet-avatar pet-avatar-add"><i class="fa-solid fa-plus"></i></div>
+                <div class="pet-name">Añadir mascota</div>
+            </div>`;
     });
 
     // Cargar citas del cliente
@@ -75,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
         const tbody = document.getElementById('pagosBody');
         if (!data.ok || data.pagos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="2" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Sin registros de pagos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Sin registros de pagos</td></tr>';
             return;
         }
         tbody.innerHTML = '';
@@ -84,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <tr>
                     <td>${p.fecha_pago}</td>
                     <td>${p.nombre_servicio}</td>
+                    <td>$${Number(p.monto).toLocaleString('es-CO')}</td>
                 </tr>`;
         });
     });
@@ -187,18 +194,6 @@ function cancelarCita(id_cita) {
         });
     });
 }
-
-/**
- * Tabs de filtro (Día / Semana / Mes).
- * Por ahora solo cambian la clase visual activa.
- */
-const tabs = document.querySelectorAll('.tab');
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-    });
-});
 
 /** Elimina la sesión del localStorage y redirige al login */
 function cerrarSesion() {

@@ -9,6 +9,12 @@
      - En móvil/tablet (<=900px): despliega el sidebar como
        panel deslizante con overlay (clase body.sidebar-open),
        sin persistencia (siempre arranca cerrado).
+
+   El estado guardado se restaura ANTES de este script (ver el
+   <script> inline justo después de <body> en cada página) para
+   evitar el parpadeo de pintar expandido y luego colapsar. Este
+   archivo solo gestiona los clics, no la restauración inicial.
+
    No depende de ningún otro script de la página ni modifica
    funciones existentes.
 ================================================ */
@@ -18,10 +24,6 @@
     var body = document.body;
     var btn = document.getElementById('sidebarToggle');
     var overlay = document.querySelector('.sidebar-overlay');
-
-    if (window.innerWidth > MOBILE_BREAKPOINT && localStorage.getItem(STORAGE_KEY) === '1') {
-        body.classList.add('sidebar-collapsed');
-    }
 
     function toggleSidebar() {
         if (window.innerWidth <= MOBILE_BREAKPOINT) {

@@ -111,14 +111,16 @@ class ClienteController extends Controller
     }
 
     /**
-     * Devuelve el historial de pagos del cliente con el nombre del servicio.
+     * Devuelve el historial de pagos del cliente con el nombre del servicio y el monto pagado.
+     * El monto se guarda en el momento del pago y no cambia aunque el precio
+     * del catálogo (raza_servicio) cambie después.
      * Ordenado de más reciente a más antiguo.
      */
     public function pagos(Request $request)
     {
         $id    = intval($request->input('id_cliente'));
         $pagos = DB::select("
-            SELECT p.fecha_pago, p.metodo_pago, p.estado_pago, s.nombre_servicio
+            SELECT p.fecha_pago, p.metodo_pago, p.estado_pago, p.monto, s.nombre_servicio
             FROM pago p
             JOIN cita c     ON p.id_cita      = c.id_cita
             JOIN servicio s ON c.id_servicio  = s.id_servicio

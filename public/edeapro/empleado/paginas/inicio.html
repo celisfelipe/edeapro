@@ -9,8 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
 <body>
+    <script>
+        // Aplicar el estado guardado del sidebar ANTES de pintar, para evitar el parpadeo
+        // (aparece expandido un instante y luego se colapsa) al navegar entre páginas.
+        if (window.innerWidth > 900 && localStorage.getItem('sidebarCollapsed') === '1') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    </script>
 
     <div class="sidebar">
         <h2>Empleado</h2>

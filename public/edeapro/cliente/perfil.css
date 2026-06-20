@@ -242,6 +242,37 @@ body {
   margin-bottom: 12px;
 }
 
+/* Avatar más grande con efecto hover sutil */
+.pet-avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 26px;
+  transition: transform 0.2s ease;
+}
+
+.pet-card:hover .pet-avatar {
+  transform: scale(1.08);
+}
+
+/* Card de "Añadir mascota" — borde punteado, opacidad reducida */
+.pet-card-add {
+  border: 2px dashed var(--color-metal);
+  background: transparent;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.pet-card-add:hover {
+  opacity: 1;
+  border-color: var(--color-cta-dark);
+}
+
+.pet-avatar-add {
+  background: transparent;
+  border: 2px solid var(--color-metal);
+  color: var(--color-metal-text);
+}
+
 /* CITAS */
 /* Grupo segmentado de filtro (Día / Semana / Mes) */
 .filter-tabs {
