@@ -279,7 +279,44 @@ header nav a {
     color: var(--color-cta);
     transform: scale(1.15);
 }
+/* Contenedor redes sociales */
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 15px;
+}
 
+/* Botones */
+.social-links a {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--color-light);
+    background: transparent;
+
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+
+    text-decoration: none;
+
+    transition: all 0.3s ease;
+}
+
+/* Iconos */
+.social-links i {
+    font-size: 28px;
+}
+
+/* Hover */
+.social-links a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.15);
+}
 /* Textarea del comentario */
 #comentario-texto {
     width: 100%;
