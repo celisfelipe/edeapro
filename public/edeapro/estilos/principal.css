@@ -346,16 +346,43 @@ nav a:hover::after {
 /* ===============================
    REDES SOCIALES
 ================================*/
-.redes-sociales a {
-    width: 40px;
-    height: 30px;
+/* Contenedor */
+.redes-sociales {
     display: flex;
     align-items: center;
+    gap: 18px;
+    margin-top: 15px;
+}
+
+/* Botones */
+.redes-sociales a {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
     justify-content: center;
-    border-radius: 50%;
+    align-items: center;
+
     color: var(--color-light);
-    background: var(--color-dark-surface);
-    font-size: 30px;
+    background: transparent;
+
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+
+    text-decoration: none;
+
+    transition: all 0.3s ease;
+}
+
+/* Iconos */
+.redes-sociales i {
+    font-size: 28px;
+}
+
+/* Hover */
+.redes-sociales a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.15);
 }
 
 /* ===============================
