@@ -27,7 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cargar ambas tablas al iniciar
     cargarPagos();
     cargarCitasSinPago();
+    cargarResumenPagos();
 });
+
+/** Devuelve el ícono de Font Awesome según el método de pago */
+function iconoMetodoPago(metodo) {
+    if (metodo === 'Efectivo') return 'fa-money-bill-wave';
+    if (metodo === 'Transferencia') return 'fa-building-columns';
+    return 'fa-credit-card'; // Tarjeta de crédito / por defecto
+}
 
 /** Trae el historial completo de pagos registrados */
 function cargarPagos() {
@@ -37,8 +45,10 @@ function cargarPagos() {
         const tbody = document.getElementById('tabla-pagos');
         if (!data.ok || data.pagos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5">No hay pagos registrados</td></tr>';
+            document.getElementById('stat-total-pagos').textContent = 0;
             return;
         }
+        document.getElementById('stat-total-pagos').textContent = data.pagos.length;
         tbody.innerHTML = '';
         data.pagos.forEach(p => {
             tbody.innerHTML += `
@@ -46,10 +56,23 @@ function cargarPagos() {
                     <td>${p.fecha_pago}</td>
                     <td>${p.nombre_cliente} ${p.apellido_cliente}</td>
                     <td>${p.nombre_servicio}</td>
-                    <td>${p.metodo_pago}</td>
+                    <td><span class="badge-metodo-pago"><i class="fa-solid ${iconoMetodoPago(p.metodo_pago)}"></i> ${p.metodo_pago}</span></td>
                     <td class="status-green"><i class="fa-solid fa-check"></i> ${p.estado_pago}</td>
                 </tr>`;
         });
+    });
+}
+
+/**
+ * Trae el total recaudado desde el endpoint de estadísticas (ya existente,
+ * usado también en estadisticas.html) para la card de resumen.
+ */
+function cargarResumenPagos() {
+    fetchAuth('http://127.0.0.1:8000/api/admin/estadisticas')
+    .then(res => res.json())
+    .then(data => {
+        if (!data.ok) return;
+        document.getElementById('stat-total-recaudado').textContent = '$' + Number(data.total_ingresos).toLocaleString('es-CO');
     });
 }
 

@@ -23,6 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
 
     cargarServicios();
+
+    // Filtrar razas por nombre dentro del acordeón que esté abierto
+    document.getElementById('buscar-raza').addEventListener('input', function () {
+        const termino = this.value.trim().toLowerCase();
+        document.querySelectorAll('#contenedor-servicios .acordeon-body table tr').forEach(function (fila) {
+            if (fila.querySelector('th')) return; // saltar la fila de encabezado
+            const raza = fila.querySelector('td').textContent.toLowerCase();
+            fila.style.display = raza.includes(termino) ? '' : 'none';
+        });
+    });
 });
 
 /**

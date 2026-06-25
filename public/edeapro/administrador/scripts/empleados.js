@@ -39,13 +39,22 @@ function cargarEmpleados() {
         }
         tbody.innerHTML = '';
         data.empleados.forEach(e => {
+            const iniciales   = ((e.nombre_estilista || '')[0] || '') + ((e.apellido_estilista || '')[0] || '');
+            const rolClase    = e.rol === 'Administrador' ? 'rol-administrador' : 'rol-peluquero';
+            const rolIcono    = e.rol === 'Administrador' ? 'fa-user-shield' : 'fa-scissors';
+            const estadoClase = e.estado === 'Activo' ? 'activo' : 'inactivo';
             tbody.innerHTML += `
                 <tr>
-                    <td>${e.nombre_estilista} ${e.apellido_estilista}</td>
-                    <td>${e.rol}</td>
+                    <td>
+                        <div class="cliente-info">
+                            <span class="avatar-circle">${iniciales.toUpperCase()}</span>
+                            ${e.nombre_estilista} ${e.apellido_estilista}
+                        </div>
+                    </td>
+                    <td><span class="badge-rol ${rolClase}"><i class="fa-solid ${rolIcono}"></i> ${e.rol}</span></td>
                     <td>${e.telefono_estilista}</td>
                     <td>${e.correo}</td>
-                    <td>${e.estado}</td>
+                    <td><span class="badge-estado"><span class="dot ${estadoClase}"></span> ${e.estado}</span></td>
                     <td>
                         <button class="btn btn-blue" onclick="editarEstilista(${e.id_estilista}, '${e.nombre_estilista}', '${e.apellido_estilista}', '${e.telefono_estilista}', '${e.correo}', '${e.rol}')"><i class="fa-solid fa-pen"></i> Editar</button>
                         <button class="btn btn-red" onclick="eliminarEmpleado(${e.id_estilista})"><i class="fa-solid fa-trash"></i> Eliminar</button>

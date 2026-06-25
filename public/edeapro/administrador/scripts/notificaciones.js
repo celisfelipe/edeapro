@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarNotificaciones();
 });
 
+// IDs de las notificaciones no leídas de la última carga (usado por "Marcar todas como leídas")
+let notificacionesNoLeidasIds = [];
+
 /**
  * Trae todas las notificaciones desde Laravel y las muestra como tarjetas.
  * Las notificaciones no leídas se muestran resaltadas con clase 'no-leida'
@@ -35,23 +38,54 @@ function cargarNotificaciones() {
     .then(res => res.json())
     .then(data => {
         const contenedor = document.getElementById('contenedor-notificaciones');
+        notificacionesNoLeidasIds = [];
+
         if (!data.ok || data.notificaciones.length === 0) {
             contenedor.innerHTML = '<p>No hay notificaciones</p>';
+            actualizarBotonMarcarTodas();
             return;
         }
         contenedor.innerHTML = '';
         data.notificaciones.forEach(n => {
             const noLeida = n.estado === 'No leída';
+            if (noLeida) notificacionesNoLeidasIds.push(n.id_notificacion);
+
+            // Ícono según el tipo de notificación (cita/pago), si el dato lo indica
+            const tipoIcono = (n.tipo || '').toLowerCase().includes('pago') ? 'fa-credit-card' : 'fa-calendar-check';
+
             contenedor.innerHTML += `
                 <div class="notif ${noLeida ? 'no-leida' : ''}">
                     <h3><i class="fa-solid ${noLeida ? 'fa-bell' : 'fa-bell-slash'}"></i> ${n.titulo} ${noLeida ? '<span class="badge-noleida">Nueva</span>' : ''}
                     </h3>
                     <p>${n.mensaje}</p>
-                    <small>Cliente: ${n.nombre_cliente} ${n.apellido_cliente} · ${n.tipo}</small>
+                    <small><i class="fa-solid ${tipoIcono}"></i> Cliente: ${n.nombre_cliente} ${n.apellido_cliente} · ${n.tipo}</small>
                     ${noLeida ? `<br><button class="btn btn-blue" style="margin-top:8px" onclick="marcarLeida(${n.id_notificacion})"><i class="fa-solid fa-check"></i> Marcar como leída</button>` : ''}
                 </div>`;
         });
+        actualizarBotonMarcarTodas();
     });
+}
+
+/** Muestra el botón "Marcar todas como leídas" solo si hay notificaciones pendientes */
+function actualizarBotonMarcarTodas() {
+    const btn = document.getElementById('btnMarcarTodas');
+    if (!btn) return;
+    btn.style.display = notificacionesNoLeidasIds.length > 0 ? 'inline-flex' : 'none';
+}
+
+/**
+ * Marca todas las notificaciones no leídas como leídas.
+ * Reutiliza el mismo endpoint de marcar-una-por-una, llamado en bucle.
+ */
+function marcarTodasLeidas() {
+    if (notificacionesNoLeidasIds.length === 0) return;
+    Promise.all(notificacionesNoLeidasIds.map(id =>
+        fetchAuth('http://127.0.0.1:8000/api/admin/notificaciones/leer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id_notificacion: id })
+        })
+    )).then(() => cargarNotificaciones());
 }
 
 /**

@@ -43,6 +43,19 @@
             <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
+        <div class="stats-cards" id="pagos-resumen">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+                <h3 id="stat-total-pagos">0</h3>
+                <p>Total de pagos</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(126,181,106,0.18); color:#5a8a48;"><i class="fa-solid fa-coins"></i></div>
+                <h3 id="stat-total-recaudado">$0</h3>
+                <p>Total recaudado</p>
+            </div>
+        </div>
+
         <!-- Historial de pagos registrados -->
         <div class="card">
             <h2><i class="fa-solid fa-receipt"></i> Historial de Pagos</h2>

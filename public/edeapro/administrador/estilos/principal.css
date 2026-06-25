@@ -151,6 +151,19 @@
     margin-bottom: 15px;
 }
 
+/* Fila de título + acción dentro de una tarjeta (ej. Notificaciones) */
+.card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.card-title-row h2 {
+    margin-bottom: 0;
+}
+
 /* TABLAS */
 /* Tablas de datos: bordes colapsados y ancho completo */
 table {
@@ -469,6 +482,59 @@ input:focus, select:focus {
 .notif small {
     font-size: 12px;
     color: #999;
+}
+
+/* ── Estilistas — badges de rol y estado ─────────────────────── */
+.badge-rol {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-rol.rol-administrador {
+    background: rgba(0, 167, 181, 0.15);
+    color: #00777f;
+}
+
+.badge-rol.rol-peluquero {
+    background: rgba(174, 157, 129, 0.22);
+    color: var(--color-metal-text);
+}
+
+.badge-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text);
+}
+
+.badge-estado .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.badge-estado .dot.activo { background: #7eb56a; }
+.badge-estado .dot.inactivo { background: #aaa; }
+
+/* ── Pagos — badge de método de pago ─────────────────────────── */
+.badge-metodo-pago {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(174, 157, 129, 0.18);
+    color: var(--color-metal-text);
 }
 
 /* Etiqueta "Nueva" en las notificaciones no leídas — CTA dorado */
