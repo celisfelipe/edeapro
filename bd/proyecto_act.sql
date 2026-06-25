@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-06-2026 a las 04:01:36
+-- Tiempo de generación: 25-06-2026 a las 07:25:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -87,8 +87,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1781414469),
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1781414469;', 1781414469);
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1782155024),
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1782155024;', 1782155024);
 
 -- --------------------------------------------------------
 
@@ -126,14 +126,14 @@ CREATE TABLE `cita` (
 INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_estilista`, `fecha`, `hora`, `estado`) VALUES
 (1, 1, 1, 1, 2, '2026-04-15', '09:30:00', 'Cancelada'),
 (2, 3, 2, 1, 1, '2026-05-14', '09:00:00', 'Cancelada'),
-(7, 3, 2, 1, 2, '2026-05-08', '11:00:00', 'Completada'),
+(7, 3, 2, 1, 2, '2026-05-08', '11:00:00', 'Cancelada'),
 (8, 3, 2, 1, 1, '2026-05-11', '11:30:00', 'Cancelada'),
 (9, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
 (10, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
 (11, 3, 2, 1, 3, '2026-05-19', '11:30:00', 'Cancelada'),
 (12, 3, 2, 2, 2, '2026-05-27', '09:00:00', 'Cancelada'),
-(13, 3, 2, 1, 2, '2026-05-28', '09:00:00', 'Pendiente'),
-(14, 3, 2, 2, 3, '2026-05-29', '09:00:00', 'Pendiente');
+(13, 3, 2, 1, 2, '2026-05-28', '09:00:00', 'Cancelada'),
+(14, 3, 2, 2, 3, '2026-05-29', '09:00:00', 'Cancelada');
 
 --
 -- Disparadores `cita`
@@ -417,13 +417,13 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (1, 1, 1, 'Tu cita fue agendada para el 2026-04-15 a las 09:30:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (2, 2, 3, 'Tu cita fue agendada para el 2026-05-14 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (3, 7, 3, 'Tu cita fue agendada para el 2026-05-08 a las 11:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
-(4, 8, 3, 'Tu cita fue agendada para el 2026-05-11 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(5, 9, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(6, 10, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(7, 11, 3, 'Tu cita fue agendada para el 2026-05-19 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(8, 12, 3, 'Tu cita fue agendada para el 2026-05-27 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(9, 13, 3, 'Tu cita fue agendada para el 2026-05-28 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(10, 14, 3, 'Tu cita fue agendada para el 2026-05-29 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
+(4, 8, 3, 'Tu cita fue agendada para el 2026-05-11 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(5, 9, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(6, 10, 3, 'Tu cita fue agendada para el 2026-05-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(7, 11, 3, 'Tu cita fue agendada para el 2026-05-19 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(8, 12, 3, 'Tu cita fue agendada para el 2026-05-27 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(9, 13, 3, 'Tu cita fue agendada para el 2026-05-28 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(10, 14, 3, 'Tu cita fue agendada para el 2026-05-29 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída');
 
 -- --------------------------------------------------------
 
@@ -450,6 +450,7 @@ CREATE TABLE `notificaciones_clientes` (
 CREATE TABLE `pago` (
   `id_pago` int(11) NOT NULL,
   `id_cita` int(11) NOT NULL,
+  `monto` decimal(10,2) DEFAULT NULL,
   `fecha_pago` date DEFAULT NULL,
   `metodo_pago` varchar(40) DEFAULT NULL,
   `estado_pago` varchar(20) DEFAULT NULL
@@ -459,9 +460,9 @@ CREATE TABLE `pago` (
 -- Volcado de datos para la tabla `pago`
 --
 
-INSERT INTO `pago` (`id_pago`, `id_cita`, `fecha_pago`, `metodo_pago`, `estado_pago`) VALUES
-(1, 7, '2026-05-09', 'Efectivo', 'Completado'),
-(2, 10, '2026-05-09', 'Tarjeta de crédito', 'Completado');
+INSERT INTO `pago` (`id_pago`, `id_cita`, `monto`, `fecha_pago`, `metodo_pago`, `estado_pago`) VALUES
+(1, 7, NULL, '2026-05-09', 'Efectivo', 'Completado'),
+(2, 10, NULL, '2026-05-09', 'Tarjeta de crédito', 'Completado');
 
 -- --------------------------------------------------------
 
@@ -515,11 +516,11 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
-(7, 'estilista', 2, 'auth_token', '3aa85d90d6784ef1cf35e1ab038b76aa0c43f6daf8507ddd6e80b75b2dd59c76', '[\"peluquero\"]', NULL, '2026-06-15 06:13:00', '2026-06-14 06:13:00', '2026-06-14 06:13:00'),
-(11, 'cliente', 3, 'auth_token', '39037d60a1e83b62ec1a31a3bb98896607148ba8e412055ea0e3a0f4b692adb3', '[\"cliente\"]', NULL, '2026-06-15 07:15:59', '2026-06-14 07:15:59', '2026-06-14 07:15:59'),
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
-(16, 'estilista', 1, 'auth_token', 'a48b8cd33d7e9481f0d4b630545ab317482ec13876f24235d1473f79c2ec9810', '[\"administrador\"]', NULL, '2026-06-15 10:20:10', '2026-06-14 10:20:10', '2026-06-14 10:20:10');
+(44, 'cliente', 3, 'auth_token', '3b01b59df1f72b0f249bfcae27dc9dbc3bb1d3c31b9c09b4899640e2a59f301b', '[\"cliente\"]', NULL, '2026-06-23 23:58:14', '2026-06-22 23:58:14', '2026-06-22 23:58:14'),
+(45, 'estilista', 1, 'auth_token', 'a5029bec582f38df2b1742682de243bf6ba3d90f71c4297bb2fe32e49febe060', '[\"administrador\"]', NULL, '2026-06-23 23:59:54', '2026-06-22 23:59:54', '2026-06-22 23:59:54'),
+(46, 'estilista', 2, 'auth_token', '9e20a1d9c68fcaa282f730eec6136ea231f537847ee15bafbad4ad67ec03909c', '[\"peluquero\"]', NULL, '2026-06-24 00:02:44', '2026-06-23 00:02:44', '2026-06-23 00:02:44');
 
 -- --------------------------------------------------------
 
@@ -666,7 +667,7 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 (37, 2, NULL, '150 min', 88000.00),
 (38, 2, NULL, '120 min', 84000.00),
 (39, 3, NULL, '150 min', 84000.00),
-(40, 3, NULL, '120 min', 84000.00),
+(40, 3, NULL, '120 min', 85000.00),
 (41, 3, NULL, '120 min', 90000.00),
 (42, 3, NULL, '90 min', 80000.00),
 (43, 3, NULL, '90 min', 80000.00),
@@ -989,7 +990,7 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estilista`
@@ -1031,7 +1032,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
