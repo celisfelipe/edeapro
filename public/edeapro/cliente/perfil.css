@@ -95,6 +95,7 @@ body {
 }
 
 .field-group input {
+  width: 100%;
   height: 36px;
   border: 1px solid var(--color-metal);
   border-radius: 8px;
@@ -109,6 +110,29 @@ body {
 .field-group input:focus {
   border-color: var(--color-metal);
   box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.15);
+}
+
+.field-group select {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--color-metal);
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--color-heading);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-group select:focus {
+  border-color: var(--color-metal);
+  box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.15);
+}
+
+/* Espaciado entre campos cuando el field-group está dentro de un modal (ej. Añadir mascota) */
+.modal .field-group {
+  margin-bottom: 12px;
 }
 
 /* BOTONES */
@@ -450,4 +474,30 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+/* Permite hacer scroll horizontal en las tablas (Citas, Pagos) en vez de
+   que se corten o se aplasten en pantallas angostas */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-scroll table {
+    min-width: 480px;
+}
+
+/* 📱 MÓVIL/TABLET (max 640px) */
+@media (max-width: 640px) {
+    .profile-layout {
+        flex-direction: column;
+    }
+
+    .form-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .field-group.full {
+        grid-column: 1;
+    }
 }

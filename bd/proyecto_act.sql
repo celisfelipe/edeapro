@@ -113,6 +113,7 @@ CREATE TABLE `cita` (
   `id_cliente` int(11) NOT NULL,
   `id_mascota` int(11) NOT NULL,
   `id_servicio` int(11) NOT NULL,
+  `id_raza` int(11) DEFAULT NULL,
   `id_estilista` int(11) NOT NULL,
   `fecha` date DEFAULT NULL,
   `hora` time DEFAULT NULL,
@@ -121,19 +122,22 @@ CREATE TABLE `cita` (
 
 --
 -- Volcado de datos para la tabla `cita`
+-- `id_raza` queda en NULL para estas citas sembradas porque se crearon
+-- antes de que la columna existiera; el backend usa una duración de
+-- respaldo (la máxima conocida del servicio) cuando id_raza es NULL.
 --
 
-INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_estilista`, `fecha`, `hora`, `estado`) VALUES
-(1, 1, 1, 1, 2, '2026-04-15', '09:30:00', 'Cancelada'),
-(2, 3, 2, 1, 1, '2026-05-14', '09:00:00', 'Cancelada'),
-(7, 3, 2, 1, 2, '2026-05-08', '11:00:00', 'Cancelada'),
-(8, 3, 2, 1, 1, '2026-05-11', '11:30:00', 'Cancelada'),
-(9, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
-(10, 3, 2, 1, 2, '2026-05-09', '09:00:00', 'Cancelada'),
-(11, 3, 2, 1, 3, '2026-05-19', '11:30:00', 'Cancelada'),
-(12, 3, 2, 2, 2, '2026-05-27', '09:00:00', 'Cancelada'),
-(13, 3, 2, 1, 2, '2026-05-28', '09:00:00', 'Cancelada'),
-(14, 3, 2, 2, 3, '2026-05-29', '09:00:00', 'Cancelada');
+INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_raza`, `id_estilista`, `fecha`, `hora`, `estado`) VALUES
+(1, 1, 1, 1, NULL, 2, '2026-04-15', '09:30:00', 'Cancelada'),
+(2, 3, 2, 1, NULL, 1, '2026-05-14', '09:00:00', 'Cancelada'),
+(7, 3, 2, 1, NULL, 2, '2026-05-08', '11:00:00', 'Cancelada'),
+(8, 3, 2, 1, NULL, 1, '2026-05-11', '11:30:00', 'Cancelada'),
+(9, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada'),
+(10, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada'),
+(11, 3, 2, 1, NULL, 3, '2026-05-19', '11:30:00', 'Cancelada'),
+(12, 3, 2, 2, NULL, 2, '2026-05-27', '09:00:00', 'Cancelada'),
+(13, 3, 2, 1, NULL, 2, '2026-05-28', '09:00:00', 'Cancelada'),
+(14, 3, 2, 2, NULL, 3, '2026-05-29', '09:00:00', 'Cancelada');
 
 --
 -- Disparadores `cita`
@@ -262,6 +266,31 @@ CREATE TRIGGER `estilista_rol_mayusculas` BEFORE INSERT ON `estilista` FOR EACH 
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `disponibilidad_estilista`
+-- Bloqueos temporales de disponibilidad por fechas (ej. vacaciones),
+-- separados del campo `estilista`.`disponibilidad` que es para baja permanente.
+--
+
+CREATE TABLE `disponibilidad_estilista` (
+  `id_disponibilidad` int(11) NOT NULL AUTO_INCREMENT,
+  `id_estilista` int(11) NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  `motivo` varchar(100) DEFAULT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_disponibilidad`),
+  KEY `idx_estilista_fechas` (`id_estilista`,`fecha_inicio`,`fecha_fin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Filtros para la tabla `disponibilidad_estilista`
+--
+ALTER TABLE `disponibilidad_estilista`
+  ADD CONSTRAINT `fk_disponibilidad_estilista` FOREIGN KEY (`id_estilista`) REFERENCES `estilista` (`id_estilista`);
 
 -- --------------------------------------------------------
 
@@ -844,6 +873,7 @@ ALTER TABLE `cita`
   ADD KEY `id_cliente` (`id_cliente`),
   ADD KEY `id_mascota` (`id_mascota`),
   ADD KEY `id_servicio` (`id_servicio`),
+  ADD KEY `id_raza` (`id_raza`),
   ADD KEY `id_estilista` (`id_estilista`);
 
 --
@@ -1064,7 +1094,8 @@ ALTER TABLE `cita`
   ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
   ADD CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`id_mascota`) REFERENCES `mascota` (`id_mascota`),
   ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`),
-  ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`id_estilista`) REFERENCES `estilista` (`id_estilista`);
+  ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`id_estilista`) REFERENCES `estilista` (`id_estilista`),
+  ADD CONSTRAINT `fk_cita_id_raza` FOREIGN KEY (`id_raza`) REFERENCES `raza` (`id_raza`);
 
 --
 -- Filtros para la tabla `cliente_promocion`

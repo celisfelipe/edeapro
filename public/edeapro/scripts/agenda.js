@@ -11,8 +11,10 @@ let ADICIONALES = [];
 let S = {
   step:1, cat:null, sel:{}, adicionales:{},
   groomer:null, yr:2026, mo:3,
-  date:null, slot:null, done:false
+  date:null, slot:null, mascota:null, done:false
 };
+
+let MASCOTAS = [];
 
 const $   = id => document.getElementById(id);
 const fmt = n  => "$" + Number(n).toLocaleString("es-CO");
@@ -59,12 +61,19 @@ async function genSlots(){
     } catch(e) {}
   }
 
+  // Si la fecha elegida es hoy, las horas que ya pasaron tampoco se pueden reservar
+  // (los días futuros no tienen este problema, solo el día de hoy)
+  const tn        = new Date();
+  const esHoy     = S.date === `${tn.getDate()}/${tn.getMonth()+1}/${tn.getFullYear()}`;
+  const minutosYa = tn.getHours()*60 + tn.getMinutes();
+
   const out = [];
   for(let h=9; h<17; h++){
     for(let m=0; m<60; m+=15){
-      const label = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
-      const fin   = h*60 + m + dur;
-      if(fin <= 17*60) out.push({label, ocupado: ocup.includes(label)});
+      const label  = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+      const fin    = h*60 + m + dur;
+      const yaPaso = esHoy && (h*60 + m) <= minutosYa;
+      if(fin <= 17*60) out.push({label, ocupado: ocup.includes(label) || yaPaso});
     }
   }
   return out;
@@ -277,10 +286,40 @@ async function renderStep3(){
   $("bgo").onclick=()=>{S.step=4;render()};
 }
 
-function renderStep4(){
+async function renderStep4(){
   const items   = Object.values(S.sel);
   const adItems = Object.values(S.adicionales);
   const g = GROOMERS.find(x=>x.id===S.groomer);
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  // ¿Para cuál mascota es la cita? Solo se puede saber si hay sesión de cliente.
+  let mascotaHtml = "";
+  if (user && user.id_cliente) {
+    try {
+      const res  = await fetchAuth(`http://127.0.0.1:8000/api/cliente/mascotas?id_cliente=${user.id_cliente}`);
+      const data = await res.json();
+      MASCOTAS = (data.ok && data.mascotas) ? data.mascotas : [];
+    } catch(e) { MASCOTAS = []; }
+
+    if (MASCOTAS.length > 0) {
+      // Mantener la selección previa si sigue siendo válida; si no, usar la primera
+      if (!MASCOTAS.some(m => m.id_mascota === S.mascota)) {
+        S.mascota = MASCOTAS[0].id_mascota;
+      }
+      mascotaHtml = `
+        <div class="cc-row">
+          <span class="cc-lbl">Mascota</span>
+          <span class="cc-val">
+            <select id="mascotaSel">
+              ${MASCOTAS.map(m=>`<option value="${m.id_mascota}" ${m.id_mascota===S.mascota?"selected":""}>${m.nombre} (${m.especie})</option>`).join("")}
+            </select>
+          </span>
+        </div>`;
+    } else {
+      S.mascota = null;
+      mascotaHtml = `<div class="cc-row"><span class="cc-lbl">Mascota</span><span class="cc-val">No tienes mascotas registradas</span></div>`;
+    }
+  }
 
   $("main").innerHTML = `
     <div>
@@ -291,6 +330,7 @@ function renderStep4(){
     <div class="confirm-layout">
       <div class="confirm-card">
         <div class="cc-head">Resumen de la cita</div>
+        ${mascotaHtml}
         ${items.map(s=>`
           <div class="cc-row">
             <span class="cc-lbl">${s.nombre_raza}</span>
@@ -313,6 +353,8 @@ function renderStep4(){
       <button class="btn-primary" id="bgo">Confirmar cita</button>
     </div>`;
 
+  if ($("mascotaSel")) $("mascotaSel").onchange = e => { S.mascota = parseInt(e.target.value); };
+
   $("bbk").onclick=()=>{S.step=3;render()};
   $("bgo").onclick=()=>{
     const user = JSON.parse(localStorage.getItem('user'));
@@ -321,14 +363,19 @@ function renderStep4(){
         window.location.href = 'login.html';
         return;
     }
+    if (!S.mascota) {
+        alert('Selecciona para cuál mascota es esta cita (o regístrala primero en tu perfil).');
+        return;
+    }
     const id_cliente = user.id_cliente;
 
-    fetch('http://127.0.0.1:8000/api/citas/crear', {
+    fetchAuth('http://127.0.0.1:8000/api/citas/crear', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams({
         accion:      'crear',
         id_cliente:  id_cliente,
+        id_mascota:  S.mascota,
         id_estilista: S.groomer,
         fecha:        S.date,
         hora:         S.slot,
@@ -363,7 +410,7 @@ function renderDone(){
 }
 
 function resetApp(){
-  S={step:1,cat:null,sel:{},adicionales:{},groomer:null,yr:2026,mo:3,date:null,slot:null,done:false};
+  S={step:1,cat:null,sel:{},adicionales:{},groomer:null,yr:2026,mo:3,date:null,slot:null,mascota:null,done:false};
   render();
 }
 

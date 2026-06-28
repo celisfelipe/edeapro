@@ -9,8 +9,17 @@
  * El token se genera al hacer login y se guarda en localStorage.
  * El frontend lo envía en cada fetch como: Bearer {token}
  *
- * Si el token no existe o expiró → devuelve error 401
- * Si el token es válido → deja pasar la petición
+ * Además del token, valida el ROL: las rutas pueden indicar uno o
+ * más roles permitidos después de los dos puntos, ej:
+ *   verificar.token:administrador
+ *   verificar.token:administrador,peluquero
+ * Esos roles llegan en $roles. Si la ruta no indica ninguno
+ * (verificar.token sin parámetros), cualquier token válido pasa,
+ * sin importar el rol — igual que antes.
+ *
+ * Si el token no existe o expiró           → 401
+ * Si el token es válido pero el rol no aplica → 403
+ * Si el token es válido y el rol aplica       → deja pasar la petición
  */
 
 namespace App\Http\Middleware;
@@ -21,7 +30,7 @@ use Illuminate\Support\Facades\DB;
 
 class VerificarToken
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         // Obtener el token del header Authorization
         // El frontend lo envía como: "Bearer abc123..."
@@ -57,7 +66,20 @@ class VerificarToken
             ], 401);
         }
 
-        // Token válido — dejar pasar la petición
+        // Verificar que el rol del token esté entre los roles permitidos
+        // por la ruta (si la ruta no especificó ninguno, no se restringe).
+        if (!empty($roles)) {
+            $abilities = json_decode($token->abilities, true) ?: [];
+
+            if (empty(array_intersect($roles, $abilities))) {
+                return response()->json([
+                    'ok'    => false,
+                    'error' => 'No tienes permiso para acceder a este recurso'
+                ], 403);
+            }
+        }
+
+        // Token válido y rol permitido — dejar pasar la petición
         return $next($request);
     }
 }

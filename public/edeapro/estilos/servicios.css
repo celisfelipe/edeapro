@@ -18,19 +18,11 @@ body {
     color: var(--color-text);
 }
 
-/* Links del navbar */
-header nav a {
-    color: var(--color-light);
-    text-decoration: none;
-    margin: 0;
-    font-weight: 500;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 30px;
-}
+/* Nota: el navbar (incluyendo el menú móvil) ya lo define principal.css
+   por completo — antes había reglas duplicadas aquí ("header nav a",
+   "nav ul") que dejaban el menú hamburguesa siempre abierto en móvil
+   porque, al cargar después, le ganaban a la regla responsive de
+   principal.css. Se quitaron a propósito, no por descuido. */
 
 /* ── Filtros de categoría ────────────────────────────────────*/
 .filtros-servicios {

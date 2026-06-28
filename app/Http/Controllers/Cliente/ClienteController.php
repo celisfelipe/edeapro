@@ -9,6 +9,7 @@
  * Rutas: GET  /api/cliente/perfil
  *        POST /api/cliente/actualizar
  *        GET  /api/cliente/mascotas
+ *        POST /api/cliente/mascotas/agregar
  *        GET  /api/cliente/citas
  *        POST /api/cliente/cancelar-cita
  *        GET  /api/cliente/pagos
@@ -74,6 +75,32 @@ class ClienteController extends Controller
         );
 
         return response()->json(['ok' => true, 'mascotas' => $mascotas]);
+    }
+
+    /**
+     * Registra una nueva mascota para el cliente que tiene la sesión activa.
+     */
+    public function agregarMascota(Request $request)
+    {
+        $id_cliente = intval($request->input('id_cliente'));
+        $nombre     = strip_tags(trim($request->input('nombre', '')));
+        $especie    = strip_tags(trim($request->input('especie', '')));
+        $genero     = strip_tags(trim($request->input('genero', '')));
+        $edad       = intval($request->input('edad'));
+
+        if (!$id_cliente || !$nombre || !$especie || !$genero) {
+            return response()->json(['ok' => false, 'error' => 'Completa todos los campos.']);
+        }
+
+        $id_mascota = DB::table('mascota')->insertGetId([
+            'id_cliente' => $id_cliente,
+            'nombre'     => $nombre,
+            'especie'    => $especie,
+            'edad'       => $edad,
+            'genero'     => $genero
+        ]);
+
+        return response()->json(['ok' => true, 'id_mascota' => $id_mascota]);
     }
 
     /**

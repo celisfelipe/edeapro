@@ -120,9 +120,15 @@ body.sidebar-collapsed .main {
     margin-left: 110px;
 }
 
-/* Móvil/tablet: sidebar fuera de pantalla, el hamburguesa lo despliega */
+/* Móvil/tablet: sidebar fuera de pantalla, el hamburguesa lo despliega.
+   Los selectores usan el prefijo "body" a propósito: principal.css carga
+   después de base.css y redeclara .sidebar/.main sin media query, así que
+   con la misma especificidad esas reglas de escritorio le ganarían a estas
+   de aquí aunque el media query esté activo. "body X" tiene más
+   especificidad que "X" solo, así que estas reglas mobile quedan a salvo
+   sin importar el orden de carga de los archivos. */
 @media (max-width: 900px) {
-    .sidebar {
+    body .sidebar {
         position: fixed;
         top: 0;
         left: 0;
@@ -134,12 +140,12 @@ body.sidebar-collapsed .main {
         transition: transform 0.25s ease;
     }
 
-    .sidebar h2,
-    .sidebar a .label {
+    body .sidebar h2,
+    body .sidebar a .label {
         display: block;
     }
 
-    .sidebar a {
+    body .sidebar a {
         justify-content: flex-start;
     }
 
@@ -151,7 +157,7 @@ body.sidebar-collapsed .main {
         display: block;
     }
 
-    .main {
+    body .main {
         margin-left: 0;
     }
 }

@@ -71,6 +71,48 @@
             </table>
         </div>
 
+        <!-- Bloqueos temporales de disponibilidad (ej. vacaciones) -->
+        <div class="card">
+            <h2><i class="fa-solid fa-plane"></i> Bloqueos temporales por fechas</h2>
+            <p style="font-size:13px; color:var(--color-metal-text); margin-bottom:14px;">
+                Para ausencias puntuales (vacaciones, permisos). No afecta la disponibilidad general del estilista,
+                solo bloquea el rango de fechas indicado.
+            </p>
+
+            <div id="form-bloqueo" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:18px;">
+                <div>
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">Estilista</label>
+                    <select id="bloqueo-estilista"></select>
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">Desde</label>
+                    <input type="date" id="bloqueo-fecha-inicio">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">Hasta</label>
+                    <input type="date" id="bloqueo-fecha-fin">
+                </div>
+                <div style="flex:1; min-width:160px;">
+                    <label style="display:block; font-size:12px; margin-bottom:4px;">Motivo (opcional)</label>
+                    <input type="text" id="bloqueo-motivo" placeholder="Ej: Vacaciones">
+                </div>
+                <button class="btn btn-green" onclick="agregarBloqueo()"><i class="fa-solid fa-plus"></i> Agregar bloqueo</button>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Estilista</th>
+                    <th>Desde</th>
+                    <th>Hasta</th>
+                    <th>Motivo</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody id="tabla-bloqueos">
+                    <tr><td colspan="5">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <script src="../../scripts/fetchToken.js"></script>

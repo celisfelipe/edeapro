@@ -2,18 +2,6 @@
 <html lang="es">
 
 <head>
-<script>
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.documentElement.classList.add('dark-mode');
-        document.addEventListener('DOMContentLoaded', function() {
-            var label = document.querySelector('.toggle .label');
-            if (label) label.textContent = '☾';
-            var toggle = document.getElementById('dark-toggle');
-            if (toggle) toggle.checked = true;
-        });
-    }
-</script>
-    <link rel="stylesheet" href="../estilos/darkmode.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros - EDEA PRO</title>
@@ -33,14 +21,6 @@
         <div class="logo">
             <img src="../imagenes/logo/logo2.png">
         </div>
-                    <!-- TOGGLE MODO OSCURO -->
-    <div class="toggle-container">
-        <div class="toggle">
-            <input type="checkbox" id="dark-toggle">
-            <span class="button"></span>
-            <span class="label">☼</span>
-        </div>
-    </div>
     <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
 
 
@@ -148,8 +128,6 @@
             <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
         </div>
     </footer>
-
-    <script src="../scripts/darkmode.js"></script>
 
     <script src="../scripts/navbar.js"></script>
 

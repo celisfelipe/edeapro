@@ -69,6 +69,11 @@ Route::middleware('verificar.token:administrador')->group(function () {
 Route::middleware('verificar.token:administrador,peluquero')->group(function () {
     Route::get('/admin/horarios',                 [App\Http\Controllers\Admin\HorarioAdminController::class, 'index']);
     Route::post('/admin/horarios/disponibilidad', [App\Http\Controllers\Admin\HorarioAdminController::class, 'disponibilidad']);
+
+    Route::get('/admin/disponibilidad-temporal',           [App\Http\Controllers\Admin\HorarioAdminController::class, 'disponibilidadTemporal']);
+    Route::post('/admin/disponibilidad-temporal/agregar',  [App\Http\Controllers\Admin\HorarioAdminController::class, 'agregarDisponibilidadTemporal']);
+    Route::post('/admin/disponibilidad-temporal/eliminar', [App\Http\Controllers\Admin\HorarioAdminController::class, 'eliminarDisponibilidadTemporal']);
+
     Route::get('/admin/clientes-empleado',        [App\Http\Controllers\Admin\ClienteAdminController::class, 'index']);
     Route::get('/empleado/citas',                 [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
 });
@@ -78,6 +83,7 @@ Route::middleware('verificar.token:cliente')->group(function () {
     Route::get('/cliente/perfil',         [App\Http\Controllers\Cliente\ClienteController::class, 'perfil']);
     Route::post('/cliente/actualizar',    [App\Http\Controllers\Cliente\ClienteController::class, 'actualizar']);
     Route::get('/cliente/mascotas',       [App\Http\Controllers\Cliente\ClienteController::class, 'mascotas']);
+    Route::post('/cliente/mascotas/agregar', [App\Http\Controllers\Cliente\ClienteController::class, 'agregarMascota']);
     Route::get('/cliente/citas',          [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
     Route::post('/cliente/cancelar-cita', [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
     Route::get('/cliente/pagos',          [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
