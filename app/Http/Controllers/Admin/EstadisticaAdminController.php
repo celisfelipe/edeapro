@@ -23,6 +23,14 @@ class EstadisticaAdminController extends Controller
      * - total_clientes: número total de clientes registrados
      * - total_citas: número total de citas en el sistema
      * - total_ingresos: suma de precios de citas completadas
+     *
+     * total_ingresos usa el precio de catálogo (raza_servicio) de cada cita
+     * completada — no es lo mismo que "lo realmente recaudado" (eso sale de
+     * pago.monto, ver PagoAdminController). El JOIN va por id_raza Y
+     * id_servicio a propósito: raza_servicio tiene varias filas por
+     * id_servicio (una por raza, con precios distintos), así que unir solo
+     * por id_servicio multiplicaba el precio de una cita por cada raza de
+     * ese servicio en vez de tomar el precio real de la raza agendada.
      */
     public function index()
     {
@@ -42,7 +50,7 @@ class EstadisticaAdminController extends Controller
         $total_ingresos = DB::select("
             SELECT IFNULL(SUM(rs.precio), 0) AS total
             FROM cita c
-            JOIN raza_servicio rs ON c.id_servicio = rs.id_servicio
+            JOIN raza_servicio rs ON rs.id_raza = c.id_raza AND rs.id_servicio = c.id_servicio
             WHERE c.estado = 'Completada'
         ")[0]->total;
 

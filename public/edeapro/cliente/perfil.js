@@ -15,6 +15,7 @@
  *   POST /api/cliente/actualizar        → actualizar perfil
  *   GET  /api/cliente/mascotas          → mascotas del cliente
  *   POST /api/cliente/mascotas/agregar  → registrar una mascota nueva
+ *   GET  /api/cliente/mascotas/historial → historial de citas de una mascota
  *   GET  /api/cliente/citas             → citas del cliente
  *   POST /api/cliente/cancelar-cita     → cancelar una cita pendiente
  *   GET  /api/cliente/pagos             → historial de pagos
@@ -103,6 +104,9 @@ function cargarMascotas(id) {
                         <div class="pet-avatar"><i class="fa-solid fa-paw"></i></div>
                         <div class="pet-name">${m.nombre}</div>
                         <div class="pet-breed">${m.especie} · ${m.edad} años · ${m.genero}</div>
+                        <button class="btn-blue btn-historial" onclick="verHistorialMascota(${m.id_mascota}, '${m.nombre}')">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Ver historial
+                        </button>
                     </div>`;
             });
         }
@@ -124,9 +128,53 @@ function abrirModalAgregarMascota() {
     document.getElementById('modal-agregar-mascota').classList.add('open');
 }
 
+/**
+ * Trae y muestra el historial de citas de UNA mascota específica (RF 1.6).
+ * @param {number} id_mascota  - id de la mascota
+ * @param {string} nombreMascota - nombre de la mascota, solo para el título del modal
+ */
+function verHistorialMascota(id_mascota, nombreMascota) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const tbody = document.getElementById('historialMascotaBody');
+
+    document.getElementById('historial-mascota-nombre').textContent = nombreMascota;
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-msg">Cargando...</td></tr>';
+    document.getElementById('modal-historial-mascota').classList.add('open');
+
+    fetchAuth(`http://127.0.0.1:8000/api/cliente/mascotas/historial?id_mascota=${id_mascota}&id_cliente=${user.id_cliente}`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data.ok || data.historial.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Esta mascota no tiene servicios registrados aún.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = '';
+        data.historial.forEach(h => {
+            const badgeClase = h.estado === 'Completada' ? 'badge-confirm' :
+                               h.estado === 'Cancelada'  ? 'badge-cancel'  : 'badge-pending';
+            const badgeIcono = h.estado === 'Completada' ? 'fa-check' :
+                               h.estado === 'Cancelada'  ? 'fa-xmark'  : 'fa-clock';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${h.fecha}</td>
+                    <td>${h.nombre_servicio}</td>
+                    <td>${h.nombre_estilista}</td>
+                    <td><span class="${badgeClase}"><i class="fa-solid ${badgeIcono}"></i> ${h.estado}</span></td>
+                </tr>`;
+        });
+    })
+    .catch(() => {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-msg">Error cargando el historial.</td></tr>';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('modal-agregar-mascota-cancel').addEventListener('click', function () {
         document.getElementById('modal-agregar-mascota').classList.remove('open');
+    });
+
+    document.getElementById('modal-historial-mascota-cerrar').addEventListener('click', function () {
+        document.getElementById('modal-historial-mascota').classList.remove('open');
     });
 
     document.getElementById('modal-agregar-mascota-ok').addEventListener('click', function () {

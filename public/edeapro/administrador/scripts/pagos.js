@@ -7,9 +7,9 @@
  * Verifica que el usuario tenga rol "administrador" en localStorage.
  *
  * Conecta con la API de Laravel:
- *   GET  /api/admin/pagos           → historial de pagos
+ *   GET  /api/admin/pagos           → historial de pagos + total recaudado real
  *   GET  /api/admin/citas           → para filtrar las citas pendientes
- *   POST /api/admin/pagos/registrar → registrar nuevo pago
+ *   POST /api/admin/pagos/registrar → registrar nuevo pago (el monto lo calcula el servidor)
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cargar ambas tablas al iniciar
     cargarPagos();
     cargarCitasSinPago();
-    cargarResumenPagos();
 });
 
 /** Devuelve el ícono de Font Awesome según el método de pago */
@@ -37,42 +36,36 @@ function iconoMetodoPago(metodo) {
     return 'fa-credit-card'; // Tarjeta de crédito / por defecto
 }
 
-/** Trae el historial completo de pagos registrados */
+/** Trae el historial completo de pagos registrados, y el total recaudado real */
 function cargarPagos() {
     fetchAuth('http://127.0.0.1:8000/api/admin/pagos')
     .then(res => res.json())
     .then(data => {
         const tbody = document.getElementById('tabla-pagos');
-        if (!data.ok || data.pagos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5">No hay pagos registrados</td></tr>';
+        if (!data.ok) return;
+
+        document.getElementById('stat-total-recaudado').textContent = '$' + Number(data.total_recaudado).toLocaleString('es-CO');
+
+        if (data.pagos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6">No hay pagos registrados</td></tr>';
             document.getElementById('stat-total-pagos').textContent = 0;
             return;
         }
         document.getElementById('stat-total-pagos').textContent = data.pagos.length;
         tbody.innerHTML = '';
         data.pagos.forEach(p => {
+            // Pagos antiguos sin monto capturado muestran "—" en vez de "$NaN"
+            const montoTexto = p.monto !== null ? '$' + Number(p.monto).toLocaleString('es-CO') : '—';
             tbody.innerHTML += `
                 <tr>
                     <td>${p.fecha_pago}</td>
                     <td>${p.nombre_cliente} ${p.apellido_cliente}</td>
                     <td>${p.nombre_servicio}</td>
+                    <td>${montoTexto}</td>
                     <td><span class="badge-metodo-pago"><i class="fa-solid ${iconoMetodoPago(p.metodo_pago)}"></i> ${p.metodo_pago}</span></td>
                     <td class="status-green"><i class="fa-solid fa-check"></i> ${p.estado_pago}</td>
                 </tr>`;
         });
-    });
-}
-
-/**
- * Trae el total recaudado desde el endpoint de estadísticas (ya existente,
- * usado también en estadisticas.html) para la card de resumen.
- */
-function cargarResumenPagos() {
-    fetchAuth('http://127.0.0.1:8000/api/admin/estadisticas')
-    .then(res => res.json())
-    .then(data => {
-        if (!data.ok) return;
-        document.getElementById('stat-total-recaudado').textContent = '$' + Number(data.total_ingresos).toLocaleString('es-CO');
     });
 }
 
@@ -133,7 +126,8 @@ function registrarPago(id_cita) {
                 // Refrescar ambas tablas sin recargar la página
                 cargarPagos();
                 cargarCitasSinPago();
-                modalExito('Pago registrado correctamente.');
+                const montoMsg = data.monto !== null ? ` por $${Number(data.monto).toLocaleString('es-CO')}` : '';
+                modalExito(`Pago registrado correctamente${montoMsg}.`);
             } else {
                 modalError('Error: ' + data.error);
             }

@@ -84,6 +84,7 @@ Route::middleware('verificar.token:cliente')->group(function () {
     Route::post('/cliente/actualizar',    [App\Http\Controllers\Cliente\ClienteController::class, 'actualizar']);
     Route::get('/cliente/mascotas',       [App\Http\Controllers\Cliente\ClienteController::class, 'mascotas']);
     Route::post('/cliente/mascotas/agregar', [App\Http\Controllers\Cliente\ClienteController::class, 'agregarMascota']);
+    Route::get('/cliente/mascotas/historial', [App\Http\Controllers\Cliente\ClienteController::class, 'historialMascota']);
     Route::get('/cliente/citas',          [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
     Route::post('/cliente/cancelar-cita', [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
     Route::get('/cliente/pagos',          [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);

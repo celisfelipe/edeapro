@@ -10,6 +10,7 @@
  *        POST /api/cliente/actualizar
  *        GET  /api/cliente/mascotas
  *        POST /api/cliente/mascotas/agregar
+ *        GET  /api/cliente/mascotas/historial
  *        GET  /api/cliente/citas
  *        POST /api/cliente/cancelar-cita
  *        GET  /api/cliente/pagos
@@ -101,6 +102,36 @@ class ClienteController extends Controller
         ]);
 
         return response()->json(['ok' => true, 'id_mascota' => $id_mascota]);
+    }
+
+    /**
+     * Devuelve el historial de citas de UNA mascota específica (RF 1.6).
+     * Verifica primero que la mascota pertenezca al cliente que la pide —
+     * si no, devuelve 403 en vez de filtrar en silencio.
+     */
+    public function historialMascota(Request $request)
+    {
+        $id_cliente = intval($request->input('id_cliente'));
+        $id_mascota = intval($request->input('id_mascota'));
+
+        $mascotaValida = DB::select(
+            "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ?",
+            [$id_mascota, $id_cliente]
+        );
+        if (empty($mascotaValida)) {
+            return response()->json(['ok' => false, 'error' => 'Mascota no encontrada para este cliente'], 403);
+        }
+
+        $historial = DB::select("
+            SELECT c.fecha, c.hora, c.estado, s.nombre_servicio, e.nombre_estilista
+            FROM cita c
+            JOIN servicio s  ON c.id_servicio  = s.id_servicio
+            JOIN estilista e ON c.id_estilista = e.id_estilista
+            WHERE c.id_mascota = ?
+            ORDER BY c.fecha DESC, c.hora DESC
+        ", [$id_mascota]);
+
+        return response()->json(['ok' => true, 'historial' => $historial]);
     }
 
     /**
