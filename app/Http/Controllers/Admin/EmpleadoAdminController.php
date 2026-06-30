@@ -17,6 +17,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EmpleadoAdminController extends Controller
 {
@@ -41,7 +42,7 @@ class EmpleadoAdminController extends Controller
             'apellido_estilista' => $request->input('apellido'),
             'telefono_estilista' => $request->input('telefono'),
             'correo'             => $request->input('correo'),
-            'contrasena'         => $request->input('contrasena'),
+            'contrasena'         => Hash::make($request->input('contrasena')),
             'rol'                => $request->input('rol'),
             'estado'             => 'Activo',
             'disponibilidad'     => 'Disponible'

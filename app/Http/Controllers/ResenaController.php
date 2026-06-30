@@ -37,11 +37,19 @@ class ResenaController extends Controller
 
     /**
      * Guarda una nueva reseña del cliente logueado.
-     * Recibe id_cliente, puntuacion y comentario.
+     * El id_cliente sale del token (no del request, que cualquiera puede
+     * manipular) — y como esta ruta solo exige "alguna sesión válida" (no
+     * un rol específico), también se confirma que el token sea de un
+     * cliente y no de un administrador/peluquero antes de usarlo como
+     * id_cliente.
      */
     public function crear(Request $request)
     {
-        $id_cliente  = intval($request->input('id_cliente'));
+        if ($request->attributes->get('auth_tokenable_type') !== 'cliente') {
+            return response()->json(['ok' => false, 'error' => 'Solo los clientes pueden dejar reseñas'], 403);
+        }
+
+        $id_cliente  = intval($request->attributes->get('auth_tokenable_id'));
         $puntuacion  = intval($request->input('puntuacion'));
         $comentario  = $request->input('comentario');
 

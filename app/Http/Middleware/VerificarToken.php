@@ -17,6 +17,13 @@
  * (verificar.token sin parámetros), cualquier token válido pasa,
  * sin importar el rol — igual que antes.
  *
+ * También deja la identidad real del token disponible en el request,
+ * para que los controladores puedan usarla en vez de confiar en un
+ * id_cliente/id_estilista que venga del propio request (que cualquiera
+ * puede manipular):
+ *   $request->attributes->get('auth_tokenable_type')  → 'cliente' | 'estilista'
+ *   $request->attributes->get('auth_tokenable_id')     → el id real del dueño del token
+ *
  * Si el token no existe o expiró           → 401
  * Si el token es válido pero el rol no aplica → 403
  * Si el token es válido y el rol aplica       → deja pasar la petición
@@ -78,6 +85,10 @@ class VerificarToken
                 ], 403);
             }
         }
+
+        // Dejar la identidad real del token disponible para los controladores
+        $request->attributes->set('auth_tokenable_type', $token->tokenable_type);
+        $request->attributes->set('auth_tokenable_id', $token->tokenable_id);
 
         // Token válido y rol permitido — dejar pasar la petición
         return $next($request);

@@ -6,6 +6,11 @@
  * Provee datos al perfil del cliente (perfil.js en cliente/).
  * Permite al cliente ver y editar su información, mascotas, citas y pagos.
  *
+ * SEGURIDAD: todos los métodos identifican "qué cliente es" a partir del
+ * id_cliente real del token (verificar.token:cliente lo deja en
+ * $request->attributes), NUNCA del id_cliente que venga en el request —
+ * cualquiera puede escribir cualquier valor ahí.
+ *
  * Rutas: GET  /api/cliente/perfil
  *        POST /api/cliente/actualizar
  *        GET  /api/cliente/mascotas
@@ -24,12 +29,18 @@ use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
+    /** Id del cliente dueño del token de la petición actual */
+    private function idClienteAutenticado(Request $request)
+    {
+        return intval($request->attributes->get('auth_tokenable_id'));
+    }
+
     /**
-     * Devuelve los datos del perfil de un cliente por su id_cliente.
+     * Devuelve los datos del perfil del cliente autenticado.
      */
     public function perfil(Request $request)
     {
-        $id      = intval($request->input('id_cliente'));
+        $id      = $this->idClienteAutenticado($request);
         $cliente = DB::select(
             "SELECT id_cliente, nombre, apellido, telefono, correo FROM cliente WHERE id_cliente = ?",
             [$id]
@@ -43,12 +54,12 @@ class ClienteController extends Controller
     }
 
     /**
-     * Actualiza los datos del perfil del cliente.
+     * Actualiza los datos del perfil del cliente autenticado.
      * El cliente puede cambiar nombre, apellido, teléfono y correo.
      */
     public function actualizar(Request $request)
     {
-        $id = intval($request->input('id_cliente'));
+        $id = $this->idClienteAutenticado($request);
 
         DB::update(
             "UPDATE cliente SET nombre=?, apellido=?, telefono=?, correo=? WHERE id_cliente=?",
@@ -65,11 +76,11 @@ class ClienteController extends Controller
     }
 
     /**
-     * Devuelve las mascotas registradas para un cliente.
+     * Devuelve las mascotas registradas para el cliente autenticado.
      */
     public function mascotas(Request $request)
     {
-        $id       = intval($request->input('id_cliente'));
+        $id       = $this->idClienteAutenticado($request);
         $mascotas = DB::select(
             "SELECT id_mascota, nombre, especie, edad, genero FROM mascota WHERE id_cliente = ?",
             [$id]
@@ -83,7 +94,7 @@ class ClienteController extends Controller
      */
     public function agregarMascota(Request $request)
     {
-        $id_cliente = intval($request->input('id_cliente'));
+        $id_cliente = $this->idClienteAutenticado($request);
         $nombre     = strip_tags(trim($request->input('nombre', '')));
         $especie    = strip_tags(trim($request->input('especie', '')));
         $genero     = strip_tags(trim($request->input('genero', '')));
@@ -106,12 +117,12 @@ class ClienteController extends Controller
 
     /**
      * Devuelve el historial de citas de UNA mascota específica (RF 1.6).
-     * Verifica primero que la mascota pertenezca al cliente que la pide —
+     * Verifica primero que la mascota pertenezca al cliente autenticado —
      * si no, devuelve 403 en vez de filtrar en silencio.
      */
     public function historialMascota(Request $request)
     {
-        $id_cliente = intval($request->input('id_cliente'));
+        $id_cliente = $this->idClienteAutenticado($request);
         $id_mascota = intval($request->input('id_mascota'));
 
         $mascotaValida = DB::select(
@@ -135,12 +146,12 @@ class ClienteController extends Controller
     }
 
     /**
-     * Devuelve el historial de citas del cliente con detalle de mascota, servicio y estilista.
-     * Ordenadas de más reciente a más antigua.
+     * Devuelve el historial de citas del cliente autenticado con detalle de
+     * mascota, servicio y estilista. Ordenadas de más reciente a más antigua.
      */
     public function citas(Request $request)
     {
-        $id    = intval($request->input('id_cliente'));
+        $id    = $this->idClienteAutenticado($request);
         $citas = DB::select("
             SELECT c.id_cita, c.fecha, c.hora, c.estado,
                    m.nombre AS mascota,
@@ -158,25 +169,36 @@ class ClienteController extends Controller
     }
 
     /**
-     * Cancela una cita del cliente cambiando su estado a 'Cancelada'.
+     * Cancela una cita del cliente autenticado cambiando su estado a 'Cancelada'.
+     * Verifica primero que la cita pertenezca a ese cliente — si no, 403.
      * Solo citas en estado 'Pendiente' deberían poder cancelarse (validación en el JS).
      */
     public function cancelarCita(Request $request)
     {
-        $id = intval($request->input('id_cita'));
-        DB::update("UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?", [$id]);
+        $id_cliente = $this->idClienteAutenticado($request);
+        $id_cita    = intval($request->input('id_cita'));
+
+        $citaValida = DB::select(
+            "SELECT id_cita FROM cita WHERE id_cita = ? AND id_cliente = ?",
+            [$id_cita, $id_cliente]
+        );
+        if (empty($citaValida)) {
+            return response()->json(['ok' => false, 'error' => 'Cita no encontrada para este cliente'], 403);
+        }
+
+        DB::update("UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?", [$id_cita]);
         return response()->json(['ok' => true]);
     }
 
     /**
-     * Devuelve el historial de pagos del cliente con el nombre del servicio y el monto pagado.
-     * El monto se guarda en el momento del pago y no cambia aunque el precio
-     * del catálogo (raza_servicio) cambie después.
-     * Ordenado de más reciente a más antiguo.
+     * Devuelve el historial de pagos del cliente autenticado con el nombre
+     * del servicio y el monto pagado. El monto se guarda en el momento del
+     * pago y no cambia aunque el precio del catálogo (raza_servicio) cambie
+     * después. Ordenado de más reciente a más antiguo.
      */
     public function pagos(Request $request)
     {
-        $id    = intval($request->input('id_cliente'));
+        $id    = $this->idClienteAutenticado($request);
         $pagos = DB::select("
             SELECT p.fecha_pago, p.metodo_pago, p.estado_pago, p.monto, s.nombre_servicio
             FROM pago p
