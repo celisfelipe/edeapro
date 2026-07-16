@@ -89,6 +89,7 @@ class VerificarToken
         // Dejar la identidad real del token disponible para los controladores
         $request->attributes->set('auth_tokenable_type', $token->tokenable_type);
         $request->attributes->set('auth_tokenable_id', $token->tokenable_id);
+        $request->attributes->set('auth_abilities', json_decode($token->abilities, true) ?: []);
 
         // Token válido y rol permitido — dejar pasar la petición
         return $next($request);

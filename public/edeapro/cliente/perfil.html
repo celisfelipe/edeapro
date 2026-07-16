@@ -13,129 +13,197 @@
 
   <header>
     <div class="logo">
-        <img src="../imagenes/logo/logo2.png">
+      <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
     </div>
-    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
+    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú">
+      <i class="fa-solid fa-bars"></i>
+    </button>
     <nav>
-        <ul>
-            <li><a href="../paginas/inicio.html">Inicio</a></li>
-            <li><a href="../paginas/perrocorto.html">Servicios</a></li>
-            <li><a href="../paginas/nosotros.html">Nosotros</a></li>
-            <li><a href="../paginas/ubicacion.html">Ubicación</a></li>
-            <li><a href="../paginas/agenda.html">Agendar cita</a></li>
-            <li><a href="#" class="login" onclick="cerrarSesion()">Cerrar sesión</a></li>
-        </ul>
+      <ul>
+        <li><a href="../paginas/inicio.html">Inicio</a></li>
+        <li><a href="../paginas/perrocorto.html">Servicios</a></li>
+        <li><a href="../paginas/nosotros.html">Nosotros</a></li>
+        <li><a href="../paginas/ubicacion.html">Ubicación</a></li>
+        <li><a href="../paginas/agenda.html">Agendar cita</a></li>
+        <li><a href="#" class="login" onclick="cerrarSesion()">Cerrar sesión</a></li>
+      </ul>
     </nav>
   </header>
 
   <main class="page">
 
-    <!-- MI PERFIL -->
-    <section class="card">
-      <h2 class="card-title"><i class="fa-solid fa-user"></i> Mi Perfil</h2>
-      <div class="profile-layout">
-        <div class="form-fields">
-          <div class="field-group">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" />
+    <!-- LAYOUT DOS COLUMNAS -->
+    <div class="perfil-grid">
+
+      <!-- COLUMNA IZQUIERDA -->
+      <aside class="perfil-sidebar">
+
+        <!-- AVATAR + PERFIL -->
+        <div class="card perfil-card">
+          <div class="perfil-avatar" id="perfil-avatar">--</div>
+          <div class="perfil-nombre-wrap">
+            <h2 class="perfil-nombre" id="perfil-nombre-display">Cargando...</h2>
+            <p class="perfil-correo" id="perfil-correo-display"></p>
           </div>
-          <div class="field-group">
-            <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" />
-          </div>
-          <div class="field-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" />
-          </div>
-          <div class="field-group">
-            <label for="correo">Correo:</label>
-            <input type="email" id="correo" />
-          </div>
-          <div class="field-group full">
-            <button class="btn-green" id="btnActualizar"><i class="fa-solid fa-floppy-disk"></i> Actualizar Perfil</button>
+          <div class="perfil-divider"></div>
+          <div class="form-fields">
+            <div class="field-group">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" />
+            </div>
+            <div class="field-group">
+              <label for="apellido">Apellido</label>
+              <input type="text" id="apellido" />
+            </div>
+            <div class="field-group">
+              <label for="telefono">Teléfono</label>
+              <input type="text" id="telefono" />
+            </div>
+            <div class="field-group">
+              <label for="correo">Correo</label>
+              <input type="email" id="correo" />
+            </div>
+            <button class="btn-green" id="btnActualizar">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+            </button>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- MIS MASCOTAS -->
-    <section class="card">
-      <h2 class="card-title"><i class="fa-solid fa-paw"></i> Mis Mascotas</h2>
-      <div class="pets-grid" id="pets-grid"></div>
-    </section>
+        <!-- MASCOTAS -->
+        <div class="card">
+          <h2 class="card-title">
+            <i class="fa-solid fa-paw"></i> Mis Mascotas
+          </h2>
+          <div class="pets-grid" id="pets-grid"></div>
+        </div>
 
-    <!-- CITAS PROGRAMADAS -->
-    <section class="card">
-      <h2 class="card-title"><i class="fa-solid fa-calendar-days"></i> Citas Programadas</h2>
-      <div class="filter-tabs">
-        <button class="tab active" data-filter="todas">Todas</button>
-        <button class="tab" data-filter="dia">Día</button>
-        <button class="tab" data-filter="semana">Semana</button>
-        <button class="tab" data-filter="mes">Mes</button>
-      </div>
-      <div class="table-scroll">
-        <table class="appts-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Mascota</th>
-              <th>Servicio</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="citasBody"></tbody>
-        </table>
-      </div>
-    </section>
+      </aside>
 
-    <!-- HISTORIAL DE PAGOS -->
-    <section class="card">
-      <h2 class="card-title"><i class="fa-solid fa-receipt"></i> Historial de Pagos</h2>
-      <div class="table-scroll">
-        <table class="payments-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Servicio</th>
-              <th>Monto</th>
-            </tr>
-          </thead>
-          <tbody id="pagosBody">
-            <tr><td colspan="3" class="empty-msg"><i class="fa-regular fa-folder-open"></i> Sin registros de pagos</td></tr>
-          </tbody>
-        </table>
+      <!-- COLUMNA DERECHA -->
+      <div class="perfil-contenido">
+
+        <!-- TABS -->
+        <div class="perfil-tabs">
+          <button class="perfil-tab active" data-tab="citas">
+            <i class="fa-solid fa-calendar-days"></i> Citas
+          </button>
+          <button class="perfil-tab" data-tab="pagos">
+            <i class="fa-solid fa-receipt"></i> Pagos
+          </button>
+        </div>
+
+        <!-- CITAS -->
+        <div class="tab-panel active" id="panel-citas">
+          <div class="card">
+            <div class="card-header-row">
+              <h2 class="card-title">Citas Programadas</h2>
+              <div class="filter-tabs">
+                <button class="tab active" data-filter="todas">Todas</button>
+                <button class="tab" data-filter="dia">Día</button>
+                <button class="tab" data-filter="semana">Semana</button>
+                <button class="tab" data-filter="mes">Mes</button>
+              </div>
+            </div>
+            <div id="citas-cards-container"></div>
+            <div class="table-scroll" id="citas-table-wrap">
+              <table class="appts-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Mascota</th>
+                    <th>Servicio</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="citasBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGOS -->
+        <div class="tab-panel" id="panel-pagos">
+          <div class="card">
+            <h2 class="card-title">Historial de Pagos</h2>
+            <div class="table-scroll">
+              <table class="payments-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Servicio</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody id="pagosBody">
+                  <tr>
+                    <td colspan="3" class="empty-msg">
+                      <i class="fa-regular fa-folder-open"></i> Sin registros de pagos
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </section>
+    </div>
 
   </main>
 
   <!-- MODAL CONFIRMAR -->
-  <div class="modal-overlay" id="modal-confirmar">
-    <div class="modal">
-      <h3>Confirmar acción</h3>
-      <p id="modal-confirmar-msg"></p>
-      <div class="modal-footer">
-        <button class="btn-orange" id="modal-confirmar-cancel">Cancelar</button>
-        <button class="btn-red" id="modal-confirmar-ok">Confirmar</button>
-      </div>
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal">
+    <h3>Confirmar acción</h3>
+    <p id="modal-confirmar-msg"></p>
+    <div class="field-group" id="modal-motivo-grupo" style="display:none">
+      <label for="modal-motivo-input">Motivo de cancelación</label>
+      <textarea id="modal-motivo-input" rows="3" placeholder="Ej: Cambio de planes, emergencia..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-orange" id="modal-confirmar-cancel">Cancelar</button>
+      <button class="btn-red" id="modal-confirmar-ok">Confirmar</button>
     </div>
   </div>
+</div>
+
+<!-- MODAL REAGENDAR -->
+<div class="modal-overlay" id="modal-reagendar">
+  <div class="modal">
+    <h3>Reagendar cita</h3>
+    <p>Selecciona la nueva fecha y hora. Solo puedes reagendar con más de 24 horas de anticipación.</p>
+    <div class="field-group">
+      <label for="reagendar-fecha">Nueva fecha</label>
+      <input type="date" id="reagendar-fecha">
+    </div>
+    <div class="field-group" style="margin-top: 12px">
+      <label for="reagendar-hora">Nueva hora</label>
+      <select id="reagendar-hora">
+        <option value="">Selecciona una hora</option>
+      </select>
+    </div>
+    <div class="modal-footer" style="margin-top: 20px">
+      <button class="btn-orange" id="reagendar-cancelar">Cancelar</button>
+      <button class="btn-green" id="reagendar-confirmar">Confirmar</button>
+    </div>
+  </div>
+</div>
 
   <!-- MODAL AÑADIR MASCOTA -->
   <div class="modal-overlay" id="modal-agregar-mascota">
     <div class="modal">
       <h3><i class="fa-solid fa-paw"></i> Añadir mascota</h3>
       <div class="field-group">
-        <label for="mascota-nombre">Nombre:</label>
+        <label for="mascota-nombre">Nombre</label>
         <input type="text" id="mascota-nombre" placeholder="Ej: Max">
       </div>
       <div class="field-group">
-        <label for="mascota-edad">Edad (años):</label>
+        <label for="mascota-edad">Edad (años)</label>
         <input type="number" id="mascota-edad" min="0" max="50">
       </div>
       <div class="field-group">
-        <label for="mascota-genero">Género:</label>
+        <label for="mascota-genero">Género</label>
         <select id="mascota-genero">
           <option value="">-- Selecciona --</option>
           <option value="macho">Macho</option>
@@ -143,7 +211,7 @@
         </select>
       </div>
       <div class="field-group">
-        <label for="mascota-especie">Especie:</label>
+        <label for="mascota-especie">Especie</label>
         <select id="mascota-especie">
           <option value="">-- Selecciona --</option>
           <option value="perro">Perro</option>
@@ -153,7 +221,9 @@
       </div>
       <div class="modal-footer">
         <button class="btn-orange" id="modal-agregar-mascota-cancel">Cancelar</button>
-        <button class="btn-green" id="modal-agregar-mascota-ok"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+        <button class="btn-green" id="modal-agregar-mascota-ok">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar
+        </button>
       </div>
     </div>
   </div>
@@ -161,7 +231,10 @@
   <!-- MODAL HISTORIAL DE MASCOTA -->
   <div class="modal-overlay" id="modal-historial-mascota">
     <div class="modal modal-wide">
-      <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial de <span id="historial-mascota-nombre"></span></h3>
+      <h3>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Historial de <span id="historial-mascota-nombre"></span>
+      </h3>
       <div class="table-scroll historial-scroll">
         <table class="appts-table">
           <thead>
@@ -181,7 +254,7 @@
     </div>
   </div>
 
-  <!-- MODAL ÉXITO -->
+  <!-- MODAL EXITO -->
   <div class="modal-overlay" id="modal-exito">
     <div class="modal">
       <h3>Operación exitosa</h3>
@@ -207,20 +280,25 @@
   <script src="modal.js"></script>
   <script src="perfil.js"></script>
   <script>
-    // Menú hamburguesa (móvil/tablet) — independiente de navbar.js porque
-    // esta página ya maneja su propio link de "Cerrar sesión".
+    // Hamburguesa
     document.addEventListener('DOMContentLoaded', function () {
-        const header = document.querySelector('header');
-        const hamburger = document.querySelector('.nav-hamburger');
-        if (!header || !hamburger) return;
-        hamburger.addEventListener('click', function () {
-            header.classList.toggle('nav-open');
+      const header = document.querySelector('header');
+      const hamburger = document.querySelector('.nav-hamburger');
+      if (!header || !hamburger) return;
+      hamburger.addEventListener('click', () => header.classList.toggle('nav-open'));
+      header.querySelectorAll('nav a').forEach(a => {
+        a.addEventListener('click', () => header.classList.remove('nav-open'));
+      });
+
+      // Tabs de citas/pagos
+      document.querySelectorAll('.perfil-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.perfil-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
         });
-        header.querySelectorAll('nav a').forEach(function (link) {
-            link.addEventListener('click', function () {
-                header.classList.remove('nav-open');
-            });
-        });
+      });
     });
   </script>
 </body>

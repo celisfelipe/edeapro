@@ -56,29 +56,45 @@ class EmpleadoAdminController extends Controller
      */
     public function editar(Request $request)
     {
-        $id = intval($request->input('id_estilista'));
+        $id       = intval($request->input('id_estilista'));
+        $nombre   = trim($request->input('nombre', ''));
+        $apellido = trim($request->input('apellido', ''));
+        $telefono = trim($request->input('telefono', ''));
+        $correo   = trim($request->input('correo', ''));
+        $rol      = trim($request->input('rol', ''));
+
+        if (!$id || !$nombre || !$apellido || !$telefono || !$correo || !$rol) {
+            return response()->json(['ok' => false, 'error' => 'Todos los campos son obligatorios.'], 422);
+        }
 
         DB::update(
             "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=? WHERE id_estilista=?",
-            [
-                $request->input('nombre'),
-                $request->input('apellido'),
-                $request->input('telefono'),
-                $request->input('correo'),
-                $request->input('rol'),
-                $id
-            ]
+            [$nombre, $apellido, $telefono, $correo, $rol, $id]
         );
 
         return response()->json(['ok' => true]);
     }
 
     /**
-     * Elimina un estilista por su id_estilista.
+     * Elimina un estilista. Rechaza la operación si tiene citas activas
+     * (Pendiente o Reagendada) para evitar dejar datos huérfanos.
      */
     public function eliminar(Request $request)
     {
         $id = intval($request->input('id_estilista'));
+
+        $citasActivas = DB::selectOne(
+            "SELECT COUNT(*) AS total FROM cita WHERE id_estilista = ? AND estado IN ('Pendiente', 'Reagendada')",
+            [$id]
+        );
+
+        if ($citasActivas && $citasActivas->total > 0) {
+            return response()->json([
+                'ok'    => false,
+                'error' => 'No se puede eliminar el estilista porque tiene citas pendientes o reagendadas.'
+            ], 422);
+        }
+
         DB::delete("DELETE FROM estilista WHERE id_estilista = ?", [$id]);
         return response()->json(['ok' => true]);
     }

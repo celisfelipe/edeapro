@@ -65,10 +65,14 @@ class CitaController extends Controller
      * Convierte una fecha dd/mm/yyyy (formato del frontend) a yyyy-mm-dd (formato BD).
      */
     private function fechaABd($fecha)
-    {
+{
+    // Acepta DD/MM/YYYY o YYYY-MM-DD
+    if (str_contains($fecha, '/')) {
         $partes = explode('/', $fecha);
         return $partes[2] . '-' . str_pad($partes[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($partes[0], 2, '0', STR_PAD_LEFT);
     }
+    return $fecha; // Ya viene en formato YYYY-MM-DD
+}
 
     /**
      * Duración (en minutos) más larga registrada para cada id_servicio.

@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Servicios - Corte Especializado - EDEA PRO Peluquería Canina y Felina</title>
+    <title>Servicios - Corte Especializado - EDEA PRO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Conoce todos los servicios de grooming canino y felino que ofrece EDEA PRO">
+    <meta name="description" content="Servicios de corte especializado en EDEA PRO">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../estilos/principal.css" />
     <link rel="stylesheet" href="../estilos/servicios.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
 </head>
-
 <body>
-    <!-- ENCABEZADO -->
+
     <header>
-        <div class="logo">
-            <img src="../imagenes/logo/logo2.png">
-        </div>
-    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
-    
+        <div class="logo"><img src="../imagenes/logo/logo2.png" alt="EDEA PRO"></div>
+        <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
         <nav>
             <ul>
                 <li><a href="inicio.html">Inicio</a></li>
@@ -34,70 +28,94 @@
             </ul>
         </nav>
     </header>
+
+    <section class="servicios-hero">
+        <div class="servicios-hero-inner">
+            <span class="servicios-eyebrow">Grooming Profesional</span>
+            <h1>Nuestros Servicios</h1>
+            <p>Cortes de alto nivel adaptados al estilo y la raza de tu mascota.</p>
+        </div>
+    </section>
+
     <div class="filtros-servicios">
-
         <a href="perrocorto.html" class="btn-filtro">Perro pelo corto</a>
-
-        <a href="perrolargo.html" class="btn-filtro">Perro largo doble capa</a>
-
+        <a href="perrolargo.html" class="btn-filtro">Perro pelo largo</a>
         <a href="gatos.html" class="btn-filtro">Gato</a>
-
         <a href="corteespecializado.html" class="btn-filtro active">Corte Especializado</a>
-
     </div>
 
     <section class="services">
-        <h2>Nuestros Servicios</h2>
         <div class="service-container">
-            <div class="service">
-                <img src="../imagenes/imagenes servicios/especializado/especial1.jpeg" alt="Baño y Corte">
-                <h3>Scottish Terrier</h3>
-                <p>Incluye baño con productos especializados, secado y corte según la raza o estilo que prefieras.</p>
-                <section class="price">
-                    <p>150.000$</p>
-                </section>
+
+            <div class="service fade-up">
+                <div class="service-imagen"><img src="../imagenes/imagenes servicios/especializado/especial1.jpeg" alt="Scottish Terrier"></div>
+                <div class="service-body">
+                    <h3>Scottish Terrier</h3>
+                    <p>Incluye baño con productos especializados, secado y corte según la raza o estilo que prefieras.</p>
+                    <div class="service-footer">
+                        <div class="service-duracion"><i class="fa-solid fa-clock"></i> ~90 min</div>
+                        <div class="price"><p>$150.000</p></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="service">
-                <img src="../imagenes/imagenes servicios/especializado/especial2.jpeg" alt="Corte de Uñas">
-                <h3>West Hiland White Terrier</h3>
-                <p>Mantenemos las uñas de tu mascota a la longitud adecuada para evitar molestias o lesiones.</p>
-                <section class="price">
-                    <p>150.000$</p>
-                </section>
+            <div class="service fade-up delay-1">
+                <div class="service-imagen"><img src="../imagenes/imagenes servicios/especializado/especial2.jpeg" alt="West Highland White Terrier"></div>
+                <div class="service-body">
+                    <h3>West Highland White Terrier</h3>
+                    <p>Corte de raza con baño completo, secado y acabado profesional adaptado al estándar de la raza.</p>
+                    <div class="service-footer">
+                        <div class="service-duracion"><i class="fa-solid fa-clock"></i> ~90 min</div>
+                        <div class="price"><p>$150.000</p></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="service">
-                <img src="../imagenes/imagenes servicios/especializado/especial3.jpeg" alt="Limpieza Dental">
-                <h3>Pomerania</h3>
-                <p>Cuidamos la salud bucal de tu perro eliminando el sarro y manteniendo su aliento fresco.</p>
-                <section class="price">
-                    <p>150.000$</p>
-                </section>
+            <div class="service fade-up delay-2">
+                <div class="service-imagen"><img src="../imagenes/imagenes servicios/especializado/especial3.jpeg" alt="Pomerania"></div>
+                <div class="service-body">
+                    <h3>Pomerania</h3>
+                    <p>Corte especializado con baño, desenredado y secado para mantener el volumen característico de la raza.</p>
+                    <div class="service-footer">
+                        <div class="service-duracion"><i class="fa-solid fa-clock"></i> ~75 min</div>
+                        <div class="price"><p>$150.000</p></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="service">
-                <img src="../imagenes/imagenes servicios/especializado/especial4.jpeg" alt="Spa Canino">
-                <h3>Shih Tzu</h3>
-                <p>Un servicio de relajación total con masajes, aromaterapia y productos naturales para tu mascota.</p>
-                <section class="price">
-                    <p>150.000$</p>
-                </section>
+            <div class="service fade-up">
+                <div class="service-imagen"><img src="../imagenes/imagenes servicios/especializado/especial4.jpeg" alt="Shih Tzu"></div>
+                <div class="service-body">
+                    <h3>Shih Tzu</h3>
+                    <p>Corte de raza o estilo libre con baño completo, desenredado y secado profesional.</p>
+                    <div class="service-footer">
+                        <div class="service-duracion"><i class="fa-solid fa-clock"></i> ~75 min</div>
+                        <div class="price"><p>$150.000</p></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="service">
-                <img src="../imagenes/imagenes servicios/especializado/especial5.jpeg" alt="Spa Canino">
-                <h3>Jack Russell</h3>
-                <p>Un servicio de relajación total con masajes, aromaterapia y productos naturales para tu mascota.</p>
-                <section class="price">
-                    <p>150.000$</p>
-                </section>
+            <div class="service fade-up delay-1">
+                <div class="service-imagen"><img src="../imagenes/imagenes servicios/especializado/especial5.jpeg" alt="Jack Russell"></div>
+                <div class="service-body">
+                    <h3>Jack Russell</h3>
+                    <p>Baño completo con productos especializados, corte higiénico y acabado según el estilo de la raza.</p>
+                    <div class="service-footer">
+                        <div class="service-duracion"><i class="fa-solid fa-clock"></i> ~60 min</div>
+                        <div class="price"><p>$150.000</p></div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </section>
 
     <section class="hero">
-        <a href="login.html">Agendar Cita</a>
+        <div class="hero-cta-inner">
+            <h2>¿Listo para consentir a tu mascota?</h2>
+            <p>Agenda tu cita y déjanos encargarnos del resto.</p>
+            <a href="agenda.html" onclick="verificarSesionAgenda(event)">Agendar tu cita</a>
+        </div>
     </section>
 
     <footer id="contacto">
@@ -114,23 +132,19 @@
             <div class="footer-col footer-info">
                 <h3>Contacto</h3>
                 <p>📞 Llámanos: (+57) 350 507 3843</p>
-                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
-                </p>
+                <p>📍 Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia</p>
                 <div class="social-links">
                     <a href="https://www.youtube.com/@edeaplay" target="_blank"><i class="fab fa-youtube"></i></a>
                     <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script src="../scripts/servicios.js"></script>
-    
     <script src="../scripts/navbar.js"></script>
 </body>
-
 </html>

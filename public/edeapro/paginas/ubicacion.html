@@ -1,30 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Ubicación - EDEA PRO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Encuéntranos en Mall Terracina Plaza, Envigado, Antioquia. Reseñas y horarios de EDEA PRO">
+    <meta name="description" content="Encuéntranos en Mall Terracina Plaza, Envigado, Antioquia. Reseñas y horarios de EDEA PRO">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../estilos/ubicacion.css">
     <link rel="stylesheet" href="../estilos/principal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
 </head>
-
 <body>
+ 
     <!-- ENCABEZADO -->
     <header>
         <div class="logo">
-            <img src="../imagenes/logo/logo2.png">
+            <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
         </div>
-    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
-
-
+        <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         <nav>
             <ul>
                 <li><a href="inicio.html">Inicio</a></li>
@@ -33,79 +30,143 @@
                 <li><a href="ubicacion.html">Ubicación</a></li>
                 <li><a href="agenda.html">Agendar cita</a></li>
                 <li><a href="login.html" class="login" style="visibility:hidden">Inicio de Sesión</a></li>
-                
             </ul>
         </nav>
     </header>
-
+ 
     <main class="ubicacion-page">
-        <!-- SECCIÓN MAPA -->
-        <section id="mapa-ubicacion">
-            <h2>📍 Encuéntranos Fácilmente</h2>
-
-            <div class="map-responsive">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.8542754649223!2d-75.56887342345888!3d6.167691818719845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682fe71f3f23b%3A0x4d726ed3f68d8088!2sMall%20Terracina%20Plaza%20P.H.%2C%20Cra.%2027%20%2335%20sur%20162%2C%20Quebrada%20Clara%2C%20Envigado%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1699564800000!5m2!1ses!2sco"
-                    style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+ 
+        <!-- HERO DE PÁGINA -->
+        <div class="ubicacion-hero fade-up">
+            <h1>Encuéntranos</h1>
+            <p>Estamos ubicados en Envigado, Antioquia, listos para recibir a tus mejores amigos con el amor y profesionalismo que merecen.</p>
+        </div>
+ 
+        <!-- LAYOUT PRINCIPAL: info izquierda + mapa derecha -->
+        <section class="ubicacion-grid">
+ 
+            <!-- COLUMNA IZQUIERDA: cards de contacto + botones -->
+            <div class="ubicacion-info">
+ 
+                <!-- Cards de contacto -->
+                <div class="contact-cards">
+ 
+                    <div class="contact-card fade-up">
+                        <div class="contact-card-icon icon-dorado">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div class="contact-card-body">
+                            <span class="contact-card-label">Dirección</span>
+                            <p>Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia</p>
+                        </div>
+                    </div>
+ 
+                    <div class="contact-card fade-up delay-1">
+                        <div class="contact-card-icon icon-teal">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="contact-card-body">
+                            <span class="contact-card-label">Teléfono</span>
+                            <p><a href="tel:+573505073843">(+57) 350 507 3843</a></p>
+                        </div>
+                    </div>
+ 
+                    <div class="contact-card fade-up delay-2">
+                        <div class="contact-card-icon icon-verde">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="contact-card-body">
+                            <span class="contact-card-label">Horario de Atención</span>
+                            <ul class="horario-lista">
+                                <li><span>Lunes - Sábado:</span><span>9:00 AM - 5:00 PM</span></li>
+                                <li><span>Domingos:</span><span>9:00 AM - 4:00 PM</span></li>
+                            </ul>
+                        </div>
+                    </div>
+ 
+                </div>
+ 
+                <!-- Botones de acción -->
+                <div class="ubicacion-acciones fade-up delay-3">
+                    <a href="https://maps.google.com/?q=Mall+Terracina+Plaza+Envigado" target="_blank" class="btn-accion btn-accion-primary">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        Ver en Google Maps
+                    </a>
+                    <a href="tel:+573505073843" class="btn-accion btn-accion-secondary">
+                        <i class="fa-solid fa-phone"></i>
+                        Llamar ahora
+                    </a>
+                </div>
+ 
             </div>
-
-            <div class="contact-info">
-                <p><strong>🐾 Dirección:</strong> Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara,
-                    Envigado, Antioquia</p>
-                <p><strong>📞 Llámanos:</strong> <a href="tel:+573505073843">(+57) 350 507 3843</a></p>
-                <p><strong>🕒 Horario:</strong> Lunes a Sábado 9:00 AM - 5:00 PM | Domingos 9:00 AM - 4:00 PM</p>
+ 
+            <!-- COLUMNA DERECHA: mapa -->
+            <div class="ubicacion-mapa-wrap fade-up delay-1">
+                <div class="map-responsive">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.8542754649223!2d-75.56887342345888!3d6.167691818719845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682fe71f3f23b%3A0x4d726ed3f68d8088!2sMall%20Terracina%20Plaza%20P.H.%2C%20Cra.%2027%20%2335%20sur%20162%2C%20Quebrada%20Clara%2C%20Envigado%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1699564800000!5m2!1ses!2sco"
+                        style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
             </div>
+ 
         </section>
-
+ 
         <!-- SECCIÓN RESEÑAS -->
         <section id="resenas">
             <h2>⭐ Lo Que Dicen Nuestros Clientes</h2>
-
-        <!-- Carrusel de reseñas -->
-        <div class="resenas-carrusel">
-                <button class="resena-prev" onclick="moverResena(-1)">❮</button>
+ 
+            <div class="resenas-carrusel">
+                <button class="resena-prev" onclick="moverResena(-1)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
                 <div class="resenas-track" id="resenas-track">
                     <!-- Las reseñas se cargan dinámicamente desde Laravel -->
                 </div>
-                <button class="resena-next" onclick="moverResena(1)">❯</button>
+                <button class="resena-next" onclick="moverResena(1)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
             <div class="resenas-dots" id="resenas-dots"></div>
-
-    <!-- Formulario — solo visible si hay sesión de cliente -->
-    <div class="resena-form-container" id="form-resena" style="display:none">
-        <h3>Deja tu Opinión</h3>
-        <div class="form-group">
-            <label>Puntuación:</label>
-            <div class="estrellas-input" id="estrellas-input">
-                <span class="estrella" data-valor="1">★</span>
-                <span class="estrella" data-valor="2">★</span>
-                <span class="estrella" data-valor="3">★</span>
-                <span class="estrella" data-valor="4">★</span>
-                <span class="estrella" data-valor="5">★</span>
+ 
+            <!-- Formulario — solo visible si hay sesión de cliente -->
+            <div class="resena-form-container" id="form-resena" style="display:none">
+                <h3>Deja tu Opinión</h3>
+                <div class="form-group">
+                    <label>Puntuación:</label>
+                    <div class="estrellas-input" id="estrellas-input">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                    <input type="hidden" id="puntuacion-valor" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Tu Reseña:</label>
+                    <textarea id="comentario-texto" rows="4"
+                        placeholder="Cuéntanos tu experiencia con EDEA PRO..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="enviarResena()">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Reseña
+                </button>
+                <div id="resena-mensaje" class="message"></div>
             </div>
-            <input type="hidden" id="puntuacion-valor" value="0">
-        </div>
-        <div class="form-group">
-            <label>Tu Reseña:</label>
-            <textarea id="comentario-texto" rows="4"
-                placeholder="Cuéntanos tu experiencia con EDEA PRO..."></textarea>
-        </div>
-        <button class="submit-btn" onclick="enviarResena()">✉️ Enviar Reseña</button>
-        <div id="resena-mensaje" class="message"></div>
-    </div>
-
-    <!-- Mensaje si no hay sesión -->
-    <div id="resena-login-msg" style="text-align:center; margin-top:30px; display:none">
-        <p style="color:var(--color-muted); font-size:14px;">
-            <a href="login.html" style="color:var(--color-heading); font-weight:700;">Inicia sesión</a>
-            para dejar tu reseña
-        </p>
-    </div>
-</section>
+ 
+            <!-- Mensaje si no hay sesión -->
+            <div id="resena-login-msg" style="text-align:center; margin-top:30px; display:none">
+                <p style="color:var(--color-muted); font-size:14px;">
+                    <a href="login.html" style="color:var(--color-heading); font-weight:700;">Inicia sesión</a>
+                    para dejar tu reseña
+                </p>
+            </div>
+        </section>
+ 
     </main>
-
+ 
+    <!-- FOOTER -->
     <footer id="contacto">
         <div class="footer-container">
             <div class="footer-col footer-links">
@@ -120,24 +181,36 @@
             <div class="footer-col footer-info">
                 <h3>Contacto</h3>
                 <p>📞 Llámanos: (+57) 350 507 3843</p>
-                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
-                </p>
+                <p>📍 Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia</p>
                 <div class="social-links">
                     <a href="https://www.youtube.com/@edeaplay" target="_blank"><i class="fab fa-youtube"></i></a>
                     <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
         </div>
     </footer>
-
+ 
     <script src="../scripts/fetchToken.js"></script>
     <script src="../scripts/ubicacion.js"></script>
-
     <script src="../scripts/navbar.js"></script>
+ 
+    <script>
+    /**
+     * Fade-up al scroll para elementos de esta página
+     */
+    const fadeObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                fadeObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+    </script>
+ 
 </body>
-
 </html>

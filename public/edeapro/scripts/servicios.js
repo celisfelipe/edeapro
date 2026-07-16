@@ -19,3 +19,17 @@ botones.forEach(boton => {
     });
 
 });
+
+/* ── Fade-up al scroll para las cards de servicios ── */
+document.addEventListener('DOMContentLoaded', () => {
+    const fadeObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                fadeObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+});

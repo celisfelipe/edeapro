@@ -4,12 +4,8 @@
    Estilos exclusivos para ubicacion.html.
    Se carga junto a principal.css y reutiliza sus variables
    (ver docs/MODERNIZACION-VISUAL.md).
-
-   Tarjetas de contacto/reseñas con bordes metálicos suaves
-   y estrellas de calificación en CTA dorado.
 ================================================ */
 
-/* Reset básico de body para esta página */
 body {
     margin: 0;
     font-family: var(--font-body);
@@ -17,42 +13,197 @@ body {
     color: var(--color-text);
 }
 
-/* Nota: el navbar (incluyendo el menú móvil) ya lo define principal.css
-   por completo — antes había reglas duplicadas aquí ("header nav ul",
-   "header nav a") que, por ser más específicas, le ganaban a la regla
-   responsive de principal.css y dejaban el menú hamburguesa siempre
-   abierto en móvil. Se quitaron a propósito, no por descuido. */
-
-/* ── Contenedor principal ────────────────────────────────────*/
+/* ── Contenedor principal ── */
 .ubicacion-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 60px;
+    padding: 60px var(--space-16);
 }
 
-/* ── Sección del mapa ────────────────────────────────────────*/
-#mapa-ubicacion {
-    margin-bottom: 60px;
+/* ── Hero de página ── */
+.ubicacion-hero {
+    margin-bottom: var(--space-12);
 }
 
-#mapa-ubicacion h2 {
-    text-align: center;
-    color: var(--color-heading);
-    font-size: 2rem;
-    margin-bottom: 30px;
+.ubicacion-hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
     font-weight: 800;
+    color: var(--color-heading);
+    margin-bottom: var(--space-4);
+    line-height: 1.1;
 }
 
-/* Mapa responsivo con proporción 16:9 */
+.ubicacion-hero p {
+    font-size: var(--text-md);
+    color: var(--color-muted);
+    max-width: 560px;
+    line-height: 1.7;
+}
+
+/* ── Layout principal — dos columnas ── */
+.ubicacion-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: var(--space-8);
+    align-items: start;
+    margin-bottom: var(--space-16);
+}
+
+/* ── Columna izquierda ── */
+.ubicacion-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* ── Cards de contacto ── */
+.contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.contact-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-sm);
+    border: 0.5px solid rgba(174, 157, 129, 0.2);
+    transition: var(--transition-smooth);
+}
+
+.contact-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.contact-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.icon-dorado { background: rgba(240, 171, 6, 0.12); color: var(--color-cta-dark); }
+.icon-teal   { background: rgba(0, 167, 181, 0.12); color: var(--color-info); }
+.icon-verde  { background: rgba(126, 181, 106, 0.12); color: #5a8a48; }
+
+.contact-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.contact-card-label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.contact-card-body p {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.contact-card-body a {
+    color: var(--color-metal-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.contact-card-body a:hover {
+    color: var(--color-heading);
+}
+
+/* Horario con layout flex */
+.horario-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.horario-lista li {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-base);
+    color: var(--color-text);
+    gap: var(--space-4);
+}
+
+/* ── Botones de acción ── */
+.ubicacion-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.btn-accion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-full);
+    font-size: var(--text-base);
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-accion-primary {
+    background: var(--color-dark-surface);
+    color: var(--color-light);
+}
+
+.btn-accion-primary:hover {
+    background: var(--color-heading);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-accion-secondary {
+    background: var(--color-cta);
+    color: var(--color-heading);
+}
+
+.btn-accion-secondary:hover {
+    background: var(--color-cta-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(240, 171, 6, 0.35);
+}
+
+/* ── Mapa ── */
+.ubicacion-mapa-wrap {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
 .map-responsive {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%;
+    padding-bottom: 75%;
     height: 0;
     overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
 }
 
 .map-responsive iframe {
@@ -64,147 +215,148 @@ body {
     border: none;
 }
 
-/* Información de contacto debajo del mapa — borde metálico suave */
-.contact-info {
-    background: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    border-left: 4px solid var(--color-metal);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-}
-
-.contact-info p {
-    font-size: 15px;
-    color: var(--color-text);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.contact-info strong {
-    color: var(--color-metal-text);
-    font-weight: 700;
-}
-
-.contact-info a {
-    color: var(--color-metal-text);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.contact-info a:hover {
-    color: var(--color-heading);
-}
-
-/* ── Sección de reseñas ──────────────────────────────────────*/
+/* ── Sección de reseñas ── */
 #resenas {
-    padding: 60px 0;
-    border-top: 2px solid var(--color-metal);
+    padding: var(--space-16) 0 var(--space-8);
+    border-top: 2px solid rgba(174, 157, 129, 0.3);
 }
 
 #resenas h2 {
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 40px;
+    font-size: clamp(1.6rem, 2.5vw, 2rem);
+    margin-bottom: var(--space-10);
     color: var(--color-heading);
+    font-weight: 800;
 }
 
-/* ── Carrusel de reseñas ─────────────────────────────────────*/
+/* Carrusel de reseñas */
 .resenas-carrusel {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
 }
 
 .resenas-track {
     display: flex;
     overflow: hidden;
-    gap: 20px;
+    gap: var(--space-5);
     flex: 1;
 }
 
-/* Card individual de reseña — borde metálico suave */
+/* Card de reseña mejorada — avatar con iniciales */
 .resena-card {
     min-width: calc(33.33% - 14px);
     background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    border-left: 4px solid var(--color-metal);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    /* Borde superior que cambia de color al hover — más confiable que ::before
+       porque no depende de overflow del contenedor padre */
+    border-top: 3px solid rgba(174, 157, 129, 0.2);
+    border-right: 0.5px solid rgba(174, 157, 129, 0.15);
+    border-bottom: 0.5px solid rgba(174, 157, 129, 0.15);
+    border-left: 0.5px solid rgba(174, 157, 129, 0.15);
+    transition: var(--transition-smooth);
     flex-shrink: 0;
 }
 
 .resena-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(240, 171, 6, 0.18);
+    box-shadow: var(--shadow-md);
+    border-top-color: var(--color-cta);
 }
 
-.resena-card h4 {
+/* Header de la card con avatar */
+.resena-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.resena-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-dark-surface);
+    color: var(--color-cta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    flex-shrink: 0;
+}
+
+.resena-meta h4 {
     font-weight: 700;
     color: var(--color-heading);
-    margin-bottom: 4px;
-    font-size: 15px;
+    font-size: var(--text-base);
+    margin: 0 0 2px;
 }
 
 .resena-card .fecha {
-    font-size: 11px;
-    color: #aaa;
-    margin-bottom: 8px;
+    font-size: var(--text-xs);
+    color: var(--color-muted);
 }
 
-/* Estrellas de calificación en las cards — CTA dorado */
 .resena-card .rating {
     color: var(--color-cta);
     font-size: 16px;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-3);
+    letter-spacing: 2px;
 }
 
 .resena-card p {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--color-text);
-    line-height: 1.6;
+    line-height: 1.7;
     font-style: italic;
+    margin: 0;
 }
 
 /* Botones prev/next del carrusel */
 .resena-prev,
 .resena-next {
-    background: var(--color-metal);
-    color: white;
-    border: none;
+    background: white;
+    color: var(--color-heading);
+    border: 1px solid rgba(174, 157, 129, 0.35);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
 }
 
 .resena-prev:hover,
 .resena-next:hover {
-    background: var(--color-heading);
+    background: var(--color-cta);
+    border-color: var(--color-cta);
+    color: var(--color-heading);
 }
 
-/* Dots de navegación del carrusel */
+/* Dots del carrusel */
 .resenas-dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 40px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-10);
 }
 
 .resenas-dots span {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #d0c4b0;
+    background: rgba(174, 157, 129, 0.4);
     cursor: pointer;
     transition: background 0.3s ease;
 }
@@ -213,45 +365,42 @@ body {
     background: var(--color-cta);
 }
 
-/* ── Formulario de reseña ────────────────────────────────────*/
+/* ── Formulario de reseña ── */
 .resena-form-container {
-    background: var(--color-surface);
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 600px;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-10);
+    max-width: 560px;
     margin: 0 auto;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    border: 1px solid var(--color-metal);
+    box-shadow: var(--shadow-md);
+    border: 0.5px solid rgba(174, 157, 129, 0.2);
 }
 
 .resena-form-container h3 {
     text-align: center;
-    font-size: 1.4rem;
+    font-size: var(--text-xl);
     color: var(--color-heading);
-    margin-bottom: 28px;
+    margin-bottom: var(--space-8);
     font-weight: 700;
 }
 
-/* Grupo de label + campo */
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 18px;
+    margin-bottom: var(--space-5);
 }
 
-/* Labels del formulario */
 #form-resena .form-group label {
-    font-size: 13px;
+    font-size: var(--text-sm);
     font-weight: 600;
     color: var(--color-text);
-    margin-bottom: 6px;
+    margin-bottom: var(--space-2);
 }
 
-/* Estrellas interactivas — más grandes y con animación */
 .estrellas-input {
     display: flex;
-    gap: 8px;
-    margin: 6px 0 10px;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 var(--space-3);
 }
 
 .estrella {
@@ -263,59 +412,19 @@ body {
     line-height: 1;
 }
 
-/* Estrella activa/hover — CTA dorado */
 .estrella:hover,
 .estrella.activa {
     color: var(--color-cta);
     transform: scale(1.15);
 }
-/* Contenedor redes sociales */
-.social-links {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-top: 15px;
-}
 
-/* Botones */
-.social-links a {
-    width: 55px;
-    height: 55px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: var(--color-light);
-    background: transparent;
-
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-
-    text-decoration: none;
-
-    transition: all 0.3s ease;
-    color: #fff;
-}
-
-/* Iconos */
-.social-links i {
-    font-size: 28px;
-}
-
-/* Hover */
-.social-links a:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(255,255,255,0.15);
-}
-/* Textarea del comentario */
 #comentario-texto {
     width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--color-metal);
-    border-radius: 10px;
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid rgba(174, 157, 129, 0.4);
+    border-radius: var(--radius-sm);
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: var(--text-base);
     background: white;
     color: var(--color-text);
     resize: vertical;
@@ -336,19 +445,22 @@ body {
     font-style: italic;
 }
 
-/* Botón enviar — CTA dorado */
 .submit-btn {
     width: 100%;
-    padding: 14px;
+    padding: var(--space-4);
     background: var(--color-cta);
     color: var(--color-heading);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-full);
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: var(--text-base);
     font-weight: 700;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -357,14 +469,13 @@ body {
     transform: translateY(-2px);
 }
 
-/* Mensaje de éxito o error al enviar — colores semánticos, sin cambios */
 #resena-mensaje {
-    margin-top: 12px;
+    margin-top: var(--space-3);
     text-align: center;
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: 600;
-    padding: 10px 14px;
-    border-radius: 6px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
     display: none;
     animation: slideIn 0.3s ease;
 }
@@ -388,17 +499,57 @@ body {
     to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* ── Responsive ──────────────────────────────────────────────*/
+/* Redes sociales en el footer */
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 15px;
+}
+
+.social-links a {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-links i { font-size: 20px; }
+
+.social-links a:hover {
+    border-color: var(--color-cta);
+    color: var(--color-cta);
+    transform: translateY(-3px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .ubicacion-grid {
+        grid-template-columns: 1fr;
+    }
+    .ubicacion-mapa-wrap {
+        order: -1;
+    }
+    .map-responsive {
+        padding-bottom: 56.25%;
+    }
+}
+
 @media (max-width: 768px) {
-    .ubicacion-page       { padding: 20px; }
-    .map-responsive       { padding-bottom: 66.67%; }
-    .contact-info         { grid-template-columns: 1fr; }
-    .resena-card          { min-width: 100%; }
-    .resena-form-container { padding: 20px; }
+    .ubicacion-page { padding: 30px var(--space-5); }
+    .resena-card { min-width: 100%; }
+    .resena-form-container { padding: var(--space-6); }
+    .ubicacion-acciones { flex-direction: column; }
 }
 
 @media (max-width: 480px) {
-    #mapa-ubicacion h2,
     #resenas h2 { font-size: 1.5rem; }
     .submit-btn { font-size: 14px; }
 }

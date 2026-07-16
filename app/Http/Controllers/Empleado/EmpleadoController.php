@@ -18,13 +18,19 @@ use Illuminate\Support\Facades\DB;
 class EmpleadoController extends Controller
 {
     /**
-     * Devuelve todas las citas asignadas a un estilista específico.
-     * Recibe el id_estilista desde el localStorage del navegador (enviado por inicio.js).
-     * Ordena por fecha descendente y hora ascendente.
+     * Devuelve las citas asignadas a un estilista.
+     * - Si el token tiene rol 'peluquero', fuerza el id del token (no puede ver citas ajenas).
+     * - Si el token tiene rol 'administrador', acepta el id_estilista del request.
      */
     public function citas(Request $request)
     {
-        $id_estilista = intval($request->input('id_estilista'));
+        $abilities = $request->attributes->get('auth_abilities', []);
+
+        if (in_array('peluquero', $abilities)) {
+            $id_estilista = intval($request->attributes->get('auth_tokenable_id'));
+        } else {
+            $id_estilista = intval($request->input('id_estilista'));
+        }
 
         $citas = DB::select("
             SELECT c.id_cita, c.fecha, c.hora, c.estado,

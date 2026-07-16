@@ -226,3 +226,52 @@ function mostrarMsg(div, texto, tipo) {
     div.textContent = texto;
     div.className   = 'mensaje ' + tipo;
 }
+
+// ── RECUPERAR CONTRASEÑA ──────────────────────────────────────
+
+/** Muestra el panel de recuperar contraseña y oculta los demás */
+function mostrarRecuperar() {
+    document.getElementById('login-box').classList.add('hidden');
+    document.getElementById('registro-box').classList.add('hidden');
+    document.getElementById('recuperar-box').classList.remove('hidden');
+}
+
+/** Oculta recuperar y vuelve al login — sobreescribe mostrarLogin para limpiar los tres paneles */
+const _mostrarLoginOriginal = mostrarLogin;
+mostrarLogin = function () {
+    document.getElementById('recuperar-box').classList.add('hidden');
+    document.getElementById('registro-box').classList.add('hidden');
+    document.getElementById('login-box').classList.remove('hidden');
+};
+
+/**
+ * Envía el correo al backend para generar el token y mandar el email.
+ */
+async function enviarRecuperacion() {
+    const correo = document.getElementById('recuperar-correo').value.trim();
+    const msg    = document.getElementById('recuperar-msg');
+
+    if (!correo) {
+        mostrarMsg(msg, 'Escribe tu correo.', 'error');
+        return;
+    }
+
+    mostrarMsg(msg, 'Enviando...', '');
+
+    try {
+        const res  = await fetch('http://127.0.0.1:8000/api/recuperar-contrasena', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ correo })
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+            mostrarMsg(msg, 'Correo enviado. Revisa tu bandeja de entrada.', 'success');
+        } else {
+            mostrarMsg(msg, data.error || 'Error al enviar el correo.', 'error');
+        }
+    } catch {
+        mostrarMsg(msg, 'Error conectando con el servidor.', 'error');
+    }
+}

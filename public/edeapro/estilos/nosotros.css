@@ -2,11 +2,9 @@
    nosotros.css — Página Nosotros
    ================================================
    Estilos exclusivos para nosotros.html.
-   Se carga junto a principal.css y reutiliza sus variables
-   (ver docs/MODERNIZACION-VISUAL.md).
+   Se carga junto a principal.css y reutiliza sus variables.
 ================================================ */
 
-/* Reset básico */
 body {
     margin: 0;
     padding: 0;
@@ -14,143 +12,349 @@ body {
     background: var(--color-bg);
 }
 
-/* ── Sección del equipo ──────────────────────────────────────*/
-.equipo {
-    text-align: center;
-    padding: 60px 20px;
+.nosotros-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px var(--space-16);
 }
 
-/* Título con línea decorativa dorada debajo */
-.titulo {
-    font-size: 2.3rem;
+/* ── Eyebrow compartido ── */
+.sec-eyebrow {
+    display: block;
+    text-align: center;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-metal-text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-3);
+}
+
+/* ── HERO ── */
+.nosotros-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+    margin-bottom: var(--space-20);
+}
+
+.nosotros-eyebrow {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-metal-text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-4);
+}
+
+.nosotros-hero-texto h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.5vw, 3rem);
     font-weight: 800;
-    margin-bottom: 10px;
     color: var(--color-heading);
+    line-height: 1.15;
+    margin-bottom: var(--space-5);
+}
+
+.nosotros-hero-texto p {
+    font-size: var(--text-md);
+    color: var(--color-text);
+    line-height: 1.75;
+    margin-bottom: var(--space-4);
+}
+
+.nosotros-hero-imagen {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    box-shadow: var(--shadow-xl);
+    transition: var(--transition-smooth);
+}
+
+.nosotros-hero-imagen:hover {
+    transform: scale(1.015);
+}
+
+.nosotros-hero-imagen img,
+.nosotros-hero-imagen video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ── EQUIPO ── */
+.equipo {
+    text-align: center;
+    margin-bottom: var(--space-20);
+}
+
+.titulo {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    margin-bottom: var(--space-3);
 }
 
 .titulo::after {
     content: '';
     display: block;
-    width: 60px;
+    width: 52px;
     height: 3px;
     background: var(--color-cta);
-    margin: 12px auto 40px;
+    margin: var(--space-3) auto var(--space-6);
     border-radius: 2px;
 }
 
-/* Grid de cards del equipo */
+.equipo-desc {
+    font-size: var(--text-base);
+    color: var(--color-muted);
+    max-width: 500px;
+    margin: 0 auto var(--space-10);
+    line-height: 1.7;
+}
+
+/* Grid de cards — formato 3/4 como Stitch */
 .cards-container {
     display: grid;
-    gap: 30px;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    max-width: 1200px;
-    margin: auto;
+    gap: var(--space-6);
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-/* Card individual — más redondeada, sombra suave */
 .card {
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 0.5px solid rgba(174, 157, 129, 0.2);
     overflow: hidden;
-    padding-bottom: 20px;
-    position: relative;
+    transition: var(--transition-smooth);
 }
 
-/* Borde superior con degradado metal→dorado que aparece al hacer hover */
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-metal), var(--color-cta));
-    transform: scaleX(0);
-    transition: transform 0.35s ease;
-}
-
-.card:hover::before {
-    transform: scaleX(1);
-}
-
-/* Elevación con sombra dorada al hacer hover */
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 32px rgba(240, 171, 6, 0.18);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
 }
 
-/* Foto con zoom suave al hacer hover */
-.card img {
+/* Foto en formato 3/4 con zoom */
+.card-imagen {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+}
+
+.card-imagen img {
     width: 100%;
-    height: 250px;
+    height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
 }
 
-.card:hover img {
-    transform: scale(1.04);
+.card:hover .card-imagen img {
+    transform: scale(1.06);
 }
 
-/* Nombre */
-.card h3 {
-    margin: 15px 15px 5px;
+/* Info debajo de la foto */
+.card-info {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    border-top: 3px solid rgba(174, 157, 129, 0.15);
+    transition: border-top-color 0.3s ease;
+}
+
+.card:hover .card-info {
+    border-top-color: var(--color-cta);
+}
+
+.card-info h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
     font-weight: 700;
-    font-size: 1.1rem;
     color: var(--color-heading);
+    margin: 0 0 var(--space-2);
 }
 
-/* Badge del cargo con estilo pill metálico */
 .cargo {
     display: inline-block;
-    background: var(--color-surface);
+    background: rgba(174, 157, 129, 0.12);
     color: var(--color-metal-text);
-    font-size: 0.78rem;
+    font-size: var(--text-xs);
     font-weight: 700;
     padding: 3px 12px;
-    border-radius: 20px;
-    margin: 4px 15px 10px;
+    border-radius: var(--radius-full);
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    margin: 0;
 }
 
-/* Descripción */
-.texto {
-    padding: 0 15px;
-    font-size: 0.88rem;
-    color: var(--color-text);
-    line-height: 1.6;
-    text-align: justify;
+/* ── COMPROMISO ── */
+.compromiso {
+    background: #f0ede6;
+    border-radius: var(--radius-xl);
+    padding: var(--space-16);
+    margin-bottom: var(--space-20);
 }
 
-/* ── Sección Nuestro Presente ────────────────────────────────*/
-/* Fondo de sección (gris claro) con bordes metálicos */
-.nuestro-presente {
-    background: var(--color-surface);
-    border-top: 2px solid var(--color-metal);
-    border-bottom: 2px solid var(--color-metal);
-    padding: 70px 20px;
-    text-align: center;
-    margin-top: 60px;
+.compromiso-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.nuestro-presente h2 {
-    font-size: 2rem;
+.compromiso-texto h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 2.5vw, 2.2rem);
     font-weight: 800;
     color: var(--color-heading);
-    margin-bottom: 16px;
+    margin-bottom: var(--space-8);
 }
 
-.nuestro-presente p {
-    max-width: 600px;
-    margin: 0 auto;
-    color: var(--color-text);
-    line-height: 1.8;
-    font-size: 15px;
+.compromiso-texto .sec-eyebrow {
+    text-align: left;
+    margin-bottom: var(--space-3);
 }
-/* Contenedor redes sociales */
+
+.compromiso-lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.compromiso-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+}
+
+.compromiso-icono {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.icono-verde  { background: rgba(126, 181, 106, 0.15); color: #5a8a48; }
+.icono-teal   { background: rgba(0, 167, 181, 0.15); color: var(--color-info); }
+.icono-dorado { background: rgba(240, 171, 6, 0.15); color: var(--color-cta-dark); }
+
+.compromiso-item h4 {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0 0 var(--space-2);
+}
+
+.compromiso-item p {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.compromiso-imagen {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-smooth);
+}
+
+.compromiso-imagen:hover { transform: scale(1.015); }
+
+.compromiso-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ── GALERÍA ── */
+.galeria {
+    margin-bottom: var(--space-12);
+    text-align: center;
+}
+
+.galeria h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    margin-bottom: var(--space-3);
+}
+
+.galeria-desc {
+    font-size: var(--text-base);
+    color: var(--color-muted);
+    max-width: 500px;
+    margin: 0 auto var(--space-10);
+    line-height: 1.7;
+}
+
+/* Grid tipo bento */
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 260px);
+    gap: var(--space-4);
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.galeria-item {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.galeria-grande {
+    grid-column: span 1;
+    grid-row: span 2;
+}
+
+.galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+}
+
+.galeria-item:hover img {
+    transform: scale(1.07);
+}
+
+/* Overlay con nombre al hover */
+.galeria-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(5,5,5,0.75) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-4);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.galeria-item:hover .galeria-overlay {
+    opacity: 1;
+}
+
+.galeria-overlay span {
+    color: white;
+    font-size: var(--text-base);
+    font-weight: 600;
+    font-family: var(--font-heading);
+}
+
+/* Redes sociales en footer */
 .social-links {
     display: flex;
     align-items: center;
@@ -158,33 +362,52 @@ body {
     margin-top: 15px;
 }
 
-/* Botones */
 .social-links a {
-    width: 55px;
-    height: 55px;
-
+    width: 44px;
+    height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    color: var(--color-light);
+    color: white;
     background: transparent;
-
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-sm);
     text-decoration: none;
-
     transition: all 0.3s ease;
 }
 
-/* Iconos */
-.social-links i {
-    font-size: 28px;
+.social-links i { font-size: 20px; }
+
+.social-links a:hover {
+    border-color: var(--color-cta);
+    color: var(--color-cta);
+    transform: translateY(-3px);
 }
 
-/* Hover */
-.social-links a:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(255,255,255,0.15);
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .nosotros-hero { grid-template-columns: 1fr; }
+    .nosotros-hero-imagen { aspect-ratio: 16/9; }
+    .cards-container { grid-template-columns: repeat(2, 1fr); }
+    .compromiso-inner { grid-template-columns: 1fr; }
+    .compromiso-imagen { aspect-ratio: 16/9; }
+    .galeria-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+    .galeria-grande { grid-column: span 2; height: 280px; }
+    .galeria-item { height: 220px; }
+}
+
+@media (max-width: 768px) {
+    .nosotros-page { padding: 40px var(--space-5); }
+    .cards-container { grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+    .compromiso { padding: var(--space-8); }
+    .galeria-grid { grid-template-columns: 1fr; }
+    .galeria-grande { grid-column: span 1; height: 260px; }
+    .galeria-item { height: 220px; }
+}
+
+@media (max-width: 480px) {
+    .cards-container { grid-template-columns: 1fr; }
 }

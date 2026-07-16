@@ -45,6 +45,7 @@
                 <button class="btn-primary" onclick="iniciarSesion()">Iniciar sesión</button>
                 <div id="login-msg" class="mensaje"></div>
 
+                <p class="switch-text">¿Olvidaste tu contraseña? <span onclick="mostrarRecuperar()">Recupérala aquí</span></p>
                 <p class="switch-text">¿No tienes cuenta? <span onclick="mostrarRegistro()">Regístrate aquí</span></p>
             </div>
 
@@ -131,12 +132,27 @@
 
                 <p class="switch-text">¿Ya tienes cuenta? <span onclick="mostrarLogin()">Inicia sesión</span></p>
             </div>
+        <!-- RECUPERAR CONTRASEÑA -->
+            <div class="form-box hidden" id="recuperar-box">
+                <a href="inicio.html" class="btn-volver-login">← Volver al inicio</a>
+                <h2>Recuperar contraseña</h2>
+                <p class="subtitle">Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+
+                <div class="input-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="recuperar-correo" placeholder="tu@correo.com">
+                </div>
+
+                <button class="btn-primary" onclick="enviarRecuperacion()">Enviar enlace</button>
+                <div id="recuperar-msg" class="mensaje"></div>
+
+                <p class="switch-text">¿Ya recordaste? <span onclick="mostrarLogin()">Inicia sesión</span></p>
+            </div>
 
         </div>
     </div>
 
-
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>  
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script src="../scripts/login.js"></script>
 
 </body>

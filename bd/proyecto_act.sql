@@ -117,7 +117,8 @@ CREATE TABLE `cita` (
   `id_estilista` int(11) NOT NULL,
   `fecha` date DEFAULT NULL,
   `hora` time DEFAULT NULL,
-  `estado` varchar(20) DEFAULT NULL
+  `estado` varchar(20) DEFAULT NULL,
+  `motivo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -1136,6 +1137,60 @@ ALTER TABLE `raza_servicio`
 --
 ALTER TABLE `resena`
   ADD CONSTRAINT `resena_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `recuperacion_contrasena`
+--
+
+CREATE TABLE `recuperacion_contrasena` (
+  `correo` varchar(150) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indices de la tabla `recuperacion_contrasena`
+--
+ALTER TABLE `recuperacion_contrasena`
+  ADD PRIMARY KEY (`correo`);
+
+-- --------------------------------------------------------
+
+--
+-- Disparadores `cita` — actualización (cancelación con motivo y reagendado)
+--
+
+DELIMITER $$
+CREATE TRIGGER `trg_notificacion_cita_update` AFTER UPDATE ON `cita` FOR EACH ROW BEGIN
+    IF NEW.estado = 'Cancelada' AND OLD.estado <> 'Cancelada' THEN
+        INSERT INTO notificacion (id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
+        VALUES (
+            (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
+            NEW.id_cita,
+            NEW.id_cliente,
+            CONCAT('Tu cita fue cancelada. Motivo: ', IFNULL(NEW.motivo, 'No especificado')),
+            'Cancelación',
+            'Cita cancelada',
+            'No leída'
+        );
+    ELSEIF NEW.estado = 'Reagendada' AND OLD.estado <> 'Reagendada' THEN
+        INSERT INTO notificacion (id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
+        VALUES (
+            (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
+            NEW.id_cita,
+            NEW.id_cliente,
+            CONCAT('Tu cita fue reagendada para el ', NEW.fecha, ' a las ', NEW.hora),
+            'Reagendamiento',
+            'Cita reagendada',
+            'No leída'
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

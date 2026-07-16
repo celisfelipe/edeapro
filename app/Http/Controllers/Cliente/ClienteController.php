@@ -154,6 +154,7 @@ class ClienteController extends Controller
         $id    = $this->idClienteAutenticado($request);
         $citas = DB::select("
             SELECT c.id_cita, c.fecha, c.hora, c.estado,
+                   c.id_estilista,
                    m.nombre AS mascota,
                    s.nombre_servicio,
                    e.nombre_estilista
@@ -174,21 +175,69 @@ class ClienteController extends Controller
      * Solo citas en estado 'Pendiente' deberían poder cancelarse (validación en el JS).
      */
     public function cancelarCita(Request $request)
-    {
-        $id_cliente = $this->idClienteAutenticado($request);
-        $id_cita    = intval($request->input('id_cita'));
+{
+    $id_cliente = $this->idClienteAutenticado($request);
+    $id_cita    = intval($request->input('id_cita'));
+    $motivo     = strip_tags(trim($request->input('motivo', '')));
 
-        $citaValida = DB::select(
-            "SELECT id_cita FROM cita WHERE id_cita = ? AND id_cliente = ?",
-            [$id_cita, $id_cliente]
-        );
-        if (empty($citaValida)) {
-            return response()->json(['ok' => false, 'error' => 'Cita no encontrada para este cliente'], 403);
-        }
-
-        DB::update("UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?", [$id_cita]);
-        return response()->json(['ok' => true]);
+    if (!$motivo) {
+        return response()->json(['ok' => false, 'error' => 'Debes indicar el motivo de cancelación.']);
     }
+
+    $citaValida = DB::select(
+        "SELECT id_cita FROM cita WHERE id_cita = ? AND id_cliente = ? AND estado IN ('Pendiente', 'Reagendada')",
+        [$id_cita, $id_cliente]
+    );
+    if (empty($citaValida)) {
+        return response()->json(['ok' => false, 'error' => 'Cita no encontrada o ya no está pendiente.'], 403);
+    }
+
+    DB::update(
+        "UPDATE cita SET estado = 'Cancelada', motivo = ? WHERE id_cita = ?",
+        [$motivo, $id_cita]
+    );
+
+    return response()->json(['ok' => true]);
+}
+
+    /**
+ * Reagenda una cita del cliente autenticado.
+ * Valida que la cita sea suya, esté Pendiente y
+ * que la nueva fecha sea con más de 24h de anticipación.
+ */
+public function reagendarCita(Request $request)
+{
+    $id_cliente = $this->idClienteAutenticado($request);
+    $id_cita    = intval($request->input('id_cita'));
+    $fecha      = $request->input('fecha');
+    $hora       = $request->input('hora');
+
+    if (!$fecha || !$hora) {
+        return response()->json(['ok' => false, 'error' => 'Debes seleccionar fecha y hora.']);
+    }
+
+    // Validar que la nueva fecha sea con más de 24h de anticipación
+    $nuevaFechaHora = strtotime($fecha . ' ' . $hora);
+    if ($nuevaFechaHora <= strtotime('+24 hours')) {
+        return response()->json(['ok' => false, 'error' => 'Solo puedes reagendar con más de 24 horas de anticipación.']);
+    }
+
+    // Verificar que la cita pertenece al cliente y está Pendiente
+    $citaValida = DB::select(
+        "SELECT id_cita FROM cita WHERE id_cita = ? AND id_cliente = ? AND estado IN ('Pendiente', 'Reagendada')",
+        [$id_cita, $id_cliente]
+    );
+    if (empty($citaValida)) {
+        return response()->json(['ok' => false, 'error' => 'Cita no encontrada o ya no está pendiente.'], 403);
+    }
+
+    DB::update(
+        "UPDATE cita SET fecha = ?, hora = ?, estado = 'Reagendada' WHERE id_cita = ?",
+        [$fecha, $hora, $id_cita]
+    );
+
+    return response()->json(['ok' => true]);
+}
 
     /**
      * Devuelve el historial de pagos del cliente autenticado con el nombre

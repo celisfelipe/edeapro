@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('apellido').value = data.cliente.apellido;
             document.getElementById('telefono').value = data.cliente.telefono;
             document.getElementById('correo').value   = data.cliente.correo;
+
+            const n = data.cliente.nombre   || '';
+            const a = data.cliente.apellido || '';
+            const avatarEl = document.getElementById('perfil-avatar');
+            const nombreEl = document.getElementById('perfil-nombre-display');
+            const correoEl = document.getElementById('perfil-correo-display');
+            if (avatarEl) avatarEl.textContent = ((n[0] || '') + (a[0] || '')).toUpperCase();
+            if (nombreEl) nombreEl.textContent = n + ' ' + a;
+            if (correoEl) correoEl.textContent = data.cliente.correo;
         }
     });
 
@@ -282,8 +291,11 @@ function renderTablaCitas(lista, filtro) {
         const badgeIcono = c.estado === 'Completada' ? 'fa-check' :
                            c.estado === 'Cancelada'  ? 'fa-xmark'  : 'fa-clock';
         // Solo las citas pendientes tienen botón de cancelar
-        const acciones = c.estado === 'Pendiente'
-            ? `<button class="btn-red" onclick="cancelarCita(${c.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>`
+        const acciones = (c.estado === 'Pendiente' || c.estado === 'Reagendada')
+            ? `<div style="display:flex; gap:6px;">
+                 <button class="btn-blue" onclick="reagendarCita(${c.id_cita}, ${c.id_estilista})"><i class="fa-solid fa-calendar-pen"></i> Reagendar</button>
+                 <button class="btn-red" onclick="cancelarCita(${c.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+               </div>`
             : '';
         tbody.innerHTML += `
             <tr>
@@ -338,24 +350,118 @@ document.getElementById('btnActualizar').addEventListener('click', () => {
  * Recarga la tabla de citas después de cancelar.
  */
 function cancelarCita(id_cita) {
-    modalConfirmar('¿Seguro que deseas cancelar esta cita?', function () {
+    // Mostrar campo de motivo en el modal
+    document.getElementById('modal-motivo-grupo').style.display = 'block';
+    document.getElementById('modal-motivo-input').value = '';
+
+    modalConfirmar('¿Seguro que deseas cancelar esta cita? Indica el motivo:', function () {
+        const motivo = document.getElementById('modal-motivo-input').value.trim();
+        if (!motivo) {
+            modalError('Debes escribir el motivo de cancelación.');
+            return;
+        }
+
         const user = JSON.parse(localStorage.getItem('user'));
         fetchAuth('http://127.0.0.1:8000/api/cliente/cancelar-cita', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ id_cita })
+            body: new URLSearchParams({ id_cita, motivo })
         })
         .then(res => res.json())
         .then(data => {
+            document.getElementById('modal-motivo-grupo').style.display = 'none';
             if (data.ok) {
                 modalExito('Cita cancelada correctamente.');
-                // Refrescar la tabla de citas sin recargar la página
                 setTimeout(() => cargarCitas(user.id_cliente), 500);
             } else {
                 modalError('Error al cancelar: ' + data.error);
             }
         });
     });
+}
+
+// ── REAGENDAR CITA ────────────────────────────────────────────
+function reagendarCita(id_cita, id_estilista) {
+    const overlay = document.getElementById('modal-reagendar');
+    const inputFecha = document.getElementById('reagendar-fecha');
+    const selectHora = document.getElementById('reagendar-hora');
+
+    // Fecha mínima: mañana + 24h
+    const manana = new Date();
+    manana.setDate(manana.getDate() + 2);
+    inputFecha.min = manana.toISOString().split('T')[0];
+    inputFecha.value = '';
+    selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
+
+    overlay.classList.add('open');
+
+    // Cargar slots al cambiar fecha
+    inputFecha.onchange = async function () {
+        selectHora.innerHTML = '<option value="">Cargando...</option>';
+        const fecha = inputFecha.value;
+
+        try {
+            const res = await fetch(
+                `http://127.0.0.1:8000/api/citas/slots?id_estilista=${id_estilista}&fecha=${fecha}`
+            );
+            const data = await res.json();
+
+            const todos = [];
+            for (let h = 9; h < 17; h++) {
+                for (let m = 0; m < 60; m += 15) {
+                    todos.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+                }
+            }
+
+            const disponibles = todos.filter(slot => !data.ocupados.includes(slot));
+            selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
+            disponibles.forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot;
+                opt.textContent = slot;
+                selectHora.appendChild(opt);
+            });
+
+            if (disponibles.length === 0) {
+                selectHora.innerHTML = '<option value="">No hay horas disponibles</option>';
+            }
+        } catch (e) {
+            selectHora.innerHTML = '<option value="">Error al cargar horas</option>';
+        }
+    };
+
+    // Cancelar
+    document.getElementById('reagendar-cancelar').onclick = function () {
+        overlay.classList.remove('open');
+    };
+
+    // Confirmar
+    document.getElementById('reagendar-confirmar').onclick = function () {
+        const fecha = inputFecha.value;
+        const hora  = selectHora.value;
+
+        if (!fecha || !hora) {
+            modalError('Debes seleccionar fecha y hora.');
+            return;
+        }
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        fetchAuth('http://127.0.0.1:8000/api/cliente/reagendar-cita', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id_cita, fecha, hora })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                overlay.classList.remove('open');
+                modalExito('Cita reagendada correctamente.');
+                setTimeout(() => cargarCitas(user.id_cliente), 500);
+            } else {
+                modalError('Error: ' + data.error);
+            }
+        });
+    };
 }
 
 /** Elimina la sesión del localStorage y redirige al login */

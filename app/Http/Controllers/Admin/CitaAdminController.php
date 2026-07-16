@@ -29,11 +29,24 @@ class CitaAdminController extends Controller
     }
 
     /**
-     * Cambia el estado de una cita a 'Cancelada' por su id_cita.
+     * Cambia el estado de una cita a 'Cancelada'.
+     * Rechaza la operación si la cita ya está Cancelada o Completada.
      */
     public function cancelar(Request $request)
     {
         $id = intval($request->input('id_cita'));
+
+        $cita = DB::selectOne(
+            "SELECT estado FROM cita WHERE id_cita = ?", [$id]
+        );
+
+        if (!$cita) {
+            return response()->json(['ok' => false, 'error' => 'Cita no encontrada.'], 404);
+        }
+        if (in_array($cita->estado, ['Cancelada', 'Completada'])) {
+            return response()->json(['ok' => false, 'error' => "La cita ya está {$cita->estado}."], 422);
+        }
+
         DB::update("UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?", [$id]);
         return response()->json(['ok' => true]);
     }

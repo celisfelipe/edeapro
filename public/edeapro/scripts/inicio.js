@@ -32,14 +32,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         init() {
-        this.setupEventListeners();
-        // Delay de 100ms para que el CSS detecte el cambio de clase
-        // y active el zoom Ken Burns desde el primer slide
-        setTimeout(() => {
-            this.showSlide(0);
+            this.setupEventListeners();
+            // Si el HTML ya tiene un slide activo, respetarlo para no
+            // interrumpir las animaciones CSS que ya empezaron.
+            const activeIdx = Array.from(this.slides).findIndex(s => s.classList.contains('active'));
+            if (activeIdx >= 0) {
+                this.currentIndex = activeIdx;
+            } else {
+                this.showSlide(0);
+            }
             this.startAutoPlay();
-        }, 100);
-    }
+        }
 
         setupEventListeners() {
             // Botones de navegación

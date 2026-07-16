@@ -34,10 +34,14 @@ class ClienteAdminController extends Controller
     public function editar(Request $request)
     {
         $id       = intval($request->input('id_cliente'));
-        $nombre   = $request->input('nombre');
-        $apellido = $request->input('apellido');
-        $telefono = $request->input('telefono');
-        $correo   = $request->input('correo');
+        $nombre   = trim($request->input('nombre', ''));
+        $apellido = trim($request->input('apellido', ''));
+        $telefono = trim($request->input('telefono', ''));
+        $correo   = trim($request->input('correo', ''));
+
+        if (!$id || !$nombre || !$apellido || !$telefono || !$correo) {
+            return response()->json(['ok' => false, 'error' => 'Todos los campos son obligatorios.'], 422);
+        }
 
         DB::update(
             "UPDATE cliente SET nombre=?, apellido=?, telefono=?, correo=? WHERE id_cliente=?",

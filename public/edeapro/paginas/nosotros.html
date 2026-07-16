@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +11,17 @@
     <link rel="stylesheet" href="../estilos/principal.css">
     <link rel="stylesheet" href="../estilos/nosotros.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
 </head>
-
 <body>
+
     <!-- ENCABEZADO -->
     <header>
         <div class="logo">
-            <img src="../imagenes/logo/logo2.png">
+            <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
         </div>
-    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
-
-
-
+        <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         <nav>
             <ul>
                 <li><a href="inicio.html">Inicio</a></li>
@@ -37,70 +34,156 @@
         </nav>
     </header>
 
-    <section class="equipo">
-        <h1 class="titulo">Nuestro Equipo</h1>
+    <main class="nosotros-page">
 
-        <div class="cards-container">
-            <!-- CARD 1 -->
-            <div class="card">
-                <img src="../imagenes/juanpablo.jfif" alt="Juan Pablo Lopez">
-                <h3>Juan Pablo Lopez</h3>
-                <p class="cargo">Gerente/Jefe</p>
-                <p class="texto">
-                    Al frente de Patas de Palos, lidera con la elegancia y determinación
-                    de su raza favorita: el galgo afgano. Visionaria, apasionada y con
-                    un enfoque único para el detalle, hace que cada peludo se sienta parte
-                    de esta gran familia.
-                </p>
+        <!-- HERO — historia de EDEA -->
+        <section class="nosotros-hero fade-up">
+            <div class="nosotros-hero-texto">
+                <span class="nosotros-eyebrow">Conoce nuestro origen</span>
+                <h1>Nuestra Historia</h1>
+                <p>EDEA PRO nació de la pasión por el bienestar animal y el arte del grooming profesional. Lo que comenzó como un sueño se ha convertido en un espacio donde la creatividad, la técnica y el amor por las mascotas se unen cada día.</p>
+                <p>Nuestra misión es clara: elevar el estándar del cuidado estético canino y felino, tratando a cada mascota como si fuera de nuestra propia familia.</p>
             </div>
-
-            <!-- CARD 2 -->
-            <div class="card">
-                <img src="../imagenes/maria.jfif" alt="Maria del Mar">
-                <h3>Maria del Mar</h3>
-                <p class="cargo">Estilista</p>
-                <p class="texto">
-                    Con la serenidad y lealtad del Bernés de la Montaña, gestiona el spa para que
-                    cada detalle funcione a la perfección. Entre agendas y peludos curiosos, garantiza
-                    experiencias únicas para perros, gatos y sus humanos.
-                </p>
+            <div class="nosotros-hero-imagen">
+                <video autoplay muted loop playsinline>
+                    <source src="../imagenes/videoedea.mp4" type="video/mp4">
+                </video>
             </div>
+        </section>
 
-            <!-- CARD 3 -->
-            <div class="card">
-                <img src="../imagenes/camila.jfif" alt="Camila Tamayo Restrepo">
-                <h3>Camila Tamayo Restrepo</h3>
-                <p class="cargo">Estilista</p>
-                <p class="texto">
-                    Es la voz amable al teléfono y la sonrisa detrás del mostrador. Atiende humanos
-                    con paciencia y encanto, y siempre tiene una mano para los peludos.
-                </p>
+        <!-- EQUIPO -->
+        <section class="equipo">
+            <p class="sec-eyebrow fade-up">Quiénes somos</p>
+            <h2 class="titulo fade-up">Nuestro Equipo</h2>
+            <p class="equipo-desc fade-up">Profesionales apasionados certificados en las mejores técnicas de estética animal.</p>
+
+            <div class="cards-container">
+                <div class="card fade-up">
+                    <div class="card-imagen">
+                        <img src="../imagenes/juanpablo.jfif" alt="Juan Pablo Lopez">
+                    </div>
+                    <div class="card-info">
+                        <h3>Juan Pablo Lopez</h3>
+                        <p class="cargo">Gerente / Jefe</p>
+                    </div>
+                </div>
+
+                <div class="card fade-up delay-1">
+                    <div class="card-imagen">
+                        <img src="../imagenes/maria.jfif" alt="Maria del Mar">
+                    </div>
+                    <div class="card-info">
+                        <h3>Maria del Mar</h3>
+                        <p class="cargo">Estilista</p>
+                    </div>
+                </div>
+
+                <div class="card fade-up delay-2">
+                    <div class="card-imagen">
+                        <img src="../imagenes/camila.jfif" alt="Camila Tamayo Restrepo">
+                    </div>
+                    <div class="card-info">
+                        <h3>Camila Tamayo</h3>
+                        <p class="cargo">Estilista</p>
+                    </div>
+                </div>
+
+                <div class="card fade-up delay-3">
+                    <div class="card-imagen">
+                        <img src="../imagenes/katherine.jfif" alt="Katherine Ortiz Hernandez">
+                    </div>
+                    <div class="card-info">
+                        <h3>Katherine Ortiz</h3>
+                        <p class="cargo">Estilista</p>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <!-- CARD 4 -->
-            <div class="card">
-                <img src="../imagenes/katherine.jfif" alt="Katherine Ortiz Hernandez">
-                <h3>Katherine Ortiz Hernandez</h3>
-                <p class="cargo">Estilista</p>
-                <p class="texto">
-                    En su mundo, las tijeras bailan y los peludos salen renovados. Atenta y apasionada,
-                    transforma cada servicio en un momento único de amor y cuidado.
-                </p>
+        <!-- NUESTRO COMPROMISO -->
+        <section class="compromiso">
+            <div class="compromiso-inner">
+                <div class="compromiso-texto fade-up">
+                    <p class="sec-eyebrow">Lo que nos define</p>
+                    <h2>Nuestro Compromiso</h2>
+                    <div class="compromiso-lista">
+                        <div class="compromiso-item">
+                            <div class="compromiso-icono icono-verde">
+                                <i class="fa-solid fa-leaf"></i>
+                            </div>
+                            <div>
+                                <h4>Productos Premium</h4>
+                                <p>Solo utilizamos productos de alta calidad, respetuosos con la piel de tu mascota y con el medio ambiente.</p>
+                            </div>
+                        </div>
+                        <div class="compromiso-item">
+                            <div class="compromiso-icono icono-teal">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <div>
+                                <h4>Grooming Sin Estrés</h4>
+                                <p>Aplicamos técnicas de refuerzo positivo y tiempos de descanso para que cada experiencia sea placentera.</p>
+                            </div>
+                        </div>
+                        <div class="compromiso-item">
+                            <div class="compromiso-icono icono-dorado">
+                                <i class="fa-solid fa-certificate"></i>
+                            </div>
+                            <div>
+                                <h4>Calidad Garantizada</h4>
+                                <p>Cada servicio pasa por un control de calidad final para asegurar un acabado impecable y profesional.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="compromiso-imagen fade-up delay-1">
+                    <img src="../imagenes/descripcion.jpeg" alt="Cuidado profesional EDEA PRO">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
+        <!-- GALERÍA DE FOTOS -->
+        <section class="galeria">
+            <p class="sec-eyebrow fade-up">Nuestro trabajo</p>
+            <h2 class="fade-up">Galería</h2>
+            <p class="galeria-desc fade-up">Una muestra del cuidado y dedicación que ponemos en cada servicio.</p>
+            <div class="galeria-grid">
+                <div class="galeria-item galeria-grande fade-up">
+                    <img src="../imagenes/tarjeta1.jpeg" alt="Peluquería canina">
+                    <div class="galeria-overlay">
+                        <span>Peluquería Canina</span>
+                    </div>
+                </div>
+                <div class="galeria-item fade-up delay-1">
+                    <img src="../imagenes/gato.jpeg" alt="Peluquería felina">
+                    <div class="galeria-overlay">
+                        <span>Peluquería Felina</span>
+                    </div>
+                </div>
+                <div class="galeria-item fade-up delay-2">
+                    <img src="../imagenes/carrusel2.jfif" alt="Cuidado experto">
+                    <div class="galeria-overlay">
+                        <span>Cuidado Experto</span>
+                    </div>
+                </div>
+                <div class="galeria-item fade-up delay-1">
+                    <img src="../imagenes/negocio.jpeg" alt="Instalaciones">
+                    <div class="galeria-overlay">
+                        <span>Nuestras Instalaciones</span>
+                    </div>
+                </div>
+                <div class="galeria-item fade-up delay-2">
+                    <img src="../imagenes/perro-amarillo.jfif" alt="Resultado final">
+                    <div class="galeria-overlay">
+                        <span>Resultado Final</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- SECCIÓN NUESTRO PRESENTE -->
-    <section class="nuestro-presente">
-        <h2>Nuestro Presente</h2>
-        <p>
-            En este apartado irá una descripción escrita por el propietario, donde
-            se explique la situación actual del negocio, su crecimiento y sus metas.
-        </p>
-    </section>
+    </main>
 
-
+    <!-- FOOTER -->
     <footer id="contacto">
         <div class="footer-container">
             <div class="footer-col footer-links">
@@ -115,23 +198,31 @@
             <div class="footer-col footer-info">
                 <h3>Contacto</h3>
                 <p>📞 Llámanos: (+57) 350 507 3843</p>
-                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
-                </p>
+                <p>📍 Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia</p>
                 <div class="social-links">
-                        <a href="https://www.youtube.com/@edeaplay" target="_blank">  <i class="fab fa-youtube"></i>
-                        <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank"> <i class="fab fa-instagram"></i> </a>
+                    <a href="https://www.youtube.com/@edeaplay" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script src="../scripts/navbar.js"></script>
+    <script>
+    /* Fade-up al scroll */
+    const fadeObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                fadeObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+    </script>
 
-    
 </body>
-
 </html>

@@ -11,249 +11,294 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../estilos/principal.css" />
-    
 </head>
 
 <body>
 
-    <!-- ENCABEZADO -->
-    <header>
-        <div class="logo">
-            <img src="../imagenes/logo/logo2.png">
-        </div>
-    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
-        <nav>
-            <ul>
-                <li><a href="inicio.html">Inicio</a></li>
-                <li><a href="perrocorto.html">Servicios</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="ubicacion.html">Ubicación</a></li>
-                <li><a href="agenda.html">Agendar cita</a></li>
-                <li><a href="login.html" class="login" style="visibility:hidden">Inicio de Sesión</a></li>
-            </ul>
-            
-        </nav>
-    </header>
-
-
-    <main>
-        <section id="carrusel-hero">
-            <div class="carrusel-slide">
-                <div class="carrusel-item">
-                    <img src="../imagenes/perro-amarillo.jfif" class="d-block w-100" />
-                    <div class="carrusel-caption">
-                        <h1>EDEA PRO</h1>
-                        <p>Peluquería Canina y Felina Premium</p>
-                    </div>
-                </div>
-
-                <div class="carrusel-item">
-                    <img src="../imagenes/carrusel2.jfif" alt="Cuidado experto para tu mascota">
-                    <div class="carrusel-caption">
-                        <h1>Cuidado Experto</h1>
-                        <p>Profesionales certificados en el cuidado de tu mascota</p>
-                    </div>
-                </div>
-
-                <div class="carrusel-item">
-                    <img src="../imagenes/carrusel3.jfif" alt="Instalaciones modernas y seguras">
-                    <div class="carrusel-caption">
-                        <h1>Instalaciones Modernas</h1>
-                        <p>Ambiente limpio, seguro y cómodo para tu compañero</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dot-container">
-                <span class="dot active" data-slide="0"></span>
-                <span class="dot" data-slide="1"></span>
-                <span class="dot" data-slide="2"></span>
-            </div>
-
-            <button class="carrusel-control prev" aria-label="Slide anterior">❮</button>
-            <button class="carrusel-control next" aria-label="Siguiente slide">❯</button>
-        </section>
-
-        
-        <!-- SECCIÓN DE ESTADÍSTICAS
-     Los números se animan contando desde 0 hasta el valor
-     de data-target cuando el usuario llega a esta sección -->
-<section class="stats-section">
-    <div class="stat-item">
-        <span class="stat-number" data-target="500">0</span>
-        <span class="stat-label">Clientes felices</span>
+<!-- SPLASH -->
+<div id="splash">
+    <div class="splash-logo">
+        <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
+        <span class="splash-nombre">EDEA PRO</span>
+        <div class="splash-linea"></div>
     </div>
-    <div class="stat-item">
-        <span class="stat-number" data-target="50">0</span>
-        <span class="stat-label">Razas atendidas</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number" data-target="5">0</span>
-        <span class="stat-label">Años de experiencia</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number" data-target="100">0</span>
-        <span class="stat-label">% Satisfacción</span>
-    </div>
-</section>
-
-
-        <section id="featured-section">
-            <div class="featured-container">
-                <!-- IMAGEN A LA DERECHA + TEXTO A LA IZQUIERDA -->
-                <div class="featured-content">
-                    <div class="featured-text">
-                        <h2>Cuida a tu Mascota con Profesionales</h2>
-                        <p>En EDEA PRO, ofrecemos servicios de grooming de alta calidad para perros y gatos. Nuestro
-                            equipo de expertos utiliza técnicas avanzadas y productos premium para garantizar que tu
-                            mascota se sienta cómoda, segura y hermosa.</p>
-                        <p>Contamos con instalaciones modernas, personal certificado y un profundo amor por los
-                            animales. Cada servicio es personalizado según las necesidades específicas de tu compañero
-                            peludo.</p>
-                        <a href="#" class="btn-reserve" onclick="verificarSesionAgenda(event)">Reserva Aquí</a>
-                    </div>
-                    <div class="featured-image">
-                        <img src="../imagenes/descripcion.jpeg" alt="Mascota cuidada profesionalmente">
-                    </div>
-                </div>
-
-                <!-- SECCIÓN DE SERVICIOS -->
-                <div class="services-header">
-                    <h2>Nuestros Servicios de Grooming</h2>
-                    <p>Descubre la variedad de servicios que ofrecemos para tu mascota</p>
-                </div>
-
-                <div class="services-cards">
-                    <!-- CARD 1 - IZQUIERDA -->
-                    <div class="service-card card-left">
-                        <div class="card-image">
-                            <img src="../imagenes/tarjeta1.jpeg" alt="Grooming Completo">
-                        </div>
-                        <div class="card-content">
-                            <h3>Peluqueria Canina</h3>
-                            <p>Brindamos un cuidado completo para tu perro, adaptando cada baño y corte según su raza, tamaño y necesidades. 
-                                Usamos productos especializados y técnicas profesionales para que tu compañero siempre luzca y se sienta increíble.</p>
-                        </div>
-                    </div>
-
-                    <!-- CARD 2 - DERECHA -->
-                    <div class="service-card card-right">
-                        <div class="card-image">
-                            <img src="../imagenes/gato.jpeg" alt="Baño y Secado">
-                        </div>
-                        <div class="card-content">
-                            <h3>Peluqueria Felina</h3>
-                            <p>¡Hacer que tu gato se sienta cómodo es nuestra prioridad! Nuestros baños están pensados para su tranquilidad, con atención personalizada y productos especiales para mimar a tu felino.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="servicios"></section>
-        <!-- LÍNEA DIVISORA -->
-        <div class="divider-line"></div>
-        <section id="features-zigzag">
-            <h2>ARTE, PASIÓN Y PROFESIÓN</h2>
-            <p class="section-subtitle">En EDEA, combinamos el arte, la pasión y la profesión para transformar vidas,
-                tanto de personas como de animales de compañía.
-                Somos más que una escuela; somos un espacio donde la creatividad y la conexión animal convergen para
-                despertar el potencial humano y profesional. Aquí, estudiantes y estilistas no solo perfeccionan su
-                oficio, sino que descubren su propósito, se conectan con sus capacidades y comprenden un camino hacia la
-                excelencia, a través de nuestra dedicación al estilismo canino y felino.</p>
-
-            <div class="feature-card">
-                <div class="feature-image">
-                    <img src="../imagenes/equipo.jfif" alt="Profesionales certificados">
-                </div>
-                <div class="feature-content">
-                    <h3>Profesionales Certificados</h3>
-                    <p>Nuestro equipo cuenta con años de experiencia y certificaciones internacionales en grooming y
-                        cuidado animal. Cada miembro está comprometido con la excelencia y el bienestar de tu mascota.
-                    </p>
-                    <a href="nosotros.html" class="cta-card">Conocer equipo</a>
-                </div>
-            </div>
-            </div>
-        </section>
-    </main>
-
-
-    <footer id="contacto">
-        <div class="footer-container">
-            <div class="footer-col footer-links">
-                <h3>Servicios</h3>
-                <ul>
-                    <li><a href="perrocorto.html">Perro pelo corto</a></li>
-                    <li><a href="perrolargo.html">Perro pelo largo</a></li>
-                    <li><a href="gatos.html">Gatos</a></li>
-                    <li><a href="corteespecializado.html">Corte especializado</a></li>
-                </ul>
-            </div>
-            <div class="footer-col footer-info">
-                <h3>Contacto</h3>
-                <p>📞 Llámanos: (+57) 350 507 3843</p>
-                <p>📍 Dirección: Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia
-                </p>
-<div class="redes-sociales">
-    <a href="https://www.youtube.com/@edeaplay" target="_blank">
-        <i class="fab fa-youtube"></i>
-    </a>
-    <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank">
-        <i class="fab fa-instagram"></i>
-    </a>
 </div>
+
+<!-- HEADER -->
+<header id="main-header">
+    <div class="logo">
+        <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
+    </div>
+    <button class="nav-hamburger" id="navToggle" aria-label="Alternar menú">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <nav>
+        <ul>
+            <li><a href="inicio.html">Inicio</a></li>
+            <li><a href="perrocorto.html">Servicios</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="ubicacion.html">Ubicación</a></li>
+            <li><a href="agenda.html">Agendar cita</a></li>
+            <li><a href="login.html" class="login" id="navLoginBtn" style="visibility:hidden">Inicio de Sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <!-- CARRUSEL -->
+    <section id="carrusel-hero">
+        <div class="carrusel-slide">
+            <div class="carrusel-item active">
+                <img src="../imagenes/perro-amarillo.jfif" alt="EDEA PRO">
+                <div class="carrusel-caption">
+                    <span class="carrusel-eyebrow"><i class="fa-solid fa-star"></i> Peluquería Premium</span>
+                    <h1>EDEA PRO</h1>
+                    <p>Peluquería Canina y Felina Premium</p>
+                    <a href="agenda.html" class="carrusel-cta" onclick="verificarSesionAgenda(event)">
+                        <i class="fa-solid fa-calendar-check"></i> Reserva tu cita
+                    </a>
+                </div>
+            </div>
+            <div class="carrusel-item">
+                <img src="../imagenes/carrusel2.jfif" alt="Cuidado experto">
+                <div class="carrusel-caption">
+                    <span class="carrusel-eyebrow"><i class="fa-solid fa-award"></i> Certificados</span>
+                    <h1>Cuidado Experto</h1>
+                    <p>Profesionales certificados en el cuidado de tu mascota</p>
+                    <a href="nosotros.html" class="carrusel-cta">
+                        <i class="fa-solid fa-users"></i> Conoce el equipo
+                    </a>
+                </div>
+            </div>
+            <div class="carrusel-item">
+                <img src="../imagenes/carrusel3.jfif" alt="Instalaciones modernas">
+                <div class="carrusel-caption">
+                    <span class="carrusel-eyebrow"><i class="fa-solid fa-shield-halved"></i> Seguro y confiable</span>
+                    <h1>Instalaciones Modernas</h1>
+                    <p>Ambiente limpio, seguro y cómodo para tu compañero</p>
+                    <a href="perrocorto.html" class="carrusel-cta">
+                        <i class="fa-solid fa-scissors"></i> Ver servicios
+                    </a>
+                </div>
             </div>
         </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+        <div class="dot-container">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
         </div>
-    </footer>
-    <script src="../scripts/inicio.js"></script>
+        <button class="carrusel-control prev" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="carrusel-control next" aria-label="Siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+    </section>
 
-    <script src="../scripts/navbar.js"></script>
+    <!-- ESTADÍSTICAS -->
+    <section class="stats-section" id="stats-section">
+        <div class="stat-item fade-up">
+            <div class="stat-icono-wrap"><i class="fa-solid fa-users"></i></div>
+            <span class="stat-number" data-target="500">0</span>
+            <span class="stat-label">Clientes felices</span>
+        </div>
+        <div class="stat-item fade-up delay-1">
+            <div class="stat-icono-wrap"><i class="fa-solid fa-paw"></i></div>
+            <span class="stat-number" data-target="50">0</span>
+            <span class="stat-label">Razas atendidas</span>
+        </div>
+        <div class="stat-item fade-up delay-2">
+            <div class="stat-icono-wrap"><i class="fa-solid fa-award"></i></div>
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Años de experiencia</span>
+        </div>
+        <div class="stat-item fade-up delay-3">
+            <div class="stat-icono-wrap"><i class="fa-solid fa-heart"></i></div>
+            <span class="stat-number" data-target="100">0</span>
+            <span class="stat-label">% Satisfacción</span>
+        </div>
+    </section>
+
+    <!-- ¿POR QUÉ ELEGIRNOS? -->
+    <section class="porque">
+        <p class="sec-eyebrow fade-up">¿Por qué elegirnos?</p>
+        <h2 class="sec-titulo fade-up delay-1">Cuidado que marca la diferencia</h2>
+        <p class="sec-desc fade-up delay-2">Combinamos técnica profesional con un ambiente relajado para que tu mascota se sienta como en casa.</p>
+        <div class="porque-grid">
+            <div class="porque-card fade-up">
+                <div class="porque-icono dorado"><i class="fa-solid fa-scissors"></i></div>
+                <h3>Estilistas Expertos</h3>
+                <p>Nuestro equipo cuenta con certificaciones y años de experiencia en todo tipo de razas y pelajes.</p>
+            </div>
+            <div class="porque-card fade-up delay-1">
+                <div class="porque-icono verde"><i class="fa-solid fa-leaf"></i></div>
+                <h3>Productos Premium</h3>
+                <p>Solo usamos shampoos y tratamientos de alta calidad seleccionados para el pelaje de tu mascota.</p>
+            </div>
+            <div class="porque-card fade-up delay-2">
+                <div class="porque-icono teal"><i class="fa-solid fa-face-smile"></i></div>
+                <h3>Sin Estrés</h3>
+                <p>Diseñamos cada sesión sin prisas, con atención personalizada y un ambiente tranquilo para tu compañero.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section class="services-section">
+        <p class="sec-eyebrow fade-up">Nuestros servicios</p>
+        <h2 class="sec-titulo fade-up delay-1">Grooming Profesional</h2>
+        <p class="sec-desc fade-up delay-2">Cada servicio es personalizado según las necesidades de tu compañero peludo.</p>
+        <div class="services-cards">
+            <div class="service-card fade-up">
+                <img src="../imagenes/tarjeta1.jpeg" alt="Peluquería Canina">
+                <span class="service-card-badge">Canino</span>
+                <div class="service-card-overlay">
+                    <h3>Peluquería Canina</h3>
+                    <p>Cuidado completo para tu perro — baño, corte y acabado profesional adaptado a su raza y tamaño.</p>
+                    <a href="perrocorto.html" class="service-card-btn">
+                        Ver servicios <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="service-card fade-up delay-1">
+                <img src="../imagenes/gato.jpeg" alt="Peluquería Felina">
+                <span class="service-card-badge">Felino</span>
+                <div class="service-card-overlay">
+                    <h3>Peluquería Felina</h3>
+                    <p>Atención especializada para gatos — baño suave, cepillado y cuidado pensado para su tranquilidad.</p>
+                    <a href="gatos.html" class="service-card-btn">
+                        Ver servicios <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARTE PASIÓN Y PROFESIÓN -->
+    <section class="arte-pasion-texto">
+        <div class="arte-pasion-inner">
+            <h2>ARTE, PASIÓN Y PROFESIÓN</h2>
+            <p>En EDEA, combinamos el arte, la pasión y la profesión para transformar vidas,
+            tanto de personas como de animales de compañía. Somos más que una escuela; somos un espacio donde la
+            creatividad y la conexión animal convergen para despertar el potencial humano y profesional.</p>
+        </div>
+    </section>
+
+    <!-- SECCIÓN ASIMÉTRICA -->
+    <section class="asimetrica">
+        <div class="asimetrica-inner">
+            <div class="asimetrica-img fade-up">
+                <img src="../imagenes/equipo.jfif" alt="Equipo EDEA PRO">
+            </div>
+            <div class="fade-up delay-1">
+                <span class="asim-eyebrow">Arte, pasión y profesión</span>
+                <h2 class="asim-titulo">La experiencia EDEA PRO</h2>
+                <p class="asim-texto">En EDEA combinamos el arte, la pasión y la profesión para transformar vidas,
+                    tanto de personas como de animales de compañía. Somos más que una peluquería — somos un espacio
+                    donde la creatividad y la conexión animal convergen para despertar el potencial humano y profesional.</p>
+                <div class="checks">
+                    <div class="check-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Sesiones individuales para mayor comodidad
+                    </div>
+                    <div class="check-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Desinfección profesional entre cada atención
+                    </div>
+                    <div class="check-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Estilistas certificados con experiencia comprobada
+                    </div>
+                </div>
+                <a href="nosotros.html" class="btn-asim">
+                    Conocer el equipo <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="contacto">
+    <div class="footer-container">
+        <div class="footer-col footer-links">
+            <h3>Servicios</h3>
+            <ul>
+                <li><a href="perrocorto.html">Perro pelo corto</a></li>
+                <li><a href="perrolargo.html">Perro pelo largo</a></li>
+                <li><a href="gatos.html">Gatos</a></li>
+                <li><a href="corteespecializado.html">Corte especializado</a></li>
+            </ul>
+        </div>
+        <div class="footer-col footer-info">
+            <h3>Contacto</h3>
+            <p>📞 Llámanos: (+57) 350 507 3843</p>
+            <p>📍 Mall Terracina Plaza P.H., Carrera 27, 35 sur 162, Quebrada Clara, Envigado, Antioquia</p>
+            <div class="redes-sociales">
+                <a href="https://www.youtube.com/@edeaplay" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/edeagrooming?igsh=a2s4Zml3dzVwMHE5" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 EDEA PRO - Peluquería Canina y Felina. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script src="../scripts/inicio.js"></script>
+<script src="../scripts/navbar.js"></script>
 
 <script>
-/**
- * Contador animado para la sección de estadísticas.
- * Usa IntersectionObserver para detectar cuando la sección
- * entra en pantalla y activa la animación de conteo.
- */
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            // Animar cada número cuando la sección es visible
-            entry.target.querySelectorAll('.stat-number').forEach(el => {
-                const target   = parseInt(el.getAttribute('data-target'));
-                const duracion = 1800; // milisegundos que dura la animación
-                const paso     = target / (duracion / 16);
-                let actual     = 0;
+/* ── SPLASH: ocultar al cargar y arrancar el contador de stats ── */
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('splash').classList.add('oculto');
+        setTimeout(iniciarContador, 300);
+    }, 1600);
+});
 
-                const intervalo = setInterval(() => {
-                    actual += paso;
-                    if (actual >= target) {
-                        // Mostrar el número final con + o %
-                        el.textContent = target + (target === 100 ? '%' : '+');
-                        clearInterval(intervalo);
-                    } else {
-                        el.textContent = Math.floor(actual) + (target === 100 ? '%' : '+');
-                    }
-                }, 16);
-            });
-            // Dejar de observar — la animación solo corre una vez
-            statsObserver.unobserve(entry.target);
-        }
+/* ── NAVBAR SHRINK al hacer scroll ── */
+const mainHeader = document.getElementById('main-header');
+window.addEventListener('scroll', () => {
+    mainHeader.classList.toggle('shrink', window.scrollY > 60);
+});
+
+/* ── FADE-IN AL SCROLL ── */
+const fadeObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
     });
-}, { threshold: 0.3 });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
-// Observar la sección de estadísticas
-const statsSection = document.querySelector('.stats-section');
-if (statsSection) statsObserver.observe(statsSection);
+/* ── CONTADOR ANIMADO DE ESTADÍSTICAS ── */
+function iniciarContador() {
+    const statsEl = document.getElementById('stats-section');
+    if (!statsEl) return;
+    const statsObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('.stat-number').forEach(el => {
+                    if (el.dataset.contado) return;
+                    el.dataset.contado = '1';
+                    const target = parseInt(el.getAttribute('data-target'));
+                    const paso   = target / (1800 / 16);
+                    let cur = 0;
+                    const t = setInterval(() => {
+                        cur += paso;
+                        if (cur >= target) {
+                            el.textContent = target + (target === 100 ? '%' : '+');
+                            clearInterval(t);
+                        } else {
+                            el.textContent = Math.floor(cur) + (target === 100 ? '%' : '+');
+                        }
+                    }, 16);
+                });
+                statsObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    statsObs.observe(statsEl);
+}
 </script>
 
 </body>
-
-
 </html>

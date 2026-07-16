@@ -4,23 +4,18 @@
    Estilos del sitio público: navbar, hero, carrusel,
    secciones de servicios, footer y páginas internas.
 
-   Paleta de marca (manual de colores original — ver
-   docs/MODERNIZACION-VISUAL.md):
+   Paleta de marca (manual de colores original):
      --color-bg / --color-bg-main   : #f4f3ea  (fondo base cálido)
      --color-surface                : #f4f4f4  (paneles / secciones)
      --color-metal                  : #ae9d81  (acento metálico — bordes, activos)
      --color-text                   : #333333  (texto secundario)
-     --color-heading / --color-primary / --color-dark : #050505 (texto/encabezados principales, header y footer)
+     --color-heading / --color-primary / --color-dark : #050505
      --color-cta / --color-secondary: #f0ab06  (CTA / estado activo / estrellas)
      --color-info                   : #00a7b5  (filtros/tabs activos, badges info)
-     --color-success                : #7eb56a  (éxito, sin cambios semánticos)
-     --color-special                : #7671a6  (notificaciones especiales, decorativo)
+     --color-success                : #7eb56a  (éxito)
+     --color-special                : #7671a6  (notificaciones especiales)
 
-   Tipografía: Outfit (encabezados) + Inter (texto), vía Google Fonts
-   (enlace en el <head> de cada página).
-
-   Las tarjetas (.card, .service-card, .modal, etc.) se mantienen en
-   blanco puro para distinguirse del fondo cálido y dar elevación.
+   Tipografía: Outfit (encabezados) + Inter (texto), vía Google Fonts.
 
    Se carga en: inicio.html, nosotros.html, ubicacion.html,
    perrocorto.html, perrolargo.html, gatos.html,
@@ -31,9 +26,11 @@
    VARIABLES
 ================================*/
 :root {
+    /* ── Colores de marca ── */
     --color-bg: #f4f3ea;
     --color-bg-main: #f4f3ea;
-    --color-surface: #f4f4f4;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f4f4f4;
     --color-metal: #ae9d81;
     --color-metal-text: #8B6F4E;
     --color-text: #333333;
@@ -44,28 +41,73 @@
     --color-light: #f4f3ea;
     --color-cta: #f0ab06;
     --color-cta-dark: #d69a05;
+    --color-cta-soft: rgba(240, 171, 6, 0.12);
     --color-secondary: #f0ab06;
     --color-info: #00a7b5;
     --color-success: #7eb56a;
     --color-special: #7671a6;
     --color-muted: #8B6F4E;
 
-    --shadow: 0 6px 18px rgba(5, 5, 5, 0.08);
-    --shadow-elevated: 0 14px 34px rgba(5, 5, 5, 0.12);
+    /* ── Espaciado consistente (escala de 4px) ── */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+
+    /* ── Tipografía en escala ── */
+    --text-xs: 11px;
+    --text-sm: 13px;
+    --text-base: 15px;
+    --text-md: 17px;
+    --text-lg: 20px;
+    --text-xl: 24px;
+    --text-2xl: 32px;
+    --text-3xl: 40px;
+    --text-4xl: 52px;
+
+    /* ── Border radius ── */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 32px;
+    --radius-full: 9999px;
+
+    /* ── Sombras ── */
+    --shadow-sm: 0 2px 8px rgba(5, 5, 5, 0.06);
+    --shadow-md: 0 6px 18px rgba(5, 5, 5, 0.08);
+    --shadow-lg: 0 14px 34px rgba(5, 5, 5, 0.12);
+    --shadow-xl: 0 24px 48px rgba(5, 5, 5, 0.16);
     --shadow-glow: 0 0 0 4px rgba(240, 171, 6, 0.28);
+
+    /* ── Transiciones ── */
     --transition: all 0.3s ease;
     --transition-fast: all 0.2s ease;
     --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* ── Tipografía ── */
     --font-weight-regular: 400;
+    --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-black: 800;
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
+
+    /* ── Contenedor máximo ── */
+    --container: 1200px;
+    --container-padding: var(--space-8);
 }
+
 /* ===============================
    RESET
 ================================*/
-/* Reset general */
 * {
     margin: 0;
     padding: 0;
@@ -85,7 +127,6 @@ h1, h2, h3, h4, h5, h6 {
 /* ===============================
    HEADER
 ================================*/
-/* Header principal con logo y navbar — glassmorphism sobre fondo oscuro */
 header {
     display: flex;
     justify-content: space-between;
@@ -98,9 +139,14 @@ header {
     top: 0;
     z-index: 100;
     border-bottom: 1px solid rgba(174, 157, 129, 0.25);
+    transition: padding 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Contenedor del logo en el header */
+header.shrink {
+    padding: 8px 50px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -111,20 +157,17 @@ header {
     width: 100%;
     height: auto;
 }
-/* Quitar la línea animada del botón login — es un botón, no un link */
+
 .login::after {
     display: none;
 }
 
-/* Lista de links del navbar */
 nav ul {
     display: flex;
     list-style: none;
     gap: 30px;
-
 }
 
-/* Botón hamburguesa — solo visible en móvil/tablet (ver media query) */
 .nav-hamburger {
     display: none;
     flex-shrink: 0;
@@ -155,7 +198,6 @@ nav a:hover {
     color: var(--color-light);
 }
 
-/* Línea metálica que se desliza de izquierda a derecha al hacer hover */
 nav a::after {
     content: '';
     position: absolute;
@@ -174,12 +216,70 @@ nav a:hover::after {
     transform-origin: left;
 }
 
-/* Botón de inicio de sesión / Mi perfil en el navbar — CTA dorado */
 .login {
     background: var(--color-cta);
     color: var(--color-heading);
     padding: 8px 15px;
     border-radius: 5px;
+}
+
+/* ===============================
+   SPLASH SCREEN
+================================*/
+#splash {
+    position: fixed;
+    inset: 0;
+    background: var(--color-dark-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#splash.oculto {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.splash-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    animation: splashEntrada 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-logo img {
+    width: 80px;
+    filter: brightness(0) invert(1);
+}
+
+.splash-nombre {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-light);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.splash-linea {
+    width: 0;
+    height: 2px;
+    background: var(--color-cta);
+    animation: splashLinea 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
+}
+
+@keyframes splashEntrada {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes splashLinea {
+    from { width: 0; }
+    to   { width: 110px; }
 }
 
 /* =========================================
@@ -188,7 +288,8 @@ nav a:hover::after {
 #carrusel-hero {
     position: relative;
     width: 100%;
-    height: 60vh;
+    height: 65vh;
+    min-height: 440px;
     overflow: hidden;
 }
 
@@ -198,7 +299,6 @@ nav a:hover::after {
     height: 100%;
 }
 
-/* Slides */
 .carrusel-item {
     position: absolute;
     width: 100%;
@@ -206,7 +306,6 @@ nav a:hover::after {
     top: 0;
     left: 0;
     opacity: 0;
-    /* Transición más lenta para que el zoom se vea bien */
     transition: opacity 1.2s ease-in-out;
     z-index: 0;
 }
@@ -220,139 +319,194 @@ nav a:hover::after {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Imagen empieza en tamaño normal */
     transform: scale(1);
     transition: transform 10s ease;
 }
 
-/* Efecto Ken Burns — zoom suave mientras el slide está activo */
 .carrusel-item.active img {
     transform: scale(1.08);
 }
 
-/* Ajustes de posición de imagen por slide */
-.slide1 img {
-    object-position: 100% 75%;
-}
+.carrusel-item:nth-child(1) img { object-position: 50% 65%; }
+.carrusel-item:nth-child(2) img { object-position: 50% 50%; }
+.carrusel-item:nth-child(3) img { object-position: 50% 35%; }
 
-.slide2 img {
-    object-position: 100% 50%;
-}
-
-.slide3 img {
-    object-position: 100% 30%;
-}
-
+/* Overlay — centrado */
 .carrusel-caption {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.7) 100%);
-    color: var(--color-light);
     text-align: center;
-    padding: 20px;
+    padding: 0 10% 5%;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.65) 100%);
+    color: var(--color-light);
 }
 
-/* Título del carrusel — aparece deslizándose desde abajo */
+/* Eyebrow pill animado */
+.carrusel-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(240, 171, 6, 0.18);
+    border: 1px solid rgba(240, 171, 6, 0.4);
+    color: var(--color-cta);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0.1s;
+}
+
+.carrusel-item.active .carrusel-eyebrow {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Título — clip-path reveal de izquierda a derecha */
 .carrusel-caption h1 {
-    font-size: 3.5rem;
+    font-size: clamp(2.6rem, 5.5vw, 4.5rem);
     font-weight: 800;
-    margin-bottom: 15px;
-    max-width: 100%;
-    text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: 0.3s;
+    line-height: 1.1;
+    max-width: 700px;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0.25s;
 }
 
-/* Subtítulo del carrusel — aparece un poco después que el título.
-   max-width:100% es necesario porque el contenedor padre usa
-   align-items:center (flex en columna): sin un ancho explícito, el
-   texto no se ajusta al ancho del contenedor y se desborda en vez
-   de saltar de línea. */
+.carrusel-item.active .carrusel-caption h1 {
+    clip-path: inset(0 0% 0 0);
+}
+
+/* Subtítulo — fade + slide */
 .carrusel-caption p {
-    font-size: 1.4rem;
-    font-weight: 500;
-    max-width: 100%;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 400;
+    max-width: 560px;
+    line-height: 1.6;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: 0.5s;
 }
 
-/* Cuando el slide está activo, mostrar el texto con animación */
-.carrusel-item.active .carrusel-caption h1,
 .carrusel-item.active .carrusel-caption p {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Botones del carrusel — cristal sobre la imagen */
+/* CTA dentro del carrusel */
+.carrusel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-cta);
+    color: var(--color-heading);
+    padding: 13px 30px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.25s ease,
+                box-shadow 0.25s ease;
+    transition-delay: 0.65s;
+    box-shadow: 0 4px 20px rgba(240, 171, 6, 0.4);
+}
+
+.carrusel-item.active .carrusel-cta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.carrusel-cta:hover {
+    background: var(--color-cta-dark);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(240, 171, 6, 0.5);
+}
+
+/* Botones de navegación — glassmorphism circular */
 .carrusel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(42, 33, 26, .5);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.15);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
-    font-size: 28px;
-    padding: 10px 15px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    z-index: 2;
-    transition: var(--transition-fast);
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .carrusel-control:hover {
-    background: rgba(240, 171, 6, .85);
+    background: var(--color-cta);
+    border-color: var(--color-cta);
+    color: var(--color-heading);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 20px rgba(240, 171, 6, 0.45);
 }
 
-.prev {
-    left: 20px;
-}
+.prev { left: 28px; }
+.next { right: 28px; }
 
-.next {
-    right: 20px;
-}
-
-/* Dots */
+/* Dots — barras de progreso */
 .dot-container {
     position: absolute;
-    bottom: 20px;
+    bottom: 28px;
+    left: 0;
     width: 100%;
-    text-align: center;
-    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 50%;
-    display: inline-block;
-    margin: 0 5px;
+    width: 28px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 2px;
     cursor: pointer;
+    transition: width 0.35s ease, background 0.35s ease;
 }
 
 .dot.active {
+    width: 60px;
     background: var(--color-cta);
 }
 
 /* ===============================
    REDES SOCIALES
 ================================*/
-/* Contenedor */
 .redes-sociales {
     display: flex;
     align-items: center;
@@ -360,41 +514,32 @@ nav a:hover::after {
     margin-top: 15px;
 }
 
-/* Botones */
 .redes-sociales a {
     width: 55px;
     height: 55px;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     color: var(--color-light);
     background: transparent;
-
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 15px;
-
     text-decoration: none;
-
     transition: all 0.3s ease;
 }
 
-/* Iconos */
 .redes-sociales i {
     font-size: 28px;
 }
 
-/* Hover */
 .redes-sociales a:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(255,255,255,0.15);
 }
 
 /* ===============================
-   FEATURED SECTION
+   FEATURED SECTION (otras páginas)
 ================================*/
-/* CONTENIDO PRINCIPAL CON IMAGEN Y TEXTO */
 #featured-section {
     padding: 60px 32px;
     background-color: var(--color-bg-main);
@@ -440,7 +585,6 @@ nav a:hover::after {
     order: 1;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: var(--shadow-elevated);
     transition: var(--transition);
     aspect-ratio: 4 / 3;
 }
@@ -457,7 +601,6 @@ nav a:hover::after {
     display: block;
 }
 
-/* Botón principal de agendamiento — CTA dorado */
 .btn-reserve {
     display: inline-block;
     padding: 14px 32px;
@@ -480,133 +623,446 @@ nav a:hover::after {
     box-shadow: 0 4px 12px rgba(5, 5, 5, 0.3);
 }
 
-/* ============================================
-       SECCIÓN SERVICIOS DE GROOMING
-       ============================================ */
-/* Encabezado de la sección de servicios */
-.services-header {
+/* ===============================
+   ESTADÍSTICAS
+================================*/
+.stats-section {
+    background: var(--color-bg);
+    border-top: 2px solid rgba(174, 157, 129, 0.3);
+    border-bottom: 2px solid rgba(174, 157, 129, 0.3);
+    padding: var(--space-12) var(--space-16);
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
     text-align: center;
-    margin-bottom: 40px;
+    color: var(--color-heading);
 }
 
-.services-header h2 {
-    font-size: 2rem;
-    color: var(--color-dark);
-    margin-bottom: 10px;
+.stat-icono-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    background: rgba(240, 171, 6, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-3);
+    font-size: 22px;
+    color: var(--color-cta-dark);
+}
+
+.stat-number {
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
     font-weight: 800;
+    font-family: var(--font-heading);
+    display: block;
+    line-height: 1;
+    color: var(--color-heading);
 }
 
-.services-header p {
-    font-size: 1.05rem;
+.stat-label {
+    font-size: 12px;
     color: var(--color-muted);
-}
-
-/* Grid de tarjetas de servicios */
-.services-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
+    margin-top: var(--space-2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* ===============================
-   SERVICIOS
+   ¿POR QUÉ ELEGIRNOS?
 ================================*/
-.services-header {
+.porque {
+    padding: var(--space-20) var(--space-16);
+    background: var(--color-bg);
+}
+
+.sec-eyebrow {
     text-align: center;
-    margin-top: 80px;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-metal-text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-3);
 }
 
-.services-header h2 {
-    font-size: 30px;
-    margin-bottom: 10px;
+.sec-titulo {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    text-align: center;
+    margin-bottom: var(--space-4);
 }
 
-.services-cards {
-    display: flex;
-    gap: 30px;
-    margin-top: 40px;
+.sec-desc {
+    font-size: var(--text-base);
+    color: var(--color-muted);
+    text-align: center;
+    max-width: 540px;
+    margin: 0 auto var(--space-12);
+    line-height: 1.7;
 }
 
-/* Borde animado */
-@keyframes animate-border {
-    0%   { background-position: 0% 0%; }
-    100% { background-position: 400% 0%; }
+.porque-grid {
+    max-width: var(--container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
 }
 
-/* Tarjeta individual de servicio — blanca, con borde animado metal+dorado */
-.service-card {
+.porque-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    border: 0.5px solid rgba(174, 157, 129, 0.2);
+    transition: var(--transition-smooth);
     position: relative;
     overflow: hidden;
-    border-radius: 16px;
+}
+
+.porque-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--color-metal), var(--color-cta));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.porque-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.porque-card:hover::before {
+    transform: scaleX(1);
+}
+
+.porque-icono {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: var(--space-5);
+}
+
+.porque-icono.dorado { background: rgba(240, 171, 6, 0.12); color: var(--color-cta-dark); }
+.porque-icono.verde  { background: rgba(126, 181, 106, 0.12); color: #5a8a48; }
+.porque-icono.teal   { background: rgba(0, 167, 181, 0.12); color: var(--color-info); }
+
+.porque-card h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-heading);
+    margin-bottom: var(--space-3);
+}
+
+.porque-card p {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    line-height: 1.7;
+}
+
+/* ===============================
+   SECCIÓN DE SERVICIOS (inicio.html)
+================================*/
+.services-section {
+    padding: var(--space-20) var(--space-16);
+    background: #f0ede6;
+}
+
+/* Grid de tarjetas — actualizado de flex a grid para el nuevo diseño */
+.services-cards {
+    max-width: var(--container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+/* Tarjeta de servicio — nuevo diseño overlay (reemplaza el diseño anterior con borde animado) */
+.service-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     background: white;
-    flex: 1;
-    transition: transform 0.3s ease;
-    z-index: 0;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    aspect-ratio: 4/3;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-6px);
 }
 
-.service-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    border-radius: 18px;
-    background: linear-gradient(90deg, var(--color-metal), var(--color-cta), var(--color-metal));
-    background-size: 400% 400%;
-    animation: animate-border 3s linear infinite;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.service-card::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    border-radius: 15px;
-    background: white;
-    z-index: 2;
-}
-
-.service-card .card-image,
-.service-card .card-content {
-    position: relative;
-    z-index: 3;
-}
-
-.card-image {
-    overflow: hidden;
-    height: 300px;
-}
-
-.card-image img {
+.service-card > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card-content {
-    padding: 20px;
+.service-card:hover > img {
+    transform: scale(1.08);
 }
 
-.card-content h3 {
-    margin-bottom: 10px;
+/* Badge flotante sobre la imagen */
+.service-card-badge {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    background: rgba(5, 5, 5, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    z-index: 2;
 }
+
+/* Overlay de texto que sube al hacer hover */
+.service-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-6);
+    background: linear-gradient(to top, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.3) 60%, transparent 100%);
+    transform: translateY(30%);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+}
+
+.service-card:hover .service-card-overlay {
+    transform: translateY(0);
+}
+
+.service-card-overlay h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--space-2);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.service-card-overlay p {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+}
+
+.service-card:hover .service-card-overlay p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-cta);
+    color: var(--color-heading);
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s, background 0.2s ease;
+}
+
+.service-card:hover .service-card-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-card-btn:hover {
+    background: var(--color-cta-dark);
+}
+
+/* ===============================
+   SECCIÓN ASIMÉTRICA
+================================*/
+.asimetrica {
+    padding: var(--space-20) var(--space-16);
+    background: var(--color-bg);
+}
+
+.asimetrica-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+}
+
+.asimetrica-img {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    box-shadow: var(--shadow-xl);
+    transition: var(--transition-smooth);
+}
+
+.asimetrica-img:hover {
+    transform: scale(1.015);
+}
+
+.asimetrica-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.asim-eyebrow {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-metal-text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-3);
+    display: block;
+}
+
+.asim-titulo {
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    line-height: 1.2;
+    margin-bottom: var(--space-5);
+}
+
+.asim-texto {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    line-height: 1.75;
+    margin-bottom: var(--space-7);
+}
+
+.checks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-heading);
+}
+
+.check-item i {
+    color: var(--color-success);
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.btn-asim {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: transparent;
+    color: var(--color-heading);
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid var(--color-metal);
+    transition: var(--transition-smooth);
+}
+
+.btn-asim:hover {
+    background: var(--color-metal);
+    color: var(--color-light);
+    transform: translateY(-2px);
+}
+
+/* ===============================
+   ARTE PASIÓN — texto introductorio
+================================*/
+.arte-pasion-texto {
+    background: var(--color-bg);
+    padding: var(--space-12) var(--space-16) 0;
+}
+
+.arte-pasion-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.arte-pasion-inner h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    margin-bottom: var(--space-4);
+    letter-spacing: 1px;
+}
+
+.arte-pasion-inner p {
+    font-size: var(--text-base);
+    color: var(--color-muted);
+    line-height: 1.75;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ===============================
+   FADE-IN AL SCROLL
+================================*/
+.fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
 
 /* ===============================
    DIVIDER
 ================================*/
-/* Línea divisora entre secciones */
 .divider-line {
     width: 80%;
     height: 2px;
@@ -615,7 +1071,7 @@ nav a:hover::after {
 }
 
 /* ===============================
-   FEATURES
+   FEATURES (otras páginas)
 ================================*/
 #features-zigzag {
     max-width: 1100px;
@@ -658,7 +1114,6 @@ nav a:hover::after {
     flex: 1;
     overflow: hidden;
     border-radius: 12px;
-    box-shadow: var(--shadow);
     transition: var(--transition);
     aspect-ratio: 4 / 3;
 }
@@ -712,7 +1167,6 @@ nav a:hover::after {
     background: transparent;
     cursor: pointer;
     font-size: 0.92rem;
-
 }
 
 .cta-card::after {
@@ -765,10 +1219,6 @@ footer::before {
     padding-bottom: 36px;
     position: relative;
     z-index: 1;
-}
-
-.footer-col {
-    animation: fadeInUp 0.6s ease-out;
 }
 
 .footer-col h3 {
@@ -829,7 +1279,6 @@ footer::before {
     gap: 12px;
 }
 
-/* Iconos sociales en el footer — CTA dorado */
 .social-links a {
     color: var(--color-cta);
     text-decoration: none;
@@ -866,12 +1315,9 @@ footer::before {
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
-/* =====================================
-   RESPONSIVE DESIGN
-===================================== */
 
 /* 📱 TABLETS (max 1024px) */
-@media (max-width:1024px) {
+@media (max-width: 1024px) {
 
     header {
         padding: 15px 20px;
@@ -881,18 +1327,13 @@ footer::before {
         gap: 15px;
     }
 
-    /* .featured-content es CSS grid, no flex — "flex-direction" no hacía
-       nada y la cuadrícula de 2 columnas seguía activa en móvil, dejando
-       el texto angosto y la imagen encogida flotando junto a él. Se
-       apila a 1 columna (la imagen primero, por el "order" ya definido
-       en cada bloque) y el texto queda alineado a la izquierda. */
     .featured-content {
         grid-template-columns: 1fr;
         text-align: left;
     }
 
     .services-cards {
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 
     .feature-card {
@@ -906,17 +1347,19 @@ footer::before {
         text-align: center;
     }
 
-    .carrusel-caption h1 {
-        font-size: 35px;
-    }
+    /* Stats */
+    .stats-section { gap: 40px; padding: var(--space-10) var(--space-8); }
 
-    .carrusel-caption p {
-        font-size: 18px;
-    }
+    /* Porque */
+    .porque-grid { grid-template-columns: 1fr 1fr; }
+
+    /* Asimétrica */
+    .asimetrica-inner { grid-template-columns: 1fr; }
+    .asimetrica-img { aspect-ratio: 16/9; }
 }
 
 /* 📱 CELULARES (max 768px) */
-@media (max-width:768px) {
+@media (max-width: 768px) {
 
     header {
         padding: 12px 16px;
@@ -931,9 +1374,6 @@ footer::before {
         display: block;
     }
 
-    /* nav sale del flujo flex del header (para no competir por espacio con
-       el logo/hamburguesa) y su menú se despliega como panel flotante
-       debajo, anclado al header */
     nav {
         position: absolute;
         top: 100%;
@@ -956,97 +1396,42 @@ footer::before {
         display: flex;
     }
 
-    #carrusel-hero {
-        height: 60vh;
-    }
+    /* Carrusel */
+    #carrusel-hero { height: 62vh; }
+    .carrusel-caption { padding: 0 6% 10%; }
+    .carrusel-control { width: 42px; height: 42px; font-size: 15px; }
+    .prev { left: 14px; }
+    .next { right: 14px; }
 
-    .carrusel-caption h1 {
-        font-size: 28px;
-    }
+    .featured-text h2 { font-size: 24px; }
 
-    .carrusel-caption p {
-        font-size: 16px;
-    }
+    /* Stats */
+    .stats-section { gap: 30px 40px; padding: 40px 20px; }
+    .stat-number { font-size: 36px; }
 
-    .featured-text h2 {
-        font-size: 24px;
-    }
+    /* Porque */
+    .porque { padding: var(--space-12) var(--space-5); }
+    .porque-grid { grid-template-columns: 1fr; }
 
-    .services-header h2 {
-        font-size: 24px;
-    }
+    /* Servicios */
+    .services-section { padding: var(--space-12) var(--space-5); }
 
-    .feature-content h3 {
-        font-size: 22px;
-    }
-
-    .stats-section {
-        gap: 30px 40px;
-        padding: 40px 20px;
-    }
-
-    .stat-number {
-        font-size: 36px;
-    }
+    /* Asimétrica */
+    .asimetrica { padding: var(--space-12) var(--space-5); }
 }
 
 /* 📱 CELULARES PEQUEÑOS (max 480px) */
-@media (max-width:480px) {
+@media (max-width: 480px) {
 
-    .logo {
-        font-size: 16px;
-    }
+    .logo { font-size: 16px; }
 
-    .carrusel-caption h1 {
-        font-size: 22px;
-    }
+    #carrusel-hero { height: 58vh; min-height: 360px; }
 
-    .carrusel-caption p {
-        font-size: 14px;
-    }
+    .carrusel-cta { padding: 10px 20px; font-size: 14px; }
 
     .btn-reserve,
     .cta-card {
         padding: 8px 15px;
         font-size: 14px;
     }
-
-    .services-header h2 {
-        font-size: 20px;
-    }
-
-}
-
-/* ── Sección de estadísticas ───────────────────────────────── */
-.stats-section {
-    background: var(--color-bg);
-    border-top: 2px solid var(--color-metal);
-    border-bottom: 2px solid var(--color-metal);
-    padding: 50px 40px;
-    display: flex;
-    justify-content: center;
-    gap: 80px;
-    flex-wrap: wrap;
-}
-
-.stat-item {
-    text-align: center;
-    color: var(--color-heading);
-}
-
-.stat-number {
-    font-size: 52px;
-    font-weight: 800;
-    font-family: var(--font-heading);
-    display: block;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 13px;
-    color: var(--color-muted);
-    margin-top: 6px;
-    font-family: var(--font-body);
-    letter-spacing: 1px;
-    text-transform: uppercase;
 }

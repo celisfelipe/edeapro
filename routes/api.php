@@ -10,13 +10,18 @@
 
 use Illuminate\Support\Facades\Route;
 
-// ── Rutas públicas ────────────────────────────────────────────
+// ── Autenticación ─────────────────────────────────────────────
 // Máximo 5 intentos de login por minuto por IP
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/login',    [App\Http\Controllers\AuthController::class, 'login']);
     Route::post('/registro', [App\Http\Controllers\AuthController::class, 'registro']);
 });
 
+// ── Recuperación de contraseña ────────────────────────────────
+Route::post('/recuperar-contrasena',   [App\Http\Controllers\RecuperacionController::class, 'enviarToken']);
+Route::post('/restablecer-contrasena', [App\Http\Controllers\RecuperacionController::class, 'restablecerContrasena']);
+
+// ── Rutas públicas ────────────────────────────────────────────
 Route::get('/citas/servicios',   [App\Http\Controllers\CitaController::class, 'servicios']);
 Route::get('/citas/adicionales', [App\Http\Controllers\CitaController::class, 'adicionales']);
 Route::get('/citas/estilistas',  [App\Http\Controllers\CitaController::class, 'estilistas']);
@@ -25,8 +30,8 @@ Route::get('/resenas',           [App\Http\Controllers\ResenaController::class, 
 
 // ── Rutas que requieren cualquier sesión activa ───────────────
 Route::middleware('verificar.token')->group(function () {
-    Route::post('/citas/crear',      [App\Http\Controllers\CitaController::class, 'crear']);
-    Route::post('/resenas/crear',    [App\Http\Controllers\ResenaController::class, 'crear']);
+    Route::post('/citas/crear',   [App\Http\Controllers\CitaController::class, 'crear']);
+    Route::post('/resenas/crear', [App\Http\Controllers\ResenaController::class, 'crear']);
 });
 
 // ── Rutas solo para administrador ────────────────────────────
@@ -54,12 +59,12 @@ Route::middleware('verificar.token:administrador')->group(function () {
 
     Route::get('/admin/estadisticas', [App\Http\Controllers\Admin\EstadisticaAdminController::class, 'index']);
 
-    // ── Reportes PDF — solo administrador ────────────────────────
+    // ── Reportes PDF ──────────────────────────────────────────
     Route::get('/reportes/citas/pdf',    [App\Http\Controllers\ReporteController::class, 'citasPdf']);
     Route::get('/reportes/pagos/pdf',    [App\Http\Controllers\ReporteController::class, 'pagosPdf']);
     Route::get('/reportes/clientes/pdf', [App\Http\Controllers\ReporteController::class, 'clientesPdf']);
 
-    // ── Reportes Excel — solo administrador ──────────────────────
+    // ── Reportes Excel ────────────────────────────────────────
     Route::get('/reportes/citas/excel',    [App\Http\Controllers\ReporteController::class, 'citasExcel']);
     Route::get('/reportes/pagos/excel',    [App\Http\Controllers\ReporteController::class, 'pagosExcel']);
     Route::get('/reportes/clientes/excel', [App\Http\Controllers\ReporteController::class, 'clientesExcel']);
@@ -74,18 +79,19 @@ Route::middleware('verificar.token:administrador,peluquero')->group(function () 
     Route::post('/admin/disponibilidad-temporal/agregar',  [App\Http\Controllers\Admin\HorarioAdminController::class, 'agregarDisponibilidadTemporal']);
     Route::post('/admin/disponibilidad-temporal/eliminar', [App\Http\Controllers\Admin\HorarioAdminController::class, 'eliminarDisponibilidadTemporal']);
 
-    Route::get('/admin/clientes-empleado',        [App\Http\Controllers\Admin\ClienteAdminController::class, 'index']);
-    Route::get('/empleado/citas',                 [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
+    Route::get('/admin/clientes-empleado', [App\Http\Controllers\Admin\ClienteAdminController::class, 'index']);
+    Route::get('/empleado/citas',          [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
 });
 
 // ── Rutas solo para cliente ───────────────────────────────────
 Route::middleware('verificar.token:cliente')->group(function () {
-    Route::get('/cliente/perfil',         [App\Http\Controllers\Cliente\ClienteController::class, 'perfil']);
-    Route::post('/cliente/actualizar',    [App\Http\Controllers\Cliente\ClienteController::class, 'actualizar']);
-    Route::get('/cliente/mascotas',       [App\Http\Controllers\Cliente\ClienteController::class, 'mascotas']);
-    Route::post('/cliente/mascotas/agregar', [App\Http\Controllers\Cliente\ClienteController::class, 'agregarMascota']);
+    Route::get('/cliente/perfil',             [App\Http\Controllers\Cliente\ClienteController::class, 'perfil']);
+    Route::post('/cliente/actualizar',        [App\Http\Controllers\Cliente\ClienteController::class, 'actualizar']);
+    Route::get('/cliente/mascotas',           [App\Http\Controllers\Cliente\ClienteController::class, 'mascotas']);
+    Route::post('/cliente/mascotas/agregar',  [App\Http\Controllers\Cliente\ClienteController::class, 'agregarMascota']);
     Route::get('/cliente/mascotas/historial', [App\Http\Controllers\Cliente\ClienteController::class, 'historialMascota']);
-    Route::get('/cliente/citas',          [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
-    Route::post('/cliente/cancelar-cita', [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
-    Route::get('/cliente/pagos',          [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
+    Route::get('/cliente/citas',              [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
+    Route::post('/cliente/cancelar-cita',     [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
+    Route::post('/cliente/reagendar-cita',    [App\Http\Controllers\Cliente\ClienteController::class, 'reagendarCita']);
+    Route::get('/cliente/pagos',              [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
 });

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva contraseña — EDEA PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/login.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+
+        <!-- PANEL IZQUIERDO -->
+        <div class="welcome-panel">
+            <img src="../imagenes/logo/logo.png" alt="Edea Logo" class="logo">
+            <h1>EDEA Grooming</h1>
+            <p>El mejor cuidado para tu mascota</p>
+            <div class="paws">🐾</div>
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="forms-panel">
+            <div class="form-box" id="nueva-box">
+                <h2>Nueva contraseña</h2>
+                <p class="subtitle">Escribe tu nueva contraseña. Debe tener mínimo 8 caracteres.</p>
+
+                <div class="input-group">
+                    <label>Nueva contraseña</label>
+                    <div class="password-wrap">
+                        <input type="password" id="nueva-password" placeholder="Mín. 8 caracteres">
+                        <box-icon name='hide' id="ojo-nueva" onclick="togglePassword('nueva-password', 'ojo-nueva')" class="ojo-icon"></box-icon>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Confirmar contraseña</label>
+                    <div class="password-wrap">
+                        <input type="password" id="nueva-confirmar" placeholder="Repite tu contraseña">
+                        <box-icon name='hide' id="ojo-confirmar" onclick="togglePassword('nueva-confirmar', 'ojo-confirmar')" class="ojo-icon"></box-icon>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="restablecerContrasena()">Guardar contraseña</button>
+                <div id="nueva-msg" class="mensaje"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="../scripts/nueva-contrasena.js"></script>
+
+</body>
+</html>
