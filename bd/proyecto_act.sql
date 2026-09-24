@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-06-2026 a las 07:25:58
+-- Tiempo de generación: 24-09-2026 a las 04:24:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -87,8 +87,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1782155024),
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1782155024;', 1782155024);
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:4;', 1790212777),
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1790212777;', 1790212777);
 
 -- --------------------------------------------------------
 
@@ -123,22 +123,22 @@ CREATE TABLE `cita` (
 
 --
 -- Volcado de datos para la tabla `cita`
--- `id_raza` queda en NULL para estas citas sembradas porque se crearon
--- antes de que la columna existiera; el backend usa una duración de
--- respaldo (la máxima conocida del servicio) cuando id_raza es NULL.
 --
 
-INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_raza`, `id_estilista`, `fecha`, `hora`, `estado`) VALUES
-(1, 1, 1, 1, NULL, 2, '2026-04-15', '09:30:00', 'Cancelada'),
-(2, 3, 2, 1, NULL, 1, '2026-05-14', '09:00:00', 'Cancelada'),
-(7, 3, 2, 1, NULL, 2, '2026-05-08', '11:00:00', 'Cancelada'),
-(8, 3, 2, 1, NULL, 1, '2026-05-11', '11:30:00', 'Cancelada'),
-(9, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada'),
-(10, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada'),
-(11, 3, 2, 1, NULL, 3, '2026-05-19', '11:30:00', 'Cancelada'),
-(12, 3, 2, 2, NULL, 2, '2026-05-27', '09:00:00', 'Cancelada'),
-(13, 3, 2, 1, NULL, 2, '2026-05-28', '09:00:00', 'Cancelada'),
-(14, 3, 2, 2, NULL, 3, '2026-05-29', '09:00:00', 'Cancelada');
+INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_raza`, `id_estilista`, `fecha`, `hora`, `estado`, `motivo`) VALUES
+(1, 1, 1, 1, NULL, 2, '2026-04-15', '09:30:00', 'Cancelada', NULL),
+(2, 3, 2, 1, NULL, 1, '2026-05-14', '09:00:00', 'Cancelada', NULL),
+(7, 3, 2, 1, NULL, 2, '2026-05-08', '11:00:00', 'Cancelada', NULL),
+(8, 3, 2, 1, NULL, 1, '2026-05-11', '11:30:00', 'Cancelada', NULL),
+(9, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada', NULL),
+(10, 3, 2, 1, NULL, 2, '2026-05-09', '09:00:00', 'Cancelada', NULL),
+(11, 3, 2, 1, NULL, 3, '2026-05-19', '11:30:00', 'Cancelada', NULL),
+(12, 3, 2, 2, NULL, 2, '2026-05-27', '09:00:00', 'Cancelada', NULL),
+(13, 3, 2, 1, NULL, 2, '2026-05-28', '09:00:00', 'Cancelada', NULL),
+(14, 3, 2, 2, NULL, 3, '2026-05-29', '09:00:00', 'Cancelada', NULL),
+(9202, 3, 2, 1, 9, 2, '2026-07-10', '09:00:00', 'Cancelada', 'presento accidente'),
+(9203, 3, 2, 1, 9, 2, '2026-07-11', '09:00:00', 'Cancelada', 'me dio diarrea'),
+(9204, 3, 2, 1, 9, 2, '2026-07-20', '09:00:00', 'Cancelada', 'no puedo ir');
 
 --
 -- Disparadores `cita`
@@ -173,6 +173,37 @@ VALUES (
     'Cita registrada',
     'No leída'
 )
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trg_notificacion_cita_update` AFTER UPDATE ON `cita` FOR EACH ROW BEGIN
+  IF NEW.estado = 'Cancelada' AND OLD.estado != 'Cancelada' THEN
+    INSERT INTO notificacion(id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
+    VALUES (
+      (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
+      NEW.id_cita,
+      NEW.id_cliente,
+      CONCAT('Cita del ', NEW.fecha, ' a las ', NEW.hora,
+             ' fue cancelada. Motivo: ', IFNULL(NEW.motivo, 'No especificado')),
+      'Cancelación',
+      'Cita cancelada',
+      'No leída'
+    );
+  END IF;
+
+  IF NEW.estado = 'Reagendada' AND OLD.estado != 'Reagendada' THEN
+    INSERT INTO notificacion(id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
+    VALUES (
+      (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
+      NEW.id_cita,
+      NEW.id_cliente,
+      CONCAT('Cita reagendada para el ', NEW.fecha, ' a las ', NEW.hora),
+      'Reagendamiento',
+      'Cita reagendada',
+      'No leída'
+    );
+  END IF;
+END
 $$
 DELIMITER ;
 
@@ -216,7 +247,7 @@ CREATE TABLE `cliente` (
 
 INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `contrasena`, `telefono`, `correo`, `direccion`) VALUES
 (1, 'jose', 'lopez', '$2y$12$ueMwAeEv98tT2zlK2Rww0ukGvkCtOy/h0DZAG3cYRMYe7jwpMaZKy', '3218403116', 'pruebaedea15@gmail.com', ''),
-(3, 'felipe', 'celis', '$2y$12$fw.QWaajsKEovi45Gi0CBeYdScM/Iu4azyb6qa5F/O.imOm1giw86', '3502802461', 'felipe@gmail.com', NULL),
+(3, 'felipe', 'celis', '$2y$12$TJw5UBK1xuweO9kvzsdbA.v5DVeTqB63I896OzW.5j4YP7qYmQuxK', '3156412211', 'theblasflo14@gmail.com', NULL),
 (4, 'fernada', 'avendaño', '$2y$12$fLVPWt7DSzMXqJZqa5kvIe5LhLZv78QROx0bWwxzB.YkRc4t2eH9a', '3218403565', 'fernanda@gmail.com', NULL),
 (5, 'blessd', 'el bendito', '$2y$12$ULngQhzgrspQkl4oFoq.cOwpjplD9ttK3OQ4etEM3Ru4Bwb/OMH6u', '3156459812', 'blessd@gmail.com', '');
 
@@ -230,6 +261,28 @@ CREATE TABLE `cliente_promocion` (
   `id_cliente` int(11) NOT NULL,
   `id_promocion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `disponibilidad_estilista`
+--
+
+CREATE TABLE `disponibilidad_estilista` (
+  `id_disponibilidad` int(11) NOT NULL,
+  `id_estilista` int(11) NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  `motivo` varchar(100) DEFAULT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `disponibilidad_estilista`
+--
+
+INSERT INTO `disponibilidad_estilista` (`id_disponibilidad`, `id_estilista`, `fecha_inicio`, `fecha_fin`, `motivo`, `creado_en`) VALUES
+(5, 2, '2026-06-30', '2026-07-02', 'vacaciones', '2026-06-28 06:23:20');
 
 -- --------------------------------------------------------
 
@@ -267,31 +320,6 @@ CREATE TRIGGER `estilista_rol_mayusculas` BEFORE INSERT ON `estilista` FOR EACH 
 END
 $$
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `disponibilidad_estilista`
--- Bloqueos temporales de disponibilidad por fechas (ej. vacaciones),
--- separados del campo `estilista`.`disponibilidad` que es para baja permanente.
---
-
-CREATE TABLE `disponibilidad_estilista` (
-  `id_disponibilidad` int(11) NOT NULL AUTO_INCREMENT,
-  `id_estilista` int(11) NOT NULL,
-  `fecha_inicio` date NOT NULL,
-  `fecha_fin` date NOT NULL,
-  `motivo` varchar(100) DEFAULT NULL,
-  `creado_en` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id_disponibilidad`),
-  KEY `idx_estilista_fechas` (`id_estilista`,`fecha_inicio`,`fecha_fin`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Filtros para la tabla `disponibilidad_estilista`
---
-ALTER TABLE `disponibilidad_estilista`
-  ADD CONSTRAINT `fk_disponibilidad_estilista` FOREIGN KEY (`id_estilista`) REFERENCES `estilista` (`id_estilista`);
 
 -- --------------------------------------------------------
 
@@ -453,7 +481,13 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (7, 11, 3, 'Tu cita fue agendada para el 2026-05-19 a las 11:30:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (8, 12, 3, 'Tu cita fue agendada para el 2026-05-27 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (9, 13, 3, 'Tu cita fue agendada para el 2026-05-28 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
-(10, 14, 3, 'Tu cita fue agendada para el 2026-05-29 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída');
+(10, 14, 3, 'Tu cita fue agendada para el 2026-05-29 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(11, 9202, 3, 'Tu cita fue agendada para el 2026-07-10 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(12, 9203, 3, 'Tu cita fue agendada para el 2026-07-11 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(13, 9203, 3, 'Cita del 2026-07-11 a las 09:00:00 fue cancelada. Motivo: me dio diarrea', 'Cancelación', 'Cita cancelada', 'Leída'),
+(14, 9204, 3, 'Tu cita fue agendada para el 2026-07-17 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(15, 9204, 3, 'Cita reagendada para el 2026-07-18 a las 09:00:00', 'Reagendamiento', 'Cita reagendada', 'Leída'),
+(16, 9204, 3, 'Cita del 2026-07-20 a las 09:00:00 fue cancelada. Motivo: no puedo ir', 'Cancelación', 'Cita cancelada', 'No leída');
 
 -- --------------------------------------------------------
 
@@ -548,9 +582,9 @@ CREATE TABLE `personal_access_tokens` (
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
-(44, 'cliente', 3, 'auth_token', '3b01b59df1f72b0f249bfcae27dc9dbc3bb1d3c31b9c09b4899640e2a59f301b', '[\"cliente\"]', NULL, '2026-06-23 23:58:14', '2026-06-22 23:58:14', '2026-06-22 23:58:14'),
-(45, 'estilista', 1, 'auth_token', 'a5029bec582f38df2b1742682de243bf6ba3d90f71c4297bb2fe32e49febe060', '[\"administrador\"]', NULL, '2026-06-23 23:59:54', '2026-06-22 23:59:54', '2026-06-22 23:59:54'),
-(46, 'estilista', 2, 'auth_token', '9e20a1d9c68fcaa282f730eec6136ea231f537847ee15bafbad4ad67ec03909c', '[\"peluquero\"]', NULL, '2026-06-24 00:02:44', '2026-06-23 00:02:44', '2026-06-23 00:02:44');
+(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48'),
+(100, 'cliente', 3, 'auth_token', '5d8583770efb0e1a94c685391eba255d85fe2ad9d7ea686804f4c60043178358', '[\"cliente\"]', NULL, '2026-07-17 05:35:20', '2026-07-16 05:35:20', '2026-07-16 05:35:20'),
+(101, 'estilista', 1, 'auth_token', 'ed1401f4db4a4893ef0da25bcf4ba86d5bea44ee2eb530c92d4fdb39c846e014', '[\"administrador\"]', NULL, '2026-09-25 06:19:33', '2026-09-24 06:19:33', '2026-09-24 06:19:33');
 
 -- --------------------------------------------------------
 
@@ -709,6 +743,19 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `recuperacion_contrasena`
+--
+
+CREATE TABLE `recuperacion_contrasena` (
+  `id` int(11) NOT NULL,
+  `correo` varchar(150) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `resena`
 --
 
@@ -725,7 +772,9 @@ CREATE TABLE `resena` (
 --
 
 INSERT INTO `resena` (`id_resena`, `id_cliente`, `puntuacion`, `comentario`, `fecha`) VALUES
-(1, 3, 5, 'Gran servicio', '2026-05-23 20:08:37');
+(1, 3, 5, 'Gran servicio', '2026-05-23 20:08:37'),
+(3, 3, 4, 'me gusto, pero demorado', '2026-06-27 04:35:55'),
+(5, 3, 5, 'me encanto el servicio', '2026-07-09 21:43:42');
 
 -- --------------------------------------------------------
 
@@ -874,8 +923,8 @@ ALTER TABLE `cita`
   ADD KEY `id_cliente` (`id_cliente`),
   ADD KEY `id_mascota` (`id_mascota`),
   ADD KEY `id_servicio` (`id_servicio`),
-  ADD KEY `id_raza` (`id_raza`),
-  ADD KEY `id_estilista` (`id_estilista`);
+  ADD KEY `id_estilista` (`id_estilista`),
+  ADD KEY `fk_cita_id_raza` (`id_raza`);
 
 --
 -- Indices de la tabla `cliente`
@@ -889,6 +938,13 @@ ALTER TABLE `cliente`
 ALTER TABLE `cliente_promocion`
   ADD PRIMARY KEY (`id_cliente`,`id_promocion`),
   ADD KEY `id_promocion` (`id_promocion`);
+
+--
+-- Indices de la tabla `disponibilidad_estilista`
+--
+ALTER TABLE `disponibilidad_estilista`
+  ADD PRIMARY KEY (`id_disponibilidad`),
+  ADD KEY `idx_estilista_fechas` (`id_estilista`,`fecha_inicio`,`fecha_fin`);
 
 --
 -- Indices de la tabla `estilista`
@@ -980,6 +1036,12 @@ ALTER TABLE `raza_servicio`
   ADD KEY `id_raza` (`id_raza`);
 
 --
+-- Indices de la tabla `recuperacion_contrasena`
+--
+ALTER TABLE `recuperacion_contrasena`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `resena`
 --
 ALTER TABLE `resena`
@@ -1015,7 +1077,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9205;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -1024,10 +1086,16 @@ ALTER TABLE `cliente`
   MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT de la tabla `disponibilidad_estilista`
+--
+ALTER TABLE `disponibilidad_estilista`
+  MODIFY `id_disponibilidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `estilista`
 --
 ALTER TABLE `estilista`
-  MODIFY `id_estilista` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_estilista` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`
@@ -1045,7 +1113,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1057,19 +1125,25 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+
+--
+-- AUTO_INCREMENT de la tabla `recuperacion_contrasena`
+--
+ALTER TABLE `recuperacion_contrasena`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
 --
 ALTER TABLE `resena`
-  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
@@ -1106,6 +1180,12 @@ ALTER TABLE `cliente_promocion`
   ADD CONSTRAINT `cliente_promocion_ibfk_2` FOREIGN KEY (`id_promocion`) REFERENCES `promocion` (`id_promocion`);
 
 --
+-- Filtros para la tabla `disponibilidad_estilista`
+--
+ALTER TABLE `disponibilidad_estilista`
+  ADD CONSTRAINT `fk_disponibilidad_estilista` FOREIGN KEY (`id_estilista`) REFERENCES `estilista` (`id_estilista`);
+
+--
 -- Filtros para la tabla `mascota`
 --
 ALTER TABLE `mascota`
@@ -1137,60 +1217,6 @@ ALTER TABLE `raza_servicio`
 --
 ALTER TABLE `resena`
   ADD CONSTRAINT `resena_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE CASCADE;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `recuperacion_contrasena`
---
-
-CREATE TABLE `recuperacion_contrasena` (
-  `correo` varchar(150) NOT NULL,
-  `token` varchar(64) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Indices de la tabla `recuperacion_contrasena`
---
-ALTER TABLE `recuperacion_contrasena`
-  ADD PRIMARY KEY (`correo`);
-
--- --------------------------------------------------------
-
---
--- Disparadores `cita` — actualización (cancelación con motivo y reagendado)
---
-
-DELIMITER $$
-CREATE TRIGGER `trg_notificacion_cita_update` AFTER UPDATE ON `cita` FOR EACH ROW BEGIN
-    IF NEW.estado = 'Cancelada' AND OLD.estado <> 'Cancelada' THEN
-        INSERT INTO notificacion (id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
-        VALUES (
-            (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
-            NEW.id_cita,
-            NEW.id_cliente,
-            CONCAT('Tu cita fue cancelada. Motivo: ', IFNULL(NEW.motivo, 'No especificado')),
-            'Cancelación',
-            'Cita cancelada',
-            'No leída'
-        );
-    ELSEIF NEW.estado = 'Reagendada' AND OLD.estado <> 'Reagendada' THEN
-        INSERT INTO notificacion (id_notificacion, id_cita, id_cliente, mensaje, tipo, titulo, estado)
-        VALUES (
-            (SELECT IFNULL(MAX(n.id_notificacion), 0) + 1 FROM notificacion n),
-            NEW.id_cita,
-            NEW.id_cliente,
-            CONCAT('Tu cita fue reagendada para el ', NEW.fecha, ' a las ', NEW.hora),
-            'Reagendamiento',
-            'Cita reagendada',
-            'No leída'
-        );
-    END IF;
-END
-$$
-DELIMITER ;
-
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
