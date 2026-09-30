@@ -3,24 +3,18 @@
  * ===============================================
  * Carga los servicios agrupados por categoría en un acordeón.
  * Permite editar el precio y la duración de cada servicio por raza.
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Solo accesible con sesión de administrador (ver sesion.js).
  *
  * Conecta con la API de Laravel:
  *   GET  /api/admin/servicios        → cargar servicios
  *   POST /api/admin/servicios/editar → actualizar precio y duración
+ *
+ * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             modal.js (modalExito, modalError).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     cargarServicios();
 
@@ -37,7 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /**
  * Trae todos los servicios y los agrupa por categoría (nombre_servicio).
- * Cada categoría se muestra como un acordeón con tabla de razas adentro.
+ * Cada categoría se muestra como un acordeón cerrado con la tabla de
+ * razas (duración, precio y botón Editar) adentro.
+ *
+ * @returns {void}
  */
 function cargarServicios() {
     fetchAuth('http://127.0.0.1:8000/api/admin/servicios')
@@ -95,8 +92,10 @@ function cargarServicios() {
 }
 
 /**
- * Abre o cierra el cuerpo de un acordeón.
- * También cambia la flecha de ▶ a ▼ y viceversa.
+ * Abre o cierra el cuerpo de un acordeón y gira su flecha (chevron) 180°.
+ *
+ * @param {string} id - id de la categoría (nombre en minúsculas con guiones)
+ * @returns {void}
  */
 function toggleAcordeon(id) {
     const body   = document.getElementById('body-' + id);
@@ -112,7 +111,13 @@ function toggleAcordeon(id) {
 
 /**
  * Abre el modal para editar el precio y la duración de un servicio.
- * Se identifica el servicio por la combinación id_raza + id_servicio.
+ * El registro se identifica por la combinación id_raza + id_servicio.
+ *
+ * @param {number} id_raza
+ * @param {number} id_servicio
+ * @param {string} duracion - duración actual (ej. "45 min")
+ * @param {number} precio   - precio actual
+ * @returns {void}
  */
 function editarServicio(id_raza, id_servicio, duracion, precio) {
     const overlay = document.getElementById('modal-editar-servicio');
@@ -148,11 +153,4 @@ function editarServicio(id_raza, id_servicio, duracion, precio) {
     document.getElementById('edit-servicio-cancel').onclick = function () {
         overlay.classList.remove('open');
     };
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

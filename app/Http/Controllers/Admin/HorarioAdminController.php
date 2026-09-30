@@ -4,7 +4,9 @@
  * HorarioAdminController
  * ======================
  * Gestiona la vista de horarios y disponibilidad de estilistas (horarios.js).
- * Muestra las citas del día en una grilla y permite cambiar la disponibilidad.
+ * Entrega las citas por día para el calendario del admin (FullCalendar) y
+ * la grilla del empleado (empleado/disponibilidad.js), y permite cambiar la
+ * disponibilidad y los bloqueos temporales de cada estilista.
  *
  * Rutas: GET  /api/admin/horarios?fecha=YYYY-MM-DD
  *        POST /api/admin/horarios/disponibilidad
@@ -24,23 +26,31 @@ class HorarioAdminController extends Controller
     /**
      * Devuelve las citas de un día específico y la lista de estilistas activos.
      * Si no se pasa ?fecha, usa la fecha de hoy.
-     * El JS usa estos datos para construir la grilla de horarios.
+     * Las horas salen en 24h (HH:MM:SS); el frontend las muestra en 12h.
      */
     public function index(Request $request)
     {
         $fecha = $request->input('fecha', date('Y-m-d'));
 
+        // raza_servicio se une por su PK completa (id_servicio, id_raza) para
+        // obtener una sola fila por cita; unir solo por id_servicio la duplica
+        // una vez por cada raza que ofrece ese servicio.
         $citas = DB::select("
-            SELECT c.id_cita, c.hora, c.estado,
+            SELECT c.id_cita, c.fecha, c.hora, c.estado,
                    cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente,
-                   r.nombre_raza, rs.duracion,
+                   m.nombre AS mascota,
+                   r.nombre_raza, s.nombre_servicio, rs.duracion,
                    e.id_estilista, e.nombre_estilista
             FROM cita c
-            JOIN cliente cl ON c.id_cliente = cl.id_cliente
-            JOIN raza_servicio rs ON c.id_servicio = rs.id_servicio
-            JOIN raza r ON rs.id_raza = r.id_raza
+            JOIN cliente cl  ON c.id_cliente = cl.id_cliente
             JOIN estilista e ON c.id_estilista = e.id_estilista
+            LEFT JOIN mascota m  ON c.id_mascota = m.id_mascota
+            LEFT JOIN servicio s ON c.id_servicio = s.id_servicio
+            LEFT JOIN raza r     ON r.id_raza = COALESCE(c.id_raza, m.id_raza)
+            LEFT JOIN raza_servicio rs ON rs.id_servicio = c.id_servicio
+                                      AND rs.id_raza = r.id_raza
             WHERE c.fecha = ? AND c.estado != 'Cancelada'
+            ORDER BY c.hora
         ", [$fecha]);
 
         $estilistas = DB::select("

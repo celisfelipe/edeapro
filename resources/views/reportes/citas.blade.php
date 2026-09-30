@@ -37,7 +37,7 @@
             @foreach($citas as $cita)
             <tr>
                 <td>{{ $cita->fecha }}</td>
-                <td>{{ $cita->hora }}</td>
+                <td>{{ date('g:i A', strtotime($cita->hora)) }}</td>
                 <td>{{ $cita->nombre_cliente }} {{ $cita->apellido_cliente }}</td>
                 <td>{{ $cita->mascota }}</td>
                 <td>{{ $cita->nombre_servicio }}</td>

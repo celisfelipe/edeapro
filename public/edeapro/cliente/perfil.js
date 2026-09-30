@@ -418,7 +418,7 @@ function reagendarCita(id_cita, id_estilista) {
             disponibles.forEach(slot => {
                 const opt = document.createElement('option');
                 opt.value = slot;
-                opt.textContent = slot;
+                opt.textContent = formatoHora12(slot); // se muestra en 12h, el value sigue en 24h
                 selectHora.appendChild(opt);
             });
 

@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="../estilos/principal.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- FullCalendar (calendario interactivo de citas) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
 </head>
 <body>
     <script>
@@ -43,16 +47,10 @@
             <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
-        <!-- Selector de fecha y grilla de horarios -->
+        <!-- Calendario FullCalendar -->
         <div class="card">
-            <div class="fecha-selector">
-                <label><strong><i class="fa-solid fa-calendar-days"></i> Ver horarios del día:</strong></label>
-                <input type="date" id="fecha-selector">
-                <button class="btn btn-blue" onclick="cargarHorarios()"><i class="fa-solid fa-eye"></i> Ver</button>
-            </div>
-            <div id="contenedor-horarios">
-                <p>Selecciona una fecha para ver los horarios.</p>
-            </div>
+            <h2><i class="fa-solid fa-calendar-days"></i> Agenda</h2>
+            <div id="calendario"></div>
         </div>
 
         <!-- Tabla de disponibilidad de estilistas -->
@@ -116,6 +114,8 @@
     </div>
 
     <script src="../../scripts/fetchToken.js"></script>
+    <script src="../scripts/sesion.js"></script>
+    <script src="../../scripts/formatoHora.js"></script>
     <script src="../scripts/horarios.js"></script>
     <script src="../../scripts/sidebar-toggle.js"></script>
 </body>

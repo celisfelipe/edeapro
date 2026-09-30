@@ -1,107 +1,176 @@
 /**
  * horarios.js — Panel Administrador / Horarios
  * =============================================
- * Muestra la grilla de horarios del día (citas por estilista y hora).
- * Permite ver la disponibilidad de cada estilista y cambiarla.
- * Permite además registrar bloqueos temporales por fechas (ej. vacaciones),
- * independientes de la disponibilidad general.
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Muestra la agenda de citas en un calendario interactivo (FullCalendar).
+ * Vista semanal por defecto: eje Y = horas, eje X = días de la semana.
+ * Cada cita aparece como un bloque de color; al hacer clic se ve el detalle.
  *
- * Conecta con la API de Laravel:
- *   GET  /api/admin/horarios?fecha=YYYY-MM-DD     → citas y estilistas del día
- *   POST /api/admin/horarios/disponibilidad       → cambiar disponibilidad de estilista
- *   GET  /api/admin/disponibilidad-temporal       → listar bloqueos vigentes/futuros
- *   POST /api/admin/disponibilidad-temporal/agregar  → registrar un bloqueo
- *   POST /api/admin/disponibilidad-temporal/eliminar → eliminar un bloqueo
+ * Permite ver y cambiar la disponibilidad de cada estilista.
+ * Permite registrar y eliminar bloqueos temporales por fechas.
+ *
+ * Depende de: fetchToken.js (fetchAuth), formatoHora.js (formatoHora12),
+ *             sesion.js (verificarSesionAdmin, cerrarSesion) y FullCalendar (CDN).
+ *
+ * API Laravel:
+ *   GET  /api/admin/horarios?fecha=YYYY-MM-DD        → citas y estilistas del día
+ *   POST /api/admin/horarios/disponibilidad          → cambiar disponibilidad
+ *   GET  /api/admin/disponibilidad-temporal          → listar bloqueos
+ *   POST /api/admin/disponibilidad-temporal/agregar  → agregar bloqueo
+ *   POST /api/admin/disponibilidad-temporal/eliminar → eliminar bloqueo
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+    if (!verificarSesionAdmin()) return;
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
-
-    // Poner la fecha de hoy en el selector por defecto
-    const hoy = new Date().toISOString().split('T')[0];
-    document.getElementById('fecha-selector').value = hoy;
-
-    // Cargar la tabla de disponibilidad al iniciar
+    inicializarCalendario();
     cargarDisponibilidad();
     cargarBloqueos();
 });
 
 /**
- * Construye la grilla de horarios para la fecha seleccionada.
- * Genera slots de 30 minutos entre 9:00 y 17:00.
- * Por cada slot y estilista, muestra la cita asignada o "Libre".
+ * Crea y dibuja el calendario FullCalendar dentro de #calendario.
+ *
+ * - Vista inicial timeGridWeek: columnas = días, filas = horas (8 AM – 6 PM).
+ * - Las horas del eje Y y de cada bloque se muestran en formato 12h.
+ * - Cada cita es un bloque coloreado según su estado (ver cargarEventos).
+ * - Al hacer clic en una cita se muestra su detalle en un alert.
+ *
+ * FullCalendar llama a `events` cada vez que cambia el rango visible
+ * (al navegar entre semanas/meses) y ahí se piden las citas a la API.
+ *
+ * @returns {void}
  */
-function cargarHorarios() {
-    const fecha = document.getElementById('fecha-selector').value;
-    if (!fecha) return;
+function inicializarCalendario() {
+    const el = document.getElementById('calendario');
+    if (!el) return;
 
-    fetchAuth(`http://127.0.0.1:8000/api/admin/horarios?fecha=${fecha}`)
-    .then(res => res.json())
-    .then(data => {
-        if (!data.ok) return;
+    const calendario = new FullCalendar.Calendar(el, {
+        locale:       'es',
+        initialView:  'timeGridWeek',
+        headerToolbar: {
+            left:   'prev,next today',
+            center: 'title',
+            right:  'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        slotMinTime:     '08:00:00',   // la agenda empieza a las 8
+        slotMaxTime:     '18:00:00',   // y termina a las 6pm
+        slotDuration:    '00:30:00',   // slots de 30 minutos
+        allDaySlot:      false,        // sin fila de "todo el día"
+        nowIndicator:    true,         // línea roja en la hora actual
+        height:          'auto',
+        // Formato 12h en el eje Y y dentro de los bloques de evento
+        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
+        businessHours: {
+            daysOfWeek: [1, 2, 3, 4, 5, 6],  // lunes a sábado
+            startTime:  '09:00',
+            endTime:    '17:00'
+        },
 
-        const contenedor = document.getElementById('contenedor-horarios');
-        const estilistas = data.estilistas;
-        const citas      = data.citas;
+        // Cargar eventos dinámicamente según el rango visible
+        events: function (info, successCallback, failureCallback) {
+            cargarEventos(info.start, info.end)
+                .then(eventos => successCallback(eventos))
+                .catch(()    => failureCallback());
+        },
 
-        // Generar array de slots de 30 min entre 9:00 y 17:00
-        const horas = [];
-        for (let h = 9; h <= 17; h++) {
-            horas.push(`${String(h).padStart(2, '0')}:00`);
-            if (h < 17) horas.push(`${String(h).padStart(2, '0')}:30`);
-        }
-
-        // Encabezado de la tabla con un <th> por estilista
-        let html = `<table class="horario-table">
-            <tr>
-                <th>Hora</th>
-                ${estilistas.map(e => `<th>${e.nombre_estilista}</th>`).join('')}
-            </tr>`;
-
-        // Por cada slot de hora, buscar si hay una cita para cada estilista
-        horas.forEach(hora => {
-            html += `<tr><td class="hora-col">${hora}</td>`;
-            estilistas.forEach(e => {
-                // Buscar cita que coincida con el estilista y la hora exacta
-                const cita = citas.find(c =>
-                    c.id_estilista == e.id_estilista && c.hora.substring(0, 5) === hora
-                );
-                if (cita) {
-                    // Cita completada se muestra en verde
-                    const clase = cita.estado === 'Completada' ? 'completada' : '';
-                    html += `<td>
-                        <div class="cita-bloque ${clase}">
-                            <i class="fa-solid fa-paw"></i> ${cita.nombre_raza}<br>
-                            <small>${cita.nombre_cliente} ${cita.apellido_cliente}</small><br>
-                            <small>${cita.duracion}</small>
-                        </div>
-                    </td>`;
-                } else {
-                    html += `<td><span class="libre">Libre</span></td>`;
-                }
+        // Al hacer clic en una cita, mostrar su detalle
+        eventClick: function (info) {
+            const p     = info.event.extendedProps;
+            const fecha = info.event.start.toLocaleDateString('es-CO', {
+                weekday: 'long', day: 'numeric', month: 'long'
             });
-            html += '</tr>';
-        });
-
-        html += '</table>';
-        contenedor.innerHTML = html;
+            alert(
+                `📅 ${fecha} · 🕐 ${formatoHora12(p.hora)}\n\n` +
+                `👤 ${p.cliente}\n` +
+                `🐾 ${p.mascota}\n` +
+                `✂️ Estilista: ${p.estilista}\n` +
+                `💇 Servicio: ${p.servicio}\n` +
+                `Estado: ${p.estado}`
+            );
+        }
     });
+
+    calendario.render();
 }
 
 /**
- * Carga la tabla de disponibilidad de todos los estilistas activos.
- * Muestra un botón para cambiar entre Disponible / No Disponible.
- * Esto afecta si el estilista aparece en la agenda pública.
+ * Pide a Laravel las citas de cada día del rango visible y las convierte
+ * al formato de evento de FullCalendar.
+ *
+ * La API devuelve las citas de un solo día, así que se hace una petición
+ * por día, todas en paralelo (Promise.all). Si un día falla, se omite
+ * sin romper el resto del calendario.
+ *
+ * Colores por estado: Pendiente = amarillo, Completada = verde,
+ * Cancelada = rojo, cualquier otro (ej. Reagendada) = marrón del tema.
+ *
+ * @param {Date} desde - inicio del rango visible (inclusive)
+ * @param {Date} hasta - fin del rango visible (exclusivo)
+ * @returns {Promise<Object[]>} eventos listos para FullCalendar
+ */
+async function cargarEventos(desde, hasta) {
+    // Color del bloque según el estado de la cita
+    const colores = {
+        'Pendiente':  { bg: '#e8c56a', text: '#333' },
+        'Completada': { bg: '#7eb56a', text: '#fff' },
+        'Cancelada':  { bg: '#dc3545', text: '#fff' }
+    };
+
+    const eventos  = [];
+    const promesas = [];
+    const cursor   = new Date(desde);
+
+    while (cursor < hasta) {
+        const fecha = cursor.toISOString().split('T')[0]; // YYYY-MM-DD
+
+        const p = fetchAuth(`http://127.0.0.1:8000/api/admin/horarios?fecha=${fecha}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.ok || !data.citas) return;
+
+                data.citas.forEach(cita => {
+                    const color = colores[cita.estado] || { bg: '#ae9d81', text: '#fff' };
+
+                    eventos.push({
+                        // Título visible en el bloque del calendario
+                        title: `${cita.nombre_estilista} · ${cita.nombre_cliente}`,
+                        // Combinar fecha + hora para el datetime ISO que necesita FullCalendar
+                        start: `${cita.fecha}T${cita.hora}`,
+                        backgroundColor: color.bg,
+                        borderColor:     color.bg,
+                        textColor:       color.text,
+                        // Datos extra accesibles en eventClick
+                        extendedProps: {
+                            hora:      cita.hora,
+                            cliente:   `${cita.nombre_cliente} ${cita.apellido_cliente}`,
+                            mascota:   cita.nombre_raza ? `${cita.mascota} (${cita.nombre_raza})` : (cita.mascota || '—'),
+                            servicio:  cita.nombre_servicio || '—',
+                            estilista: cita.nombre_estilista,
+                            estado:    cita.estado
+                        }
+                    });
+                });
+            })
+            .catch(() => {});
+
+        promesas.push(p);
+        cursor.setDate(cursor.getDate() + 1);
+    }
+
+    await Promise.all(promesas);
+    return eventos;
+}
+
+/**
+ * Llena la tabla #tabla-disponibilidad con los estilistas activos y un botón
+ * para alternar entre "Disponible" y "No Disponible".
+ *
+ * Usa el endpoint de horarios solo por la lista `estilistas` que devuelve
+ * (la fecha da igual). Con esa misma lista llena el <select> del formulario
+ * de bloqueos (#bloqueo-estilista).
+ *
+ * @returns {void}
  */
 function cargarDisponibilidad() {
     fetchAuth('http://127.0.0.1:8000/api/admin/horarios?fecha=' + new Date().toISOString().split('T')[0])
@@ -115,17 +184,20 @@ function cargarDisponibilidad() {
             tbody.innerHTML += `
                 <tr>
                     <td>${e.nombre_estilista}</td>
-                    <td class="${disponible ? 'status-green' : 'status-red'}"><i class="fa-solid ${disponible ? 'fa-check' : 'fa-xmark'}"></i> ${e.disponibilidad}</td>
+                    <td class="${disponible ? 'status-green' : 'status-red'}">
+                        <i class="fa-solid ${disponible ? 'fa-check' : 'fa-xmark'}"></i>
+                        ${e.disponibilidad}
+                    </td>
                     <td>
                         <button class="btn ${disponible ? 'btn-red' : 'btn-green'}"
                             onclick="cambiarDisponibilidad(${e.id_estilista}, '${disponible ? 'No Disponible' : 'Disponible'}')">
-                            <i class="fa-solid ${disponible ? 'fa-ban' : 'fa-check'}"></i> ${disponible ? 'Marcar No Disponible' : 'Marcar Disponible'}
+                            <i class="fa-solid ${disponible ? 'fa-ban' : 'fa-check'}"></i>
+                            ${disponible ? 'Marcar No Disponible' : 'Marcar Disponible'}
                         </button>
                     </td>
                 </tr>`;
         });
 
-        // Reutilizar la misma lista de estilistas para el selector del formulario de bloqueos
         const select = document.getElementById('bloqueo-estilista');
         select.innerHTML = data.estilistas.map(e =>
             `<option value="${e.id_estilista}">${e.nombre_estilista}</option>`
@@ -134,8 +206,10 @@ function cargarDisponibilidad() {
 }
 
 /**
- * Carga los bloqueos temporales vigentes/futuros y los muestra en la tabla.
- * Los bloqueos ya vencidos no se listan (quedan en la BD como historial).
+ * Llena la tabla #tabla-bloqueos con los bloqueos temporales vigentes o
+ * futuros (fecha_fin >= hoy). Los vencidos no llegan desde la API.
+ *
+ * @returns {void}
  */
 function cargarBloqueos() {
     fetchAuth('http://127.0.0.1:8000/api/admin/disponibilidad-temporal')
@@ -166,14 +240,19 @@ function cargarBloqueos() {
 }
 
 /**
- * Registra un bloqueo temporal de disponibilidad para el estilista y rango
- * de fechas elegidos en el formulario. No afecta la disponibilidad general.
+ * Registra un bloqueo temporal (ej. vacaciones) con los datos del formulario:
+ * estilista, fecha de inicio, fecha de fin y motivo (opcional).
+ * Mientras dure el bloqueo, el estilista no aparece con horarios libres en la
+ * agenda del cliente. No cambia su disponibilidad general.
+ * Si todo sale bien, limpia el formulario y recarga la tabla de bloqueos.
+ *
+ * @returns {void}
  */
 function agregarBloqueo() {
-    const id_estilista  = document.getElementById('bloqueo-estilista').value;
-    const fecha_inicio  = document.getElementById('bloqueo-fecha-inicio').value;
-    const fecha_fin     = document.getElementById('bloqueo-fecha-fin').value;
-    const motivo        = document.getElementById('bloqueo-motivo').value.trim();
+    const id_estilista = document.getElementById('bloqueo-estilista').value;
+    const fecha_inicio = document.getElementById('bloqueo-fecha-inicio').value;
+    const fecha_fin    = document.getElementById('bloqueo-fecha-fin').value;
+    const motivo       = document.getElementById('bloqueo-motivo').value.trim();
 
     if (!id_estilista || !fecha_inicio || !fecha_fin) {
         alert('Completa estilista, fecha de inicio y fecha de fin.');
@@ -198,7 +277,12 @@ function agregarBloqueo() {
     });
 }
 
-/** Elimina un bloqueo temporal previa confirmación */
+/**
+ * Elimina un bloqueo temporal (previa confirmación) y recarga la tabla.
+ *
+ * @param {number} id - id_disponibilidad del bloqueo
+ * @returns {void}
+ */
 function eliminarBloqueo(id) {
     if (!confirm('¿Eliminar este bloqueo de disponibilidad?')) return;
 
@@ -209,18 +293,18 @@ function eliminarBloqueo(id) {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.ok) {
-            cargarBloqueos();
-        } else {
-            alert('Error al eliminar el bloqueo.');
-        }
+        if (data.ok) cargarBloqueos();
+        else alert('Error al eliminar el bloqueo.');
     });
 }
 
 /**
- * Cambia la disponibilidad de un estilista.
- * @param {number} id - id_estilista
+ * Cambia la disponibilidad general de un estilista y recarga la tabla.
+ * Un estilista "No Disponible" deja de aparecer en la agenda del cliente.
+ *
+ * @param {number} id                  - id_estilista
  * @param {string} nuevaDisponibilidad - 'Disponible' o 'No Disponible'
+ * @returns {void}
  */
 function cambiarDisponibilidad(id, nuevaDisponibilidad) {
     fetchAuth('http://127.0.0.1:8000/api/admin/horarios/disponibilidad', {
@@ -230,17 +314,7 @@ function cambiarDisponibilidad(id, nuevaDisponibilidad) {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.ok) {
-            cargarDisponibilidad(); // Refrescar la tabla sin recargar la página
-        } else {
-            modalError('Error al cambiar disponibilidad.');
-        }
+        if (data.ok) cargarDisponibilidad();
+        else alert('Error al cambiar disponibilidad.');
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

@@ -53,7 +53,7 @@ function cargarServicios() {
                     <td>${c.nombre_cliente} ${c.apellido_cliente}</td>
                     <td>${c.nombre_servicio}</td>
                     <td>${c.fecha}</td>
-                    <td>${c.hora}</td>
+                    <td>${formatoHora12(c.hora)}</td>
                     <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${c.estado}</td>
                 </tr>`;
         });

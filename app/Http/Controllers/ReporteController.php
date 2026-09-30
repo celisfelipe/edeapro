@@ -111,7 +111,7 @@ public function citasExcel()
         public function array(): array {
             return array_map(fn($c) => [
                 $c->fecha,
-                $c->hora,
+                date('g:i A', strtotime($c->hora)), // 12h, ej. 2:30 PM
                 $c->nombre_cliente . ' ' . $c->apellido_cliente,
                 $c->mascota,
                 $c->nombre_servicio,

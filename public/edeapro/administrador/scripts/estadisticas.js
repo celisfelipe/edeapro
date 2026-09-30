@@ -3,23 +3,24 @@
  * ======================================================
  * Muestra tarjetas con totales y gráficos del sistema.
  * Usa la librería Chart.js para los gráficos de torta y barras.
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Solo accesible con sesión de administrador (ver sesion.js).
  *
  * Conecta con la API de Laravel:
  *   GET /api/admin/estadisticas → totales, citas por estado, servicios populares
+ *
+ * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             Chart.js (CDN).
+ *
+ * Todo se ejecuta al cargar la página: llena las tarjetas de resumen
+ * (#total-clientes, #total-citas, #total-ingresos) y dibuja dos gráficos:
+ *   #graficoCitas     → torta con la cantidad de citas por estado
+ *   #graficoServicios → barras con los servicios más solicitados
+ * "Ingresos" es el precio de catálogo de las citas completadas; lo realmente
+ * cobrado está en la página de Pagos.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     fetchAuth('http://127.0.0.1:8000/api/admin/estadisticas')
     .then(res => res.json())
@@ -62,9 +63,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
-}

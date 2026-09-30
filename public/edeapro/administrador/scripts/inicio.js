@@ -1,33 +1,27 @@
 /**
  * inicio.js — Panel Administrador / Citas
  * =========================================
- * Carga y muestra todas las citas del sistema en una tabla.
- * Permite cancelar citas mediante un modal de confirmación.
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Carga y muestra todas las citas del sistema en una tabla paginada.
+ * Permite cancelar citas (con modal de confirmación) y ver el detalle
+ * completo de cada cita en un modal lateral.
  *
- * Conecta con la API de Laravel:
- *   GET  /api/admin/citas          → cargar todas las citas
- *   POST /api/admin/citas/cancelar → cancelar una cita
- * Usa la vista citas_completas de la BD que ya tiene los JOINs hechos.
+ * API Laravel:
+ *   GET  /api/admin/citas          → lista todas las citas (vista citas_completas)
+ *   POST /api/admin/citas/cancelar → cambia estado a Cancelada
+ *   GET  /api/reportes/{tipo}/pdf  → descarga reporte PDF
+ *   GET  /api/reportes/{tipo}/excel → descarga reporte Excel
+ *
+ * Depende de: fetchToken.js (fetchAuth), formatoHora.js (formatoHora12),
+ *             sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             modal.js (modalConfirmar, modalExito, modalError).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    // Verificar que el usuario sea administrador
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    // Mostrar nombre del administrador en el header
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     // Menú desplegable de exportación (Citas/Pagos/Clientes × PDF/Excel)
     const exportDropdown = document.getElementById('exportDropdown');
-    const exportToggle    = document.getElementById('exportToggle');
+    const exportToggle   = document.getElementById('exportToggle');
     if (exportDropdown && exportToggle) {
         exportToggle.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -38,47 +32,78 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Cerrar modal de detalles al hacer clic en la X o fuera del panel
+    document.getElementById('modal-detalle-close').addEventListener('click', cerrarDetalle);
+    document.getElementById('modal-detalle-overlay').addEventListener('click', function (e) {
+        // Solo cierra si el clic fue exactamente sobre el overlay, no sobre el panel
+        if (e.target === this) cerrarDetalle();
+    });
+
     // Traer todas las citas desde Laravel
     fetchAuth('http://127.0.0.1:8000/api/admin/citas')
-    .then(res => res.json())
-    .then(data => {
-        const tbody = document.getElementById('tabla-citas');
-        if (!data.ok || data.citas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8">No hay citas registradas</td></tr>';
-            document.getElementById('stat-total').textContent       = 0;
-            document.getElementById('stat-pendientes').textContent  = 0;
-            document.getElementById('stat-completadas').textContent = 0;
-            document.getElementById('stat-canceladas').textContent  = 0;
-            return;
-        }
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById('tabla-citas');
+            if (!data.ok || data.citas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8">No hay citas registradas</td></tr>';
+                document.getElementById('stat-total').textContent       = 0;
+                document.getElementById('stat-pendientes').textContent  = 0;
+                document.getElementById('stat-completadas').textContent = 0;
+                document.getElementById('stat-canceladas').textContent  = 0;
+                return;
+            }
 
-        allCitas    = data.citas;
-        paginaActual = 1;
+            allCitas     = data.citas;
+            paginaActual = 1;
 
-        // Calcular totales para las cards de resumen
-        document.getElementById('stat-total').textContent       = allCitas.length;
-        document.getElementById('stat-pendientes').textContent  = allCitas.filter(c => c.estado === 'Pendiente').length;
-        document.getElementById('stat-completadas').textContent = allCitas.filter(c => c.estado === 'Completada').length;
-        document.getElementById('stat-canceladas').textContent  = allCitas.filter(c => c.estado === 'Cancelada').length;
+            // Calcular totales para las cards de resumen
+            document.getElementById('stat-total').textContent       = allCitas.length;
+            document.getElementById('stat-pendientes').textContent  = allCitas.filter(c => c.estado === 'Pendiente').length;
+            document.getElementById('stat-completadas').textContent = allCitas.filter(c => c.estado === 'Completada').length;
+            document.getElementById('stat-canceladas').textContent  = allCitas.filter(c => c.estado === 'Cancelada').length;
 
-        renderTablaCitas();
-    })
-    .catch(() => {
-        document.getElementById('tabla-citas').innerHTML = '<tr><td colspan="8">Error cargando citas</td></tr>';
-    });
+            renderTablaCitas();
+        })
+        .catch(() => {
+            document.getElementById('tabla-citas').innerHTML =
+                '<tr><td colspan="8">Error cargando citas</td></tr>';
+        });
 });
 
 // Estado de paginación de la tabla de citas
-let allCitas = [];
+let allCitas     = [];
 let paginaActual = 1;
 const CITAS_POR_PAGINA = 12;
 
-/** Calcula las iniciales de un cliente para el avatar circular */
+/**
+ * Calcula las iniciales de un cliente para el avatar circular.
+ *
+ * @param {string} nombre
+ * @param {string} apellido
+ * @returns {string} ej. "Felipe", "Celis" → "FC" (sin pasar a mayúsculas)
+ */
 function inicialesCliente(nombre, apellido) {
     return ((nombre || '')[0] || '') + ((apellido || '')[0] || '');
 }
 
-/** Dibuja la página actual de la tabla de citas y su footer de paginación */
+/**
+ * Devuelve la clase CSS de color y el ícono de Font Awesome para un estado.
+ *
+ * @param {string} estado - 'Completada' | 'Pendiente' | cualquier otro
+ * @returns {{clase: string, icono: string}} verde/check, amarillo/reloj o rojo/x
+ */
+function estiloEstado(estado) {
+    if (estado === 'Completada') return { clase: 'status-green',  icono: 'fa-check' };
+    if (estado === 'Pendiente')  return { clase: 'status-yellow', icono: 'fa-clock' };
+    return { clase: 'status-red', icono: 'fa-xmark' };
+}
+
+/**
+ * Dibuja en #tabla-citas las citas de la página actual (CITAS_POR_PAGINA
+ * por página, tomadas de allCitas) y actualiza el footer de paginación.
+ *
+ * @returns {void}
+ */
 function renderTablaCitas() {
     const tbody  = document.getElementById('tabla-citas');
     const inicio = (paginaActual - 1) * CITAS_POR_PAGINA;
@@ -86,15 +111,16 @@ function renderTablaCitas() {
 
     tbody.innerHTML = '';
     pagina.forEach(cita => {
-        // Asignar clase de color e ícono según el estado de la cita
-        const estado = cita.estado === 'Completada' ? 'status-green' :
-                       cita.estado === 'Pendiente'  ? 'status-yellow' : 'status-red';
-        const iconoEstado = cita.estado === 'Completada' ? 'fa-check' :
-                       cita.estado === 'Pendiente'  ? 'fa-clock' : 'fa-xmark';
+        const estilo = estiloEstado(cita.estado);
+
+        // El objeto cita completo se serializa en JSON para pasarlo al modal de detalles.
+        // encodeURIComponent evita que las comillas y caracteres especiales rompan el HTML.
+        const citaJson = encodeURIComponent(JSON.stringify(cita));
+
         tbody.innerHTML += `
             <tr>
                 <td>${cita.fecha}</td>
-                <td>${cita.hora}</td>
+                <td>${formatoHora12(cita.hora)}</td>
                 <td>
                     <div class="cliente-info">
                         <span class="avatar-circle">${inicialesCliente(cita.nombre_cliente, cita.apellido_cliente).toUpperCase()}</span>
@@ -104,10 +130,14 @@ function renderTablaCitas() {
                 <td>${cita.mascota}</td>
                 <td>${cita.nombre_servicio}</td>
                 <td>${cita.nombre_estilista}</td>
-                <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${cita.estado}</td>
+                <td class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${cita.estado}</td>
                 <td class="acciones-cell">
-                    <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>
-                    <button class="btn btn-blue"><i class="fa-solid fa-eye"></i> Detalles</button>
+                    <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})">
+                        <i class="fa-solid fa-xmark"></i> Cancelar
+                    </button>
+                    <button class="btn btn-blue" onclick="verDetalle('${citaJson}')">
+                        <i class="fa-solid fa-eye"></i> Detalles
+                    </button>
                 </td>
             </tr>`;
     });
@@ -115,15 +145,20 @@ function renderTablaCitas() {
     renderPaginacionCitas();
 }
 
-/** Dibuja el footer "Mostrando X-Y de Z citas" + números de página */
+/**
+ * Dibuja en #citasFooter el texto "Mostrando X-Y de Z citas" y un botón
+ * por cada página.
+ *
+ * @returns {void}
+ */
 function renderPaginacionCitas() {
     const footer = document.getElementById('citasFooter');
     if (!footer) return;
 
     const total        = allCitas.length;
     const totalPaginas = Math.max(1, Math.ceil(total / CITAS_POR_PAGINA));
-    const desde         = total === 0 ? 0 : (paginaActual - 1) * CITAS_POR_PAGINA + 1;
-    const hasta          = Math.min(paginaActual * CITAS_POR_PAGINA, total);
+    const desde        = total === 0 ? 0 : (paginaActual - 1) * CITAS_POR_PAGINA + 1;
+    const hasta        = Math.min(paginaActual * CITAS_POR_PAGINA, total);
 
     let botones = '';
     for (let p = 1; p <= totalPaginas; p++) {
@@ -135,15 +170,65 @@ function renderPaginacionCitas() {
         <div class="pagination">${botones}</div>`;
 }
 
-/** Cambia de página en la tabla de citas */
+/**
+ * Cambia de página en la tabla de citas.
+ *
+ * @param {number} p - número de página (empieza en 1)
+ * @returns {void}
+ */
 function irPaginaCitas(p) {
     paginaActual = p;
     renderTablaCitas();
 }
 
 /**
- * Muestra modal de confirmación antes de cancelar.
- * Si el usuario confirma, envía el id_cita a Laravel y recarga la tabla.
+ * Abre el panel lateral con toda la información de una cita.
+ * La cita llega serializada desde el onclick del botón "Detalles"
+ * (JSON.stringify + encodeURIComponent); aquí se decodifica y se
+ * rellenan los campos del modal. Fecha en DD/MM/YYYY y hora en 12h.
+ *
+ * @param {string} citaEncoded - encodeURIComponent(JSON.stringify(cita))
+ * @returns {void}
+ */
+function verDetalle(citaEncoded) {
+    const cita = JSON.parse(decodeURIComponent(citaEncoded));
+
+    // Formatear fecha de YYYY-MM-DD a DD/MM/YYYY
+    const [anio, mes, dia] = cita.fecha.split('-');
+    const fechaFormateada  = `${dia}/${mes}/${anio}`;
+
+    const estilo = estiloEstado(cita.estado);
+
+    // Rellenar el contenido del panel
+    document.getElementById('detalle-cliente').textContent   = `${cita.nombre_cliente} ${cita.apellido_cliente}`;
+    document.getElementById('detalle-mascota').textContent   = cita.mascota;
+    document.getElementById('detalle-servicio').textContent  = cita.nombre_servicio;
+    document.getElementById('detalle-estilista').textContent = cita.nombre_estilista;
+    document.getElementById('detalle-fecha').textContent     = fechaFormateada;
+    document.getElementById('detalle-hora').textContent      = formatoHora12(cita.hora);
+    document.getElementById('detalle-estado').innerHTML      =
+        `<span class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${cita.estado}</span>`;
+
+    // Mostrar el overlay y el panel con animación (clase 'open' en CSS)
+    document.getElementById('modal-detalle-overlay').classList.add('open');
+}
+
+/**
+ * Cierra el panel lateral de detalles.
+ *
+ * @returns {void}
+ */
+function cerrarDetalle() {
+    document.getElementById('modal-detalle-overlay').classList.remove('open');
+}
+
+/**
+ * Pide confirmación y cancela una cita. Si la API responde bien, muestra
+ * un mensaje de éxito y recarga la página para refrescar tabla y totales.
+ * La API rechaza cancelar citas que ya están Canceladas o Completadas.
+ *
+ * @param {number} id - id_cita
+ * @returns {void}
  */
 function cancelarCita(id) {
     modalConfirmar('¿Seguro que deseas cancelar esta cita?', function () {
@@ -156,7 +241,6 @@ function cancelarCita(id) {
         .then(data => {
             if (data.ok) {
                 modalExito('Cita cancelada correctamente.');
-                // Recargar la página después de 1.5s para reflejar el cambio
                 setTimeout(() => location.reload(), 1500);
             } else {
                 modalError('Error: ' + data.error);
@@ -165,69 +249,51 @@ function cancelarCita(id) {
     });
 }
 
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
+/**
+ * Descarga un reporte generado por Laravel (PDF o Excel).
+ * Se usa fetch con el token en el header (un <a href> normal no puede
+ * enviarlo), se recibe el archivo como blob y se fuerza la descarga.
+ *
+ * @param {string} tipo    - 'citas', 'pagos' o 'clientes'
+ * @param {string} formato - 'pdf' o 'excel'
+ * @returns {void}
+ */
+function descargarArchivo(tipo, formato) {
+    const extension = formato === 'excel' ? 'xlsx' : 'pdf';
+    const nombre    = formato === 'excel' ? 'reporte Excel' : 'reporte';
+    const token     = localStorage.getItem('token');
+
+    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/${formato}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => {
+        if (!res.ok) { modalError(`Error al generar el ${nombre}`); return; }
+        return res.blob();
+    })
+    .then(blob => {
+        if (!blob) return;
+        const url  = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href     = url;
+        link.download = `reporte-${tipo}.${extension}`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(() => modalError(`Error de conexión al generar el ${nombre}`));
 }
 
 /**
- * descargarReporte() — Descarga un reporte PDF desde Laravel
- * El token se envía en el header para autenticar la petición.
+ * Descarga el reporte en PDF (llamada desde el menú "Exportar").
  * @param {string} tipo - 'citas', 'pagos' o 'clientes'
  */
 function descargarReporte(tipo) {
-    const token = localStorage.getItem('token');
-
-    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/pdf`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => {
-        if (!res.ok) {
-            modalError('Error al generar el reporte');
-            return;
-        }
-        return res.blob();
-    })
-    .then(blob => {
-        if (!blob) return;
-        // Crear link temporal para descargar el PDF
-        const url  = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href     = url;
-        link.download = `reporte-${tipo}.pdf`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(() => modalError('Error de conexión al generar el reporte'));
+    descargarArchivo(tipo, 'pdf');
 }
 
 /**
- * descargarExcel() — Descarga un reporte Excel desde Laravel
+ * Descarga el reporte en Excel (llamada desde el menú "Exportar").
  * @param {string} tipo - 'citas', 'pagos' o 'clientes'
  */
 function descargarExcel(tipo) {
-    const token = localStorage.getItem('token');
-
-    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/excel`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => {
-        if (!res.ok) {
-            modalError('Error al generar el reporte Excel');
-            return;
-        }
-        return res.blob();
-    })
-    .then(blob => {
-        if (!blob) return;
-        const url  = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href     = url;
-        link.download = `reporte-${tipo}.xlsx`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(() => modalError('Error de conexión al generar el reporte Excel'));
+    descargarArchivo(tipo, 'excel');
 }

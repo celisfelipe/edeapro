@@ -53,12 +53,13 @@ class EnviarRecordatoriosCitas extends Command
             try {
                 $nombre   = $cita->cliente_nombre . ' ' . $cita->cliente_apellido;
                 $fecha    = date('d/m/Y', strtotime($cita->fecha));
+                $hora     = date('g:i A', strtotime($cita->hora)); // 12h, ej. 2:30 PM
 
                 // Armamos el cuerpo del correo en texto plano
                 $cuerpo = "Hola $nombre,\n\n"
                     . "Te recordamos que mañana tienes una cita en EDEA Grooming:\n\n"
                     . "Fecha: $fecha\n"
-                    . "Hora: {$cita->hora}\n"
+                    . "Hora: $hora\n"
                     . "Estilista: {$cita->estilista_nombre}\n"
                     . "Servicio: {$cita->servicio}\n\n"
                     . "Si necesitas cancelar o reagendar, hazlo con más de 24 horas de anticipación desde tu perfil.\n\n"

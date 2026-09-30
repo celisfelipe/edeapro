@@ -265,7 +265,7 @@ async function renderStep3(){
              <div class="slots-grid">
                ${mySlots.map(s=>`
                  <button class="slot-pill ${s.ocupado?"tk":""} ${S.slot===s.label&&!s.ocupado?"picked":""}"
-                   data-s="${s.label}" ${s.ocupado?"disabled":""}>${s.label}</button>`).join("")}
+                   data-s="${s.label}" ${s.ocupado?"disabled":""}>${formatoHora12(s.label)}</button>`).join("")}
              </div>`
           : `<div class="slots-empty">Selecciona primero un día en el calendario.</div>`
         }
@@ -343,7 +343,7 @@ async function renderStep4(){
           </div>`).join("")}
         <div class="cc-row"><span class="cc-lbl">Peluquero</span><span class="cc-val">${g?g.name:"Cualquier disponible"}</span></div>
         <div class="cc-row"><span class="cc-lbl">Fecha</span><span class="cc-val">${S.date}</span></div>
-        <div class="cc-row"><span class="cc-lbl">Hora</span><span class="cc-val">${S.slot}</span></div>
+        <div class="cc-row"><span class="cc-lbl">Hora</span><span class="cc-val">${formatoHora12(S.slot)}</span></div>
         <div class="cc-row"><span class="cc-lbl">Duración aprox.</span><span class="cc-val">${durL(sumD())}</span></div>
         <div class="cc-row"><span class="cc-lbl">Total</span><span class="cc-val">${fmt(sumP())}</span></div>
       </div>
@@ -402,7 +402,7 @@ function renderDone(){
       <div class="success-sub">Tu cita en <strong>Edea Grooming</strong> quedó agendada.</div>
       <div class="success-detail">
         <span><span class="sd-lbl">Peluquero</span><span class="sd-val">${g?g.name:"Cualquier disponible"}</span></span>
-        <span><span class="sd-lbl">Fecha</span><span class="sd-val">${S.date} · ${S.slot}</span></span>
+        <span><span class="sd-lbl">Fecha</span><span class="sd-val">${S.date} · ${formatoHora12(S.slot)}</span></span>
         <span><span class="sd-lbl">Total</span><span class="sd-val">${fmt(sumP())}</span></span>
       </div>
       <button class="btn-nueva" onclick="resetApp()">Agendar otra cita</button>

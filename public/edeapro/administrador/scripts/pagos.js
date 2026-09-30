@@ -4,39 +4,43 @@
  * Muestra el historial de pagos y las citas pendientes de pago.
  * Permite registrar un pago seleccionando el método de pago.
  * Al registrar un pago, la cita pasa automáticamente a "Completada".
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Solo accesible con sesión de administrador (ver sesion.js).
  *
  * Conecta con la API de Laravel:
  *   GET  /api/admin/pagos           → historial de pagos + total recaudado real
  *   GET  /api/admin/citas           → para filtrar las citas pendientes
  *   POST /api/admin/pagos/registrar → registrar nuevo pago (el monto lo calcula el servidor)
+ *
+ * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             formatoHora.js (formatoHora12), modal.js (modalConfirmar, modalExito, modalError).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     // Cargar ambas tablas al iniciar
     cargarPagos();
     cargarCitasSinPago();
 });
 
-/** Devuelve el ícono de Font Awesome según el método de pago */
+/**
+ * Devuelve el ícono de Font Awesome que corresponde a un método de pago.
+ *
+ * @param {string} metodo - 'Efectivo' | 'Transferencia' | 'Tarjeta de crédito'
+ * @returns {string} clase del ícono (ej. 'fa-money-bill-wave')
+ */
 function iconoMetodoPago(metodo) {
     if (metodo === 'Efectivo') return 'fa-money-bill-wave';
     if (metodo === 'Transferencia') return 'fa-building-columns';
     return 'fa-credit-card'; // Tarjeta de crédito / por defecto
 }
 
-/** Trae el historial completo de pagos registrados, y el total recaudado real */
+/**
+ * Llena la tabla #tabla-pagos con el historial de pagos y actualiza las
+ * tarjetas de "Total recaudado" (suma real de pago.monto) y "Total pagos".
+ *
+ * @returns {void}
+ */
 function cargarPagos() {
     fetchAuth('http://127.0.0.1:8000/api/admin/pagos')
     .then(res => res.json())
@@ -70,8 +74,11 @@ function cargarPagos() {
 }
 
 /**
- * Trae todas las citas y filtra solo las que están en estado 'Pendiente'.
- * Estas son las que aún no tienen pago registrado.
+ * Llena la tabla #tabla-sin-pago con las citas en estado 'Pendiente'
+ * (las que aún no tienen pago). Cada fila trae un <select> con el método
+ * de pago y el botón "Registrar pago". La hora se muestra en 12h.
+ *
+ * @returns {void}
  */
 function cargarCitasSinPago() {
     fetchAuth('http://127.0.0.1:8000/api/admin/citas')
@@ -93,7 +100,7 @@ function cargarCitasSinPago() {
                     <td>${c.nombre_cliente} ${c.apellido_cliente}</td>
                     <td>${c.nombre_servicio}</td>
                     <td>${c.fecha}</td>
-                    <td>${c.hora}</td>
+                    <td>${formatoHora12(c.hora)}</td>
                     <td>
                         <select id="metodo-${c.id_cita}">
                             <option value="Efectivo">Efectivo</option>
@@ -108,9 +115,13 @@ function cargarCitasSinPago() {
 }
 
 /**
- * Registra el pago de una cita con el método seleccionado.
- * Pide confirmación antes de enviar.
- * Después de registrar, la cita queda como "Completada" en la BD.
+ * Registra el pago de una cita con el método elegido en su fila.
+ * Pide confirmación antes de enviar. El monto lo calcula el servidor a
+ * partir de la raza y el servicio de la cita. Al terminar, la cita queda
+ * como "Completada" y se refrescan ambas tablas.
+ *
+ * @param {number} id_cita
+ * @returns {void}
  */
 function registrarPago(id_cita) {
     const metodo = document.getElementById('metodo-' + id_cita).value;
@@ -133,11 +144,4 @@ function registrarPago(id_cita) {
             }
         });
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

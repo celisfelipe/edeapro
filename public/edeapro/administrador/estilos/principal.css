@@ -695,3 +695,115 @@ input:focus, select:focus {
     color: white;
     border-color: var(--color-metal);
 }
+
+/* ── Panel lateral de detalle de cita ───────────────────────────
+   Se desliza desde la derecha al hacer clic en "Detalles".
+   Usa su propio overlay independiente del sistema .modal-overlay
+   para no heredar display:none — necesita opacity+pointer-events
+   para que la animación CSS funcione correctamente. */
+
+.detalle-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;              /* siempre en el DOM */
+    justify-content: flex-end;
+    opacity: 0;
+    pointer-events: none;       /* invisible e inactivo por defecto */
+    transition: opacity 0.25s ease;
+}
+
+.detalle-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.detalle-panel {
+    background: white;
+    width: 360px;
+    max-width: 95vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detalle-overlay.open .detalle-panel {
+    transform: translateX(0);
+}
+
+.detalle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    border-bottom: 1px solid #f0ece6;
+}
+
+.detalle-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detalle-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--color-metal-text);
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.detalle-close:hover {
+    background: var(--color-surface);
+    color: var(--color-heading);
+}
+
+.detalle-body {
+    padding: 18px 22px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detalle-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid #f0ece6;
+    padding-bottom: 14px;
+}
+
+.detalle-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detalle-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-metal-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detalle-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-heading);
+}

@@ -67,7 +67,7 @@ function cargarHorarios() {
             if (cita) {
                 const clase = cita.estado === 'Completada' ? 'completada' : '';
                 html += `<tr>
-                    <td class="hora-col">${hora}</td>
+                    <td class="hora-col">${formatoHora12(hora)}</td>
                     <td>
                         <div class="cita-bloque ${clase}">
                             <i class="fa-solid fa-paw"></i> ${cita.nombre_raza}<br>
@@ -77,7 +77,7 @@ function cargarHorarios() {
                 </tr>`;
             } else {
                 html += `<tr>
-                    <td class="hora-col">${hora}</td>
+                    <td class="hora-col">${formatoHora12(hora)}</td>
                     <td><span class="libre">Libre</span></td>
                 </tr>`;
             }

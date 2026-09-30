@@ -2,31 +2,30 @@
  * empleados.js — Panel Administrador / Empleados
  * ===============================================
  * Carga la lista de estilistas y permite agregar, editar y eliminar.
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Solo accesible con sesión de administrador (ver sesion.js).
  *
  * Conecta con la API de Laravel:
  *   GET  /api/admin/empleados          → cargar estilistas
  *   POST /api/admin/empleados/agregar  → registrar nuevo estilista
  *   POST /api/admin/empleados/editar   → editar datos de un estilista
  *   POST /api/admin/empleados/eliminar → eliminar estilista
+ *
+ * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             modal.js (modalExito, modalError, modalConfirmar).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     cargarEmpleados();
 });
 
-/** Trae todos los estilistas desde Laravel y los muestra en la tabla */
+/**
+ * Trae todos los estilistas desde Laravel y los dibuja en #tabla-empleados
+ * con avatar de iniciales, badge de rol, estado y botones Editar/Eliminar.
+ *
+ * @returns {void}
+ */
 function cargarEmpleados() {
     fetchAuth('http://127.0.0.1:8000/api/admin/empleados')
     .then(res => res.json())
@@ -64,19 +63,22 @@ function cargarEmpleados() {
     });
 }
 
-/** Muestra el formulario para agregar un nuevo estilista */
+/** Muestra el formulario para agregar un nuevo estilista. */
 function mostrarFormulario() {
     document.getElementById('formulario').style.display = 'block';
 }
 
-/** Oculta el formulario de agregar sin guardar */
+/** Oculta el formulario de agregar, sin guardar. */
 function ocultarFormulario() {
     document.getElementById('formulario').style.display = 'none';
 }
 
 /**
  * Valida los campos del formulario y envía el nuevo estilista a Laravel.
- * El estilista se crea con estado 'Activo' y disponibilidad 'Disponible' por defecto.
+ * Se crea con estado 'Activo' y disponibilidad 'Disponible' por defecto;
+ * la contraseña se guarda con hash en el servidor.
+ *
+ * @returns {void}
  */
 function agregarEmpleado() {
     const nombre     = document.getElementById('inp-nombre').value;
@@ -110,7 +112,15 @@ function agregarEmpleado() {
 
 /**
  * Abre el modal de edición con los datos actuales del estilista.
- * El rol no se puede cambiar desde aquí (se envía el mismo que tenía).
+ * El rol no se puede cambiar desde aquí: se reenvía el que ya tenía.
+ *
+ * @param {number} id       - id_estilista
+ * @param {string} nombre
+ * @param {string} apellido
+ * @param {string} telefono
+ * @param {string} correo
+ * @param {string} rol      - 'Administrador' | 'Peluquero'
+ * @returns {void}
  */
 function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
     const overlay = document.getElementById('modal-editar-empleado');
@@ -152,7 +162,13 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
     };
 }
 
-/** Pide confirmación antes de eliminar el estilista */
+/**
+ * Pide confirmación y elimina un estilista. La API lo rechaza si el
+ * estilista tiene citas Pendientes o Reagendadas.
+ *
+ * @param {number} id - id_estilista
+ * @returns {void}
+ */
 function eliminarEmpleado(id) {
     modalConfirmar('¿Seguro que deseas eliminar este empleado?', function () {
         fetchAuth('http://127.0.0.1:8000/api/admin/empleados/eliminar', {
@@ -170,11 +186,4 @@ function eliminarEmpleado(id) {
             }
         });
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

@@ -21,6 +21,7 @@
  * Si el usuario acepta, ejecuta la función callback onAceptar.
  * @param {string}   mensaje   - Texto de la pregunta
  * @param {function} onAceptar - Función que se ejecuta si confirma
+ * @returns {void}
  */
 function modalConfirmar(mensaje, onAceptar) {
     const overlay = document.getElementById('modal-confirmar');
@@ -42,6 +43,7 @@ function modalConfirmar(mensaje, onAceptar) {
 /**
  * Muestra el modal de éxito con un mensaje personalizado.
  * @param {string} mensaje - Texto del mensaje de éxito
+ * @returns {void}
  */
 function modalExito(mensaje) {
     const overlay = document.getElementById('modal-exito');
@@ -56,6 +58,7 @@ function modalExito(mensaje) {
 /**
  * Muestra el modal de error con un mensaje personalizado.
  * @param {string} mensaje - Texto del mensaje de error
+ * @returns {void}
  */
 function modalError(mensaje) {
     const overlay = document.getElementById('modal-error');

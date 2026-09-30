@@ -3,28 +3,22 @@
  * =============================================
  * Carga la lista de clientes con buscador en tiempo real.
  * Permite editar datos (modal) y eliminar clientes (con confirmación).
- * Verifica que el usuario tenga rol "administrador" en localStorage.
+ * Solo accesible con sesión de administrador (ver sesion.js).
  *
  * Conecta con la API de Laravel:
  *   GET  /api/admin/clientes          → cargar todos los clientes
  *   POST /api/admin/clientes/editar   → actualizar datos de un cliente
  *   POST /api/admin/clientes/eliminar → eliminar cliente y sus datos
+ *
+ * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
+ *             modal.js (modalExito, modalError, modalConfirmar).
  */
 
 // Guarda todos los clientes para poder filtrar sin ir al servidor cada vez
 let todosLosClientes = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'administrador') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-admin').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionAdmin()) return;
 
     cargarClientes();
 
@@ -41,7 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-/** Trae todos los clientes desde Laravel y los muestra en la tabla */
+/**
+ * Trae todos los clientes desde Laravel, los guarda en todosLosClientes
+ * (para que el buscador filtre sin volver al servidor) y los muestra.
+ *
+ * @returns {void}
+ */
 function cargarClientes() {
     fetchAuth('http://127.0.0.1:8000/api/admin/clientes')
     .then(res => res.json())
@@ -56,7 +55,13 @@ function cargarClientes() {
     });
 }
 
-/** Renderiza el array de clientes en la tabla del HTML */
+/**
+ * Dibuja una lista de clientes en #tabla-clientes, con los botones
+ * Editar y Eliminar en cada fila.
+ *
+ * @param {Object[]} clientes - clientes a mostrar (todos o ya filtrados)
+ * @returns {void}
+ */
 function mostrarClientes(clientes) {
     const tbody = document.getElementById('tabla-clientes');
     if (clientes.length === 0) {
@@ -81,6 +86,13 @@ function mostrarClientes(clientes) {
 /**
  * Abre el modal de edición con los datos actuales del cliente.
  * Al guardar, envía los nuevos datos a Laravel y refresca la tabla.
+ *
+ * @param {number} id       - id_cliente
+ * @param {string} nombre
+ * @param {string} apellido
+ * @param {string} telefono
+ * @param {string} correo
+ * @returns {void}
  */
 function editarCliente(id, nombre, apellido, telefono, correo) {
     const overlay = document.getElementById('modal-editar-cliente');
@@ -124,9 +136,11 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
 }
 
 /**
- * Pide confirmación antes de eliminar.
- * Laravel elimina el cliente y todos sus datos relacionados
- * (citas, mascotas, pagos, notificaciones).
+ * Pide confirmación y elimina un cliente. Laravel borra también todos
+ * sus datos relacionados (citas, mascotas, pagos, notificaciones).
+ *
+ * @param {number} id - id_cliente
+ * @returns {void}
  */
 function eliminarCliente(id) {
     modalConfirmar('¿Seguro que deseas eliminar este cliente? Esta acción no se puede deshacer.', function () {
@@ -145,11 +159,4 @@ function eliminarCliente(id) {
             }
         });
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }
