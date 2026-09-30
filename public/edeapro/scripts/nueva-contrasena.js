@@ -31,21 +31,11 @@ async function restablecerContrasena() {
     const confirmar  = document.getElementById('nueva-confirmar').value;
     const msg        = document.getElementById('nueva-msg');
 
-    if (!contrasena || !confirmar) {
-        msg.textContent = 'Completa todos los campos.';
-        msg.className   = 'mensaje error';
-        return;
-    }
-    if (contrasena !== confirmar) {
-        msg.textContent = 'Las contraseñas no coinciden.';
-        msg.className   = 'mensaje error';
-        return;
-    }
-    if (contrasena.length < 8) {
-        msg.textContent = 'La contraseña debe tener mínimo 8 caracteres.';
-        msg.className   = 'mensaje error';
-        return;
-    }
+    const vPass    = validarContrasena(contrasena);
+    if (!vPass.ok)   { msg.textContent = vPass.error;    msg.className = 'mensaje error'; return; }
+
+    const vConfirm = validarConfirmarContrasena(contrasena, confirmar);
+    if (!vConfirm.ok) { msg.textContent = vConfirm.error; msg.className = 'mensaje error'; return; }
 
     try {
         const res  = await fetch('http://127.0.0.1:8000/api/restablecer-contrasena', {

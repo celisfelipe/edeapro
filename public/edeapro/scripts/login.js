@@ -50,16 +50,22 @@ function togglePassword(inputId, iconId) {
 /**
  * Envía las credenciales a Laravel y redirige según el rol.
  * Roles posibles: 'cliente', 'administrador', 'peluquero'.
+ * Muestra "Verificando..." en el botón mientras espera la respuesta.
  */
 function iniciarSesion() {
-    const correo     = document.getElementById('login-correo').value;
+    const correo     = document.getElementById('login-correo').value.trim();
     const contrasena = document.getElementById('login-password').value;
     const msg        = document.getElementById('login-msg');
+    const btn        = document.querySelector('#login-box button[onclick="iniciarSesion()"]');
 
-    if (!correo || !contrasena) {
-        mostrarMsg(msg, 'Completa todos los campos', 'error');
-        return;
-    }
+    // Validaciones básicas antes de llamar al servidor
+    const vCorreo = validarCorreo(correo);
+    if (!vCorreo.ok) { mostrarMsg(msg, vCorreo.error, 'error'); return; }
+    if (!contrasena)  { mostrarMsg(msg, 'Ingresa tu contraseña.', 'error'); return; }
+
+    // Estado de carga — deshabilitar botón para evitar doble envío
+    if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
+    mostrarMsg(msg, '', '');
 
     fetch('http://127.0.0.1:8000/api/login', {
         method: 'POST',
@@ -94,7 +100,11 @@ function iniciarSesion() {
             mostrarMsg(msg, data.error, 'error');
         }
     })
-    .catch(() => mostrarMsg(msg, 'Error conectando con el servidor', 'error'));
+    .catch(() => mostrarMsg(msg, 'Error conectando con el servidor', 'error'))
+    .finally(() => {
+        // Restaurar el botón siempre, haya éxito o error
+        if (btn) { btn.disabled = false; btn.textContent = 'Iniciar sesión'; }
+    });
 }
 
 /**
@@ -161,19 +171,24 @@ function registrarse() {
     const confirmar = document.getElementById('reg-confirmar').value;
     const msg       = document.getElementById('reg-msg');
 
-    // Validaciones básicas antes de enviar al servidor
-    if (!nombre || !apellido || !correo || !telefono || !password || !confirmar) {
-        mostrarMsg(msg, 'Completa todos los campos', 'error');
-        return;
-    }
-    if (password !== confirmar) {
-        mostrarMsg(msg, 'Las contraseñas no coinciden', 'error');
-        return;
-    }
-    if (password.length < 8) {
-        mostrarMsg(msg, 'La contraseña debe tener mínimo 8 caracteres', 'error');
-        return;
-    }
+    // Validaciones con regex antes de enviar al servidor
+    const vNombre   = validarNombre(nombre, 'El nombre');
+    if (!vNombre.ok)   { mostrarMsg(msg, vNombre.error,   'error'); return; }
+
+    const vApellido = validarNombre(apellido, 'El apellido');
+    if (!vApellido.ok) { mostrarMsg(msg, vApellido.error, 'error'); return; }
+
+    const vCorreo   = validarCorreo(correo);
+    if (!vCorreo.ok)   { mostrarMsg(msg, vCorreo.error,   'error'); return; }
+
+    const vTel      = validarTelefono(telefono);
+    if (!vTel.ok)      { mostrarMsg(msg, vTel.error,      'error'); return; }
+
+    const vPass     = validarContrasena(password);
+    if (!vPass.ok)     { mostrarMsg(msg, vPass.error,     'error'); return; }
+
+    const vConfirm  = validarConfirmarContrasena(password, confirmar);
+    if (!vConfirm.ok)  { mostrarMsg(msg, vConfirm.error,  'error'); return; }
 
     // Recopilar datos de todas las mascotas del formulario
     const mascotas = Array.from(document.querySelectorAll('.mascota-item')).map(m => {
