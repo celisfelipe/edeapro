@@ -88,10 +88,20 @@ function agregarEmpleado() {
     const contrasena = document.getElementById('inp-contrasena').value;
     const rol        = document.getElementById('inp-rol').value;
 
-    if (!nombre || !apellido || !telefono || !correo || !contrasena) {
-        modalError('Completa todos los campos.');
-        return;
-    }
+    const vNombre   = validarNombre(nombre, 'El nombre');
+    if (!vNombre.ok)   { modalError(vNombre.error);   return; }
+
+    const vApellido = validarNombre(apellido, 'El apellido');
+    if (!vApellido.ok) { modalError(vApellido.error); return; }
+
+    const vTel      = validarTelefono(telefono);
+    if (!vTel.ok)      { modalError(vTel.error);      return; }
+
+    const vCorreo   = validarCorreo(correo);
+    if (!vCorreo.ok)   { modalError(vCorreo.error);   return; }
+
+    const vPass     = validarContrasena(contrasena);
+    if (!vPass.ok)     { modalError(vPass.error);     return; }
 
     fetchAuth('http://127.0.0.1:8000/api/admin/empleados/agregar', {
         method: 'POST',
@@ -133,6 +143,23 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
     overlay.classList.add('open');
 
     document.getElementById('edit-empleado-ok').onclick = function () {
+        const nombre   = document.getElementById('edit-emp-nombre').value;
+        const apellido = document.getElementById('edit-emp-apellido').value;
+        const telefono = document.getElementById('edit-emp-telefono').value;
+        const correo   = document.getElementById('edit-emp-correo').value;
+
+        const vNombre   = validarNombre(nombre, 'El nombre');
+        if (!vNombre.ok)   { modalError(vNombre.error);   return; }
+
+        const vApellido = validarNombre(apellido, 'El apellido');
+        if (!vApellido.ok) { modalError(vApellido.error); return; }
+
+        const vTel      = validarTelefono(telefono);
+        if (!vTel.ok)      { modalError(vTel.error);      return; }
+
+        const vCorreo   = validarCorreo(correo);
+        if (!vCorreo.ok)   { modalError(vCorreo.error);   return; }
+        
         fetchAuth('http://127.0.0.1:8000/api/admin/empleados/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

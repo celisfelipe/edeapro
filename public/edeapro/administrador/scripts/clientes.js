@@ -106,6 +106,23 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
 
     // Al confirmar, enviar los datos actualizados a Laravel
     document.getElementById('edit-cliente-ok').onclick = function () {
+        const nombre   = document.getElementById('edit-nombre').value;
+        const apellido = document.getElementById('edit-apellido').value;
+        const telefono = document.getElementById('edit-telefono').value;
+        const correo   = document.getElementById('edit-correo').value;
+
+        const vNombre   = validarNombre(nombre, 'El nombre');
+        if (!vNombre.ok)   { modalError(vNombre.error);   return; }
+
+        const vApellido = validarNombre(apellido, 'El apellido');
+        if (!vApellido.ok) { modalError(vApellido.error); return; }
+
+        const vTel      = validarTelefono(telefono);
+        if (!vTel.ok)      { modalError(vTel.error);      return; }
+
+        const vCorreo   = validarCorreo(correo);
+        if (!vCorreo.ok)   { modalError(vCorreo.error);   return; }
+        
         fetchAuth('http://127.0.0.1:8000/api/admin/clientes/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
