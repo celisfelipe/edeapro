@@ -74,20 +74,34 @@ function inicializarCalendario() {
                 .catch(()    => failureCallback());
         },
 
-        // Al hacer clic en una cita, mostrar su detalle
-        eventClick: function (info) {
+                // Al hacer clic en una cita, mostrar su detalle en el panel lateral
+            eventClick: function (info) {
             const p     = info.event.extendedProps;
             const fecha = info.event.start.toLocaleDateString('es-CO', {
                 weekday: 'long', day: 'numeric', month: 'long'
             });
-            alert(
-                `📅 ${fecha} · 🕐 ${formatoHora12(p.hora)}\n\n` +
-                `👤 ${p.cliente}\n` +
-                `🐾 ${p.mascota}\n` +
-                `✂️ Estilista: ${p.estilista}\n` +
-                `💇 Servicio: ${p.servicio}\n` +
-                `Estado: ${p.estado}`
-            );
+
+            // Llenar los campos del panel con los datos de la cita
+            document.getElementById('detalle-cliente').textContent  = p.cliente;
+            document.getElementById('detalle-mascota').textContent  = p.mascota;
+            document.getElementById('detalle-servicio').textContent = p.servicio;
+            document.getElementById('detalle-estilista').textContent = p.estilista;
+            document.getElementById('detalle-fecha').textContent    = fecha;
+            document.getElementById('detalle-hora').textContent     = formatoHora12(p.hora);
+            document.getElementById('detalle-estado').textContent   = p.estado;
+
+            // Abrir el panel
+            document.getElementById('modal-detalle-overlay').classList.add('open');
+
+            // Botón X para cerrar
+            document.getElementById('modal-detalle-close').onclick = function () {
+                document.getElementById('modal-detalle-overlay').classList.remove('open');
+            };
+
+            // Clic en el fondo oscuro también cierra
+            document.getElementById('modal-detalle-overlay').onclick = function (e) {
+                if (e.target === this) this.classList.remove('open');
+            };
         }
     });
 

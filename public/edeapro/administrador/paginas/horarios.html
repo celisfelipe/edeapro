@@ -112,6 +112,48 @@
         </div>
 
     </div>
+    <!-- Panel lateral de detalle de cita (FullCalendar eventClick) -->
+    <div class="modal-overlay detalle-overlay" id="modal-detalle-overlay">
+        <div class="detalle-panel" id="modal-detalle-panel">
+            <div class="detalle-header">
+                <h3><i class="fa-solid fa-calendar-check"></i> Detalle de cita</h3>
+                <button class="detalle-close" id="modal-detalle-close" aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="detalle-body">
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-user"></i> Cliente</span>
+                    <span class="detalle-value" id="detalle-cliente">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-paw"></i> Mascota</span>
+                    <span class="detalle-value" id="detalle-mascota">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-scissors"></i> Servicio</span>
+                    <span class="detalle-value" id="detalle-servicio">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-user-tie"></i> Estilista</span>
+                    <span class="detalle-value" id="detalle-estilista">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-calendar-days"></i> Fecha</span>
+                    <span class="detalle-value" id="detalle-fecha">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-clock"></i> Hora</span>
+                    <span class="detalle-value" id="detalle-hora">—</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label"><i class="fa-solid fa-circle-info"></i> Estado</span>
+                    <span class="detalle-value" id="detalle-estado">—</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/sesion.js"></script>
