@@ -33,8 +33,8 @@ class AuthController extends Controller
     {
         // Validar que los campos no vengan vacíos y con formato correcto
         $request->validate([
-            'correo'     => 'required|email',
-            'contrasena' => 'required|min:8'
+        'correo'     => 'required|email',
+        'contrasena' => ['required', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d).{8,}$/']
         ]);
 
         // Sanitizar datos de entrada
@@ -117,12 +117,12 @@ class AuthController extends Controller
     {
         // Validar datos del registro
         $request->validate([
-            'nombre'     => 'required|string|max:100',
-            'apellido'   => 'required|string|max:100',
-            'correo'     => 'required|email|max:150',
-            'telefono'   => 'required|string|max:20',
-            'contrasena' => 'required|min:8'
-        ]);
+    'nombre'     => ['required', 'string', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/'],
+    'apellido'   => ['required', 'string', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/'],
+    'correo'     => 'required|email|max:150',
+    'telefono'   => ['required', 'regex:/^\d{10}$/'],
+    'contrasena' => ['required', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d).{8,}$/']
+    ]);
 
         // Sanitizar — limpiar espacios extra y caracteres peligrosos
         $nombre     = strip_tags(trim($request->input('nombre')));
