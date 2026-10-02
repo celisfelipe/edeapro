@@ -92,6 +92,7 @@ Route::middleware('verificar.token:cliente')->group(function () {
     Route::get('/cliente/mascotas/historial', [App\Http\Controllers\Cliente\ClienteController::class, 'historialMascota']);
     Route::get('/cliente/citas',              [App\Http\Controllers\Cliente\ClienteController::class, 'citas']);
     Route::post('/cliente/cancelar-cita',     [App\Http\Controllers\Cliente\ClienteController::class, 'cancelarCita']);
+    Route::get('/cliente/reagendar-horarios', [App\Http\Controllers\Cliente\ClienteController::class, 'horariosReagendar']);
     Route::post('/cliente/reagendar-cita',    [App\Http\Controllers\Cliente\ClienteController::class, 'reagendarCita']);
     Route::get('/cliente/pagos',              [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
 });

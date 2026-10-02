@@ -293,7 +293,7 @@ function renderTablaCitas(lista, filtro) {
         // Solo las citas pendientes tienen botón de cancelar
         const acciones = (c.estado === 'Pendiente' || c.estado === 'Reagendada')
             ? `<div style="display:flex; gap:6px;">
-                 <button class="btn-blue" onclick="reagendarCita(${c.id_cita}, ${c.id_estilista})"><i class="fa-solid fa-calendar-pen"></i> Reagendar</button>
+                 <button class="btn-blue" onclick="reagendarCita(${c.id_cita})"><i class="fa-solid fa-calendar-pen"></i> Reagendar</button>
                  <button class="btn-red" onclick="cancelarCita(${c.id_cita})"><i class="fa-solid fa-xmark"></i> Cancelar</button>
                </div>`
             : '';
@@ -381,50 +381,60 @@ function cancelarCita(id_cita) {
 }
 
 // ── REAGENDAR CITA ────────────────────────────────────────────
-function reagendarCita(id_cita, id_estilista) {
+/**
+ * Abre el modal para mover una cita a otra fecha y hora con el mismo
+ * estilista. Las horas ofrecidas y la validación final las calcula Laravel.
+ * @param {number} id_cita
+ */
+function reagendarCita(id_cita) {
     const overlay = document.getElementById('modal-reagendar');
     const inputFecha = document.getElementById('reagendar-fecha');
     const selectHora = document.getElementById('reagendar-hora');
 
-    // Fecha mínima: mañana + 24h
+    // Fecha mínima: mañana (las horas a menos de 24h las descarta el servidor).
+    // Se usa la fecha local; toISOString usaría UTC y podría saltar un día.
     const manana = new Date();
-    manana.setDate(manana.getDate() + 2);
-    inputFecha.min = manana.toISOString().split('T')[0];
+    manana.setDate(manana.getDate() + 1);
+    inputFecha.min = formatearFechaLocal(manana);
     inputFecha.value = '';
     selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
 
     overlay.classList.add('open');
 
-    // Cargar slots al cambiar fecha
+    // Cargar horarios al cambiar fecha. El servidor ya calcula cuáles sirven
+    // (mismas reglas que el agendamiento inicial): que la cita completa
+    // termine antes de las 5:00 PM, que el estilista esté libre en todo ese
+    // rango, que no sea domingo ni día bloqueado y que falten más de 24h.
     inputFecha.onchange = async function () {
-        selectHora.innerHTML = '<option value="">Cargando...</option>';
         const fecha = inputFecha.value;
+        if (!fecha) {
+            selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
+            return;
+        }
+        selectHora.innerHTML = '<option value="">Cargando...</option>';
 
         try {
-            const res = await fetch(
-                `http://127.0.0.1:8000/api/citas/slots?id_estilista=${id_estilista}&fecha=${fecha}`
+            const res  = await fetchAuth(
+                `http://127.0.0.1:8000/api/cliente/reagendar-horarios?id_cita=${id_cita}&fecha=${fecha}`
             );
             const data = await res.json();
 
-            const todos = [];
-            for (let h = 9; h < 17; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    todos.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
-                }
+            if (!data.ok) {
+                selectHora.innerHTML = `<option value="">${data.error || 'Error al cargar horas'}</option>`;
+                return;
+            }
+            if (data.disponibles.length === 0) {
+                selectHora.innerHTML = `<option value="">${data.aviso || 'No hay horas disponibles ese día'}</option>`;
+                return;
             }
 
-            const disponibles = todos.filter(slot => !data.ocupados.includes(slot));
             selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
-            disponibles.forEach(slot => {
+            data.disponibles.forEach(slot => {
                 const opt = document.createElement('option');
                 opt.value = slot;
                 opt.textContent = formatoHora12(slot); // se muestra en 12h, el value sigue en 24h
                 selectHora.appendChild(opt);
             });
-
-            if (disponibles.length === 0) {
-                selectHora.innerHTML = '<option value="">No hay horas disponibles</option>';
-            }
         } catch (e) {
             selectHora.innerHTML = '<option value="">Error al cargar horas</option>';
         }

@@ -49,32 +49,36 @@ function togAdicional(id){
   }
 }
 
+/**
+ * Horarios del paso 3. Laravel devuelve los horarios en los que el
+ * estilista está libre durante TODA la duración del servicio y la cita
+ * termina antes de las 5:00 PM (misma lógica que usa el reagendamiento).
+ * Aquí se muestran todos los inicios posibles de 9:00 hasta (17:00 − duración),
+ * marcando como ocupados los que no vinieron en esa lista y, si la fecha
+ * es hoy, los que ya pasaron.
+ */
 async function genSlots(){
-  const dur  = sumD() || 60;
-  let ocup = [];
+  const dur = sumD() || 60;
+  let disponibles = [];
 
   if (S.groomer !== null && S.date) {
     try {
-      const res  = await fetch(`http://127.0.0.1:8000/api/citas/slots?id_estilista=${S.groomer}&fecha=${S.date}`)
+      const res  = await fetch(`http://127.0.0.1:8000/api/citas/slots?id_estilista=${S.groomer}&fecha=${S.date}&duracion=${dur}`);
       const data = await res.json();
-      if (data.ok) ocup = data.ocupados;
+      if (data.ok) disponibles = data.disponibles;
     } catch(e) {}
   }
 
   // Si la fecha elegida es hoy, las horas que ya pasaron tampoco se pueden reservar
-  // (los días futuros no tienen este problema, solo el día de hoy)
   const tn        = new Date();
   const esHoy     = S.date === `${tn.getDate()}/${tn.getMonth()+1}/${tn.getFullYear()}`;
   const minutosYa = tn.getHours()*60 + tn.getMinutes();
 
   const out = [];
-  for(let h=9; h<17; h++){
-    for(let m=0; m<60; m+=15){
-      const label  = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
-      const fin    = h*60 + m + dur;
-      const yaPaso = esHoy && (h*60 + m) <= minutosYa;
-      if(fin <= 17*60) out.push({label, ocupado: ocup.includes(label) || yaPaso});
-    }
+  for(let inicio = 9*60; inicio + dur <= 17*60; inicio += 15){
+    const label  = `${String(Math.floor(inicio/60)).padStart(2,"0")}:${String(inicio%60).padStart(2,"0")}`;
+    const yaPaso = esHoy && inicio <= minutosYa;
+    out.push({label, ocupado: !disponibles.includes(label) || yaPaso});
   }
   return out;
 }

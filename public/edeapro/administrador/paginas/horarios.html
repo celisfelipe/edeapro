@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="../estilos/principal.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- FullCalendar (calendario interactivo de citas) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
 </head>
 <body>
     <script>
@@ -47,10 +43,27 @@
             <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
-        <!-- Calendario FullCalendar -->
-        <div class="card">
-            <h2><i class="fa-solid fa-calendar-days"></i> Agenda</h2>
-            <div id="calendario"></div>
+        <!-- Grilla de agenda por estilista -->
+        <div class="card grilla-card">
+            <div class="grilla-topbar">
+                <div class="grilla-topbar-left">
+                    <h2><i class="fa-solid fa-calendar-days"></i> Agenda</h2>
+                    <div class="grilla-nav">
+                        <button class="btn" onclick="cambiarDia(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="btn" onclick="irHoy()">Hoy</button>
+                        <button class="btn" onclick="cambiarDia(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <span id="grilla-fecha-label">Cargando...</span>
+                </div>
+                <div class="grilla-leyenda">
+                    <span class="leyenda-item leyenda-pendiente">Pendiente</span>
+                    <span class="leyenda-item leyenda-completada">Completada</span>
+                    <span class="leyenda-item leyenda-cancelada">Cancelada</span>
+                </div>
+            </div>
+            <div class="grilla-scroll">
+                <div class="grilla-agenda" id="grilla-agenda"></div>
+            </div>
         </div>
 
         <!-- Tabla de disponibilidad de estilistas -->
