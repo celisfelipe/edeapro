@@ -9,6 +9,7 @@
  */
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Estilista;
 
 // ── Autenticación ─────────────────────────────────────────────
 // Máximo 5 intentos de login por minuto por IP
@@ -68,19 +69,21 @@ Route::middleware('verificar.token:administrador')->group(function () {
     Route::get('/reportes/citas/excel',    [App\Http\Controllers\ReporteController::class, 'citasExcel']);
     Route::get('/reportes/pagos/excel',    [App\Http\Controllers\ReporteController::class, 'pagosExcel']);
     Route::get('/reportes/clientes/excel', [App\Http\Controllers\ReporteController::class, 'clientesExcel']);
-});
 
-// ── Rutas para administrador y peluquero ─────────────────────
-Route::middleware('verificar.token:administrador,peluquero')->group(function () {
+    // Agenda, disponibilidad y bloqueos de estilistas (solo admin)
     Route::get('/admin/horarios',                 [App\Http\Controllers\Admin\HorarioAdminController::class, 'index']);
     Route::post('/admin/horarios/disponibilidad', [App\Http\Controllers\Admin\HorarioAdminController::class, 'disponibilidad']);
 
     Route::get('/admin/disponibilidad-temporal',           [App\Http\Controllers\Admin\HorarioAdminController::class, 'disponibilidadTemporal']);
     Route::post('/admin/disponibilidad-temporal/agregar',  [App\Http\Controllers\Admin\HorarioAdminController::class, 'agregarDisponibilidadTemporal']);
     Route::post('/admin/disponibilidad-temporal/eliminar', [App\Http\Controllers\Admin\HorarioAdminController::class, 'eliminarDisponibilidadTemporal']);
+});
 
+// ── Rutas para administrador y peluquero ─────────────────────
+Route::middleware('verificar.token:administrador,peluquero')->group(function () {
     Route::get('/admin/clientes-empleado', [App\Http\Controllers\Admin\ClienteAdminController::class, 'index']);
     Route::get('/empleado/citas',          [App\Http\Controllers\Empleado\EmpleadoController::class, 'citas']);
+    Route::get('/empleado/agenda',         [App\Http\Controllers\Empleado\EmpleadoController::class, 'agenda']);
 });
 
 // ── Rutas solo para cliente ───────────────────────────────────
@@ -95,4 +98,19 @@ Route::middleware('verificar.token:cliente')->group(function () {
     Route::get('/cliente/reagendar-horarios', [App\Http\Controllers\Cliente\ClienteController::class, 'horariosReagendar']);
     Route::post('/cliente/reagendar-cita',    [App\Http\Controllers\Cliente\ClienteController::class, 'reagendarCita']);
     Route::get('/cliente/pagos',              [App\Http\Controllers\Cliente\ClienteController::class, 'pagos']);
+});
+
+
+Route::get('/estilistas', function () {
+    $estilistas = Estilista:: where ('estado', 'activo')
+    ->select([
+        'id_estilista',
+        'nombre_estilista',
+        'apellido_estilista',
+        'rol',
+        'foto',
+    ])
+    ->get();
+
+    return response()->json($estilistas);
 });

@@ -37,6 +37,13 @@ class EmpleadoAdminController extends Controller
      */
     public function agregar(Request $request)
     {
+        // Si el usuario subió una foto, la guardamos en storage/app/public/fotos/
+        // store() devuelve la ruta relativa: "fotos/nombrealeatorio.jpg"
+        $rutaFoto = null;
+        if ($request->hasFile('foto')) {
+            $rutaFoto = $request->file('foto')->store('fotos', 'public');
+    }
+
         DB::table('estilista')->insert([
             'nombre_estilista'   => $request->input('nombre'),
             'apellido_estilista' => $request->input('apellido'),
@@ -45,8 +52,9 @@ class EmpleadoAdminController extends Controller
             'contrasena'         => Hash::make($request->input('contrasena')),
             'rol'                => $request->input('rol'),
             'estado'             => 'Activo',
-            'disponibilidad'     => 'Disponible'
-        ]);
+            'disponibilidad'     => 'Disponible',
+            'foto'               => $rutaFoto   // null si no subió foto
+    ]);
 
         return response()->json(['ok' => true]);
     }
@@ -67,10 +75,20 @@ class EmpleadoAdminController extends Controller
             return response()->json(['ok' => false, 'error' => 'Todos los campos son obligatorios.'], 422);
         }
 
-        DB::update(
-            "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=? WHERE id_estilista=?",
-            [$nombre, $apellido, $telefono, $correo, $rol, $id]
-        );
+        // Si subió foto nueva, la guardamos y actualizamos la columna
+        // Si no subió, dejamos la foto que ya tenía (no tocamos esa columna)
+        if ($request->hasFile('foto')) {
+            $rutaFoto = $request->file('foto')->store('fotos', 'public');
+            DB::update(
+                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, foto=? WHERE id_estilista=?",
+                [$nombre, $apellido, $telefono, $correo, $rol, $rutaFoto, $id]
+            );
+        } else {
+            DB::update(
+                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=? WHERE id_estilista=?",
+                [$nombre, $apellido, $telefono, $correo, $rol, $id]
+            );
+        }
 
         return response()->json(['ok' => true]);
     }
