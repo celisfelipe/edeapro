@@ -57,46 +57,8 @@
             <h2 class="titulo fade-up">Nuestro Equipo</h2>
             <p class="equipo-desc fade-up">Profesionales apasionados certificados en las mejores técnicas de estética animal.</p>
 
-            <div class="cards-container">
-                <div class="card fade-up">
-                    <div class="card-imagen">
-                        <img src="../imagenes/juanpablo.jfif" alt="Juan Pablo Lopez">
-                    </div>
-                    <div class="card-info">
-                        <h3>Juan Pablo Lopez</h3>
-                        <p class="cargo">Gerente / Jefe</p>
-                    </div>
-                </div>
-
-                <div class="card fade-up delay-1">
-                    <div class="card-imagen">
-                        <img src="../imagenes/maria.jfif" alt="Maria del Mar">
-                    </div>
-                    <div class="card-info">
-                        <h3>Maria del Mar</h3>
-                        <p class="cargo">Estilista</p>
-                    </div>
-                </div>
-
-                <div class="card fade-up delay-2">
-                    <div class="card-imagen">
-                        <img src="../imagenes/camila.jfif" alt="Camila Tamayo Restrepo">
-                    </div>
-                    <div class="card-info">
-                        <h3>Camila Tamayo</h3>
-                        <p class="cargo">Estilista</p>
-                    </div>
-                </div>
-
-                <div class="card fade-up delay-3">
-                    <div class="card-imagen">
-                        <img src="../imagenes/katherine.jfif" alt="Katherine Ortiz Hernandez">
-                    </div>
-                    <div class="card-info">
-                        <h3>Katherine Ortiz</h3>
-                        <p class="cargo">Estilista</p>
-                    </div>
-                </div>
+            <div class="cards-container" id="equipo-container">
+                <!--las tarjetas se generan en la BD-->
             </div>
         </section>
 
@@ -224,5 +186,57 @@
     document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
     </script>
 
+    /* generacion de tarjetas en la BD*/
+    <script>
+        fetch('http://localhost:8000/api/estilistas')
+            .then(res => res.json())
+            .then(estilistas => {
+                const contenedor = document.getElementById('equipo-container');
+            
+                estilistas.forEach((estilista, indice) => {
+                
+                    // Iniciales para cuando no hay foto
+                    const iniciales = estilista.nombre_estilista.charAt(0) 
+                                    + estilista.apellido_estilista.charAt(0);
+                
+                    // ¿Tiene foto? → imagen real. ¿No tiene? → div con iniciales
+                    const imagenHTML = estilista.foto
+                        ? `<img src="http://localhost:8000/storage/${estilista.foto}" 
+                               alt="${estilista.nombre_estilista}">`
+                        : `<div style="width:100%;height:100%;
+                                      display:flex;
+                                      align-items:center;
+                                      justify-content:center;
+                                      background:linear-gradient(135deg,#F0AB06,#B87D03);
+                                      font-size:2.5rem;
+                                      font-weight:800;
+                                      color:#1A1612;">
+                               ${iniciales}
+                           </div>`;
+                       
+                    const delay = indice > 0 ? ' delay-' + indice : '';
+                       
+                    const tarjeta = `
+                        <div class="card fade-up${delay}">
+                            <div class="card-imagen">
+                                ${imagenHTML}
+                            </div>
+                            <div class="card-info">
+                                <h3>${estilista.nombre_estilista} ${estilista.apellido_estilista}</h3>
+                                <p class="cargo">${estilista.rol}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    contenedor.innerHTML += tarjeta;
+                });
+            
+                document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+            })
+            .catch(() => {
+                document.getElementById('equipo-container').innerHTML =
+                    '<p style="text-align:center;color:#999;">No se pudo cargar el equipo.</p>';
+            });
+</script>
 </body>
 </html>

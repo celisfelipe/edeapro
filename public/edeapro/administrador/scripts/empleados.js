@@ -87,6 +87,7 @@ function agregarEmpleado() {
     const correo     = document.getElementById('inp-correo').value;
     const contrasena = document.getElementById('inp-contrasena').value;
     const rol        = document.getElementById('inp-rol').value;
+    const fotoInput  = document.getElementById('inp-foto');
 
     const vNombre   = validarNombre(nombre, 'El nombre');
     if (!vNombre.ok)   { modalError(vNombre.error);   return; }
@@ -103,17 +104,32 @@ function agregarEmpleado() {
     const vPass     = validarContrasena(contrasena);
     if (!vPass.ok)     { modalError(vPass.error);     return; }
 
+    // FormData puede cargar texto Y archivos al mismo tiempo
+    const formData = new FormData();
+    formData.append('nombre',     nombre);
+    formData.append('apellido',   apellido);
+    formData.append('telefono',   telefono);
+    formData.append('correo',     correo);
+    formData.append('contrasena', contrasena);
+    formData.append('rol',        rol);
+
+    // Solo adjunta la foto si el usuario seleccionó una
+    if (fotoInput.files.length > 0) {
+        formData.append('foto', fotoInput.files[0]);
+    }
+
+    // Con FormData NO se pone Content-Type manualmente
+    // El navegador lo configura solo con el boundary correcto
     fetchAuth('http://127.0.0.1:8000/api/admin/empleados/agregar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ nombre, apellido, telefono, correo, contrasena, rol })
+        body: formData
     })
     .then(res => res.json())
     .then(data => {
         if (data.ok) {
             modalExito('Empleado registrado correctamente.');
             ocultarFormulario();
-            cargarEmpleados(); // Refrescar la tabla
+            cargarEmpleados();
         } else {
             modalError('Error: ' + data.error);
         }
@@ -160,18 +176,23 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
         const vCorreo   = validarCorreo(correo);
         if (!vCorreo.ok)   { modalError(vCorreo.error);   return; }
         
+        const editFormData = new FormData();
+        editFormData.append('id_estilista', id);
+        editFormData.append('nombre',   document.getElementById('edit-emp-nombre').value);
+        editFormData.append('apellido', document.getElementById('edit-emp-apellido').value);
+        editFormData.append('telefono', document.getElementById('edit-emp-telefono').value);
+        editFormData.append('correo',   document.getElementById('edit-emp-correo').value);
+        editFormData.append('rol',      rol);
+
+        const editFoto = document.getElementById('edit-emp-foto');
+        if (editFoto.files.length > 0) {
+        editFormData.append('foto', editFoto.files[0]);
+        }
+
         fetchAuth('http://127.0.0.1:8000/api/admin/empleados/editar', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                id_estilista: id,
-                nombre:   document.getElementById('edit-emp-nombre').value,
-                apellido: document.getElementById('edit-emp-apellido').value,
-                telefono: document.getElementById('edit-emp-telefono').value,
-                correo:   document.getElementById('edit-emp-correo').value,
-                rol:      rol // Conservar el rol original
-            })
-        })
+            body: editFormData
+})
         .then(res => res.json())
         .then(data => {
             overlay.classList.remove('open');

@@ -5,6 +5,7 @@
     <title>Horarios - Administrador</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="stylesheet" href="../../estilos/agenda-grilla.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -125,7 +126,7 @@
         </div>
 
     </div>
-    <!-- Panel lateral de detalle de cita (FullCalendar eventClick) -->
+    <!-- Panel lateral de detalle de cita (lo abre agendaGrilla.js al hacer clic en una cita) -->
     <div class="modal-overlay detalle-overlay" id="modal-detalle-overlay">
         <div class="detalle-panel" id="modal-detalle-panel">
             <div class="detalle-header">
@@ -171,6 +172,7 @@
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/sesion.js"></script>
     <script src="../../scripts/formatoHora.js"></script>
+    <script src="../../scripts/agendaGrilla.js"></script>
     <script src="../scripts/horarios.js"></script>
     <script src="../../scripts/sidebar-toggle.js"></script>
 </body>

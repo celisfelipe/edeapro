@@ -3,15 +3,17 @@
 /**
  * EmpleadoController
  * ==================
- * Provee datos al panel del empleado (inicio.js en empleado/scripts/).
+ * Provee datos al panel del empleado (empleado/scripts/).
  * Filtra las citas únicamente por el estilista que inició sesión.
  *
- * Ruta: GET /api/empleado/citas?id_estilista=X
+ * Rutas: GET /api/empleado/citas?id_estilista=X   (inicio.js)
+ *        GET /api/empleado/agenda?fecha=YYYY-MM-DD (disponibilidad.js)
  */
 
 namespace App\Http\Controllers\Empleado;
 
 use App\Http\Controllers\Controller;
+use App\Services\Agenda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,5 +46,28 @@ class EmpleadoController extends Controller
         ", [$id_estilista]);
 
         return response()->json(['ok' => true, 'citas' => $citas]);
+    }
+
+    /**
+     * Agenda de un día del estilista autenticado, para la grilla de agenda.
+     * El estilista sale SIEMPRE del token (auth_tokenable_id), nunca del
+     * request, así que un empleado no puede ver la agenda de otro.
+     * Devuelve la misma forma que /api/admin/horarios, pero con una sola
+     * columna (el propio estilista) y solo sus citas.
+     */
+    public function agenda(Request $request, Agenda $agenda)
+    {
+        $id_estilista = intval($request->attributes->get('auth_tokenable_id'));
+        $fecha        = (string) $request->input('fecha', date('Y-m-d'));
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+            return response()->json(['ok' => false, 'error' => 'Fecha inválida.'], 422);
+        }
+
+        return response()->json([
+            'ok'         => true,
+            'citas'      => $agenda->citasDelDia($fecha, $id_estilista),
+            'estilistas' => $agenda->estilistas($id_estilista),
+        ]);
     }
 }

@@ -1,8 +1,8 @@
 /* ================================================
    principal.css — Panel Empleado
    ================================================
-   Estilos del panel del empleado: sidebar, header,
-   tablas y grilla de horarios.
+   Estilos del panel del empleado: sidebar, header y tablas.
+   La grilla de agenda está en ../../estilos/agenda-grilla.css.
 
    Basado en el panel admin, misma paleta de marca (variables
    definidas en base.css, ver docs/MODERNIZACION-VISUAL.md):
@@ -213,61 +213,4 @@ input, select {
 input:focus, select:focus {
     outline: none;
     border-color: var(--color-metal);
-}
-
-/* ── Disponibilidad — grilla de horarios del empleado ────────
-   Usados en disponibilidad.html */
-/* Fila del selector de fecha en disponibilidad */
-.fecha-selector {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Tabla de grilla de horarios del empleado */
-.horario-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.horario-table th {
-    background: var(--color-text);
-    color: var(--color-light);
-    padding: 10px;
-    text-align: center;
-}
-
-.horario-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-    vertical-align: top;
-    min-width: 150px;
-}
-
-/* Columna de hora en la grilla */
-.hora-col {
-    background: var(--color-surface);
-    font-weight: bold;
-    width: 80px;
-}
-
-/* Bloque de cita en la grilla */
-.cita-bloque {
-    background: var(--color-metal);
-    color: white;
-    border-radius: 6px;
-    padding: 6px;
-    font-size: 12px;
-    margin: 2px;
-}
-
-/* Cita completada en verde — semántico, sin cambios */
-.cita-bloque.completada { background: #7eb56a; }
-
-/* Slot libre en la grilla */
-.libre {
-    color: #ccc;
-    font-size: 12px;
 }

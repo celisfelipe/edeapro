@@ -16,7 +16,7 @@
             document.body.classList.add('sidebar-collapsed');
         }
     </script>
-
+0
     <div class="sidebar">
         <h2>Administrador</h2>
         <ul>
@@ -56,6 +56,11 @@
                 <input type="email"    id="inp-correo"     placeholder="Correo">
                 <input type="password" id="inp-contrasena" placeholder="Contraseña">
                 <select id="inp-rol">
+                    <div style="margin-top:10px;">
+                        <label style="font-size:13px;font-weight:600;">Foto del estilista</label><br>
+                        <input type="file" id="inp-foto" accept="image/*" style="margin-top:5px;">
+                        <small style="color:#888;">Opcional · JPG o PNG · máx 2MB</small>
+                    </div>
                     <option value="Peluquero">Peluquero</option>
                     <option value="Administrador">Administrador</option>
                 </select>
