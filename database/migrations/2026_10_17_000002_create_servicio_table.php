@@ -6,19 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
     public function up(): void
     {
-        Schema::table('estilista', function (Blueprint $table) {
-            $table->string('foto')->nullable()->after('apellido_estilista');
+        Schema::create('servicio', function (Blueprint $table) {
+            $table->unsignedInteger('id_servicio')->primary();
+            $table->string('nombre_servicio', 100);
         });
     }
 
-    
     public function down(): void
     {
-        Schema::table('estilista', function (Blueprint $table) {
-            $table->dropColumn('foto');
-        });
+        Schema::dropIfExists('servicio');
     }
 };

@@ -4,26 +4,29 @@
    Resetea estilos base para el panel del empleado.
    Se carga antes que principal.css en cada página.
 
-   Define las variables de marca usadas en todo el panel empleado
-   (ver docs/MODERNIZACION-VISUAL.md). Los colores de estado
-   (verde/amarillo/rojo) no forman parte de la identidad visual
-   y se mantienen sin cambios en principal.css.
+   Paleta dark mode — misma que el panel administrador,
+   mismas variables, mismos valores. Así ambos paneles
+   se ven iguales y comparten identidad visual.
 ================================================ */
 
 :root {
-    --color-bg: #f4f3ea;
-    --color-surface: #f4f4f4;
-    --color-metal: #ae9d81;
-    --color-metal-text: #8B6F4E;
-    --color-text: #333333;
-    --color-heading: #050505;
-    --color-dark-surface: #2A211A;
-    --color-light: #f4f3ea;
-    --color-cta: #f0ab06;
-    --color-cta-dark: #d69a05;
-    --color-info: #00a7b5;
-    --color-success: #7eb56a;
-    --color-special: #7671a6;
+    --color-bg:           #12100E;
+    --color-surface:      #1E1A17;
+    --color-surface2:     #252018;
+    --color-border:       #302A24;
+    --color-heading:      #F0EBE4;
+    --color-text:         #C8BFB3;
+    --color-light:        #F0EBE4;
+    --color-dark-surface: #0D0B09;
+    --color-metal:        #ae9d81;
+    --color-metal-text:   #9B8F84;
+    --color-cta:          #F0AB06;
+    --color-cta-dark:     #B87D03;
+    --color-cta-soft:     rgba(240,171,6,0.13);
+    --color-info:         #0284C7;
+    --color-success:      #16A34A;
+    --shadow-sm:  0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md:  0 4px 16px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* Reset general */
@@ -38,13 +41,11 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', sans-serif;
 }
 
-/* El body usa flex para el layout sidebar + main */
 body {
     display: flex;
     background: var(--color-bg);
 }
 
-/* Quitar subrayado de los links del sidebar */
 a {
     text-decoration: none;
     color: inherit;
@@ -52,7 +53,7 @@ a {
 
 /* ================================================
    SIDEBAR: íconos, colapso en escritorio y panel móvil
-   ================================================ */
+================================================ */
 .sidebar, .main {
     transition: width 0.25s ease, margin-left 0.25s ease;
 }
@@ -99,7 +100,6 @@ a {
     z-index: 150;
 }
 
-/* Escritorio colapsado: franja solo con íconos */
 body.sidebar-collapsed .sidebar {
     width: 70px;
     padding: 20px 12px;
@@ -118,13 +118,6 @@ body.sidebar-collapsed .main {
     margin-left: 110px;
 }
 
-/* Móvil/tablet: sidebar fuera de pantalla, el hamburguesa lo despliega.
-   Los selectores usan el prefijo "body" a propósito: principal.css carga
-   después de base.css y redeclara .sidebar/.main sin media query, así que
-   con la misma especificidad esas reglas de escritorio le ganarían a estas
-   de aquí aunque el media query esté activo. "body X" tiene más
-   especificidad que "X" solo, así que estas reglas mobile quedan a salvo
-   sin importar el orden de carga de los archivos. */
 @media (max-width: 900px) {
     body .sidebar {
         position: fixed;

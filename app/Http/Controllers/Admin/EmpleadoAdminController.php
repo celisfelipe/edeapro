@@ -70,26 +70,28 @@ class EmpleadoAdminController extends Controller
         $telefono = trim($request->input('telefono', ''));
         $correo   = trim($request->input('correo', ''));
         $rol      = trim($request->input('rol', ''));
-
+    
+        // Nuevo: recibimos el estado y validamos que sea uno de los dos valores permitidos
+        $estadoRaw = trim($request->input('estado', 'Activo'));
+        $estado    = in_array($estadoRaw, ['Activo', 'Inactivo']) ? $estadoRaw : 'Activo';
+    
         if (!$id || !$nombre || !$apellido || !$telefono || !$correo || !$rol) {
             return response()->json(['ok' => false, 'error' => 'Todos los campos son obligatorios.'], 422);
         }
-
-        // Si subió foto nueva, la guardamos y actualizamos la columna
-        // Si no subió, dejamos la foto que ya tenía (no tocamos esa columna)
+    
         if ($request->hasFile('foto')) {
             $rutaFoto = $request->file('foto')->store('fotos', 'public');
             DB::update(
-                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, foto=? WHERE id_estilista=?",
-                [$nombre, $apellido, $telefono, $correo, $rol, $rutaFoto, $id]
+                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, estado=?, foto=? WHERE id_estilista=?",
+                [$nombre, $apellido, $telefono, $correo, $rol, $estado, $rutaFoto, $id]
             );
         } else {
             DB::update(
-                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=? WHERE id_estilista=?",
-                [$nombre, $apellido, $telefono, $correo, $rol, $id]
+                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, estado=? WHERE id_estilista=?",
+                [$nombre, $apellido, $telefono, $correo, $rol, $estado, $id]
             );
         }
-
+    
         return response()->json(['ok' => true]);
     }
 
