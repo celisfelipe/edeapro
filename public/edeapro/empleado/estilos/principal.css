@@ -1,21 +1,11 @@
 /* ================================================
    principal.css — Panel Empleado
    ================================================
-   Estilos del panel del empleado: sidebar, header y tablas.
-   La grilla de agenda está en ../../estilos/agenda-grilla.css.
-
-   Basado en el panel admin, misma paleta de marca (variables
-   definidas en base.css, ver docs/MODERNIZACION-VISUAL.md):
-   sidebar oscuro #050505, enlace activo en teal info, encabezados
-   de tabla #333333 con texto #f4f3ea, acentos en metal #ae9d81.
-   Status verde/amarillo/rojo: sin cambios (semánticos).
-
-   Se carga en todas las páginas del empleado.
+   Estilos compartidos del panel empleado.
+   Las variables de color vienen de base.css.
 ================================================ */
 
-
 /* SIDEBAR */
-/* Sidebar izquierdo: menú de navegación del panel empleado — oscuro premium */
 .sidebar {
     width: 230px;
     background: var(--color-dark-surface);
@@ -25,14 +15,12 @@
     position: fixed;
 }
 
-/* Título del sidebar */
 .sidebar h2 {
     margin-bottom: 20px;
     font-weight: 800;
     letter-spacing: 1px;
 }
 
-/* Lista de links del menú */
 .sidebar ul {
     list-style: none;
 }
@@ -44,7 +32,7 @@
 }
 
 .sidebar ul li:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.07);
 }
 
 .sidebar a {
@@ -55,17 +43,26 @@
     font-size: 14px;
     font-weight: 600;
     border-radius: 5px;
+    position: relative;
 }
 
-/* Elemento activo del sidebar — teal info (lista para usarse si se marca
-   la página actual con class="active" en el link correspondiente) */
+/* Enlace activo: fondo dorado suave + borde izquierdo dorado
+   (igual que el panel administrador) */
 .sidebar a.active {
-    background: var(--color-info);
-    color: var(--color-heading);
+    background: rgba(240,171,6,0.12);
+    color: var(--color-cta);
+}
+
+.sidebar a.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--color-cta);
 }
 
 /* CONTENIDO */
-/* Área principal de contenido */
 .main {
     margin-left: 250px;
     padding: 30px;
@@ -74,16 +71,17 @@
     min-height: 100vh;
 }
 
-/* Barra superior con título, nombre del empleado y cerrar sesión */
+/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background: white;
+    background: var(--color-surface);
     padding: 15px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
 }
 
 .header h1 {
@@ -99,23 +97,29 @@
 }
 
 /* TARJETAS */
-/* Tarjeta blanca que envuelve cada sección — acento metálico */
 .card {
-    background: white;
+    background: var(--color-surface);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border-top: 3px solid var(--color-metal);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 
-/* Buscador con ícono de lupa */
+.card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin-bottom: 15px;
+}
+
+/* BUSCADOR */
 .search-wrap {
     position: relative;
     margin-bottom: 14px;
@@ -135,44 +139,35 @@
     padding-left: 34px;
 }
 
-.card h2 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--color-heading);
-    margin-bottom: 15px;
-}
-
 /* TABLAS */
-/* Tablas de datos */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-/* Encabezados en gris carbón con texto crema */
 table th {
-    background: var(--color-text);
-    color: var(--color-light);
+    background: var(--color-surface2);
+    color: var(--color-heading);
     padding: 10px;
     text-align: left;
     font-size: 13px;
     font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
 }
 
 table td {
     padding: 10px;
-    border-bottom: 1px solid #f0ece6;
+    border-bottom: 1px solid var(--color-border);
     font-size: 13px;
     color: var(--color-text);
 }
 
 table tr:hover {
-    background: var(--color-surface);
+    background: var(--color-surface2);
 }
 
 /* BOTONES */
-/* Botón base */
 .btn {
     padding: 6px 14px;
     border: none;
@@ -185,32 +180,37 @@ table tr:hover {
 
 .btn:hover { opacity: 0.85; }
 
-/* Botón metálico: acciones secundarias */
-.btn-blue { background: var(--color-metal); color: white; }
-/* Botón verde: acciones de confirmación — semántico, sin cambios */
-.btn-green { background: #7eb56a; color: white; }
-/* Botón rojo: cerrar sesión — semántico, sin cambios */
-.btn-red { background: #dc3545; color: white; }
-/* Botón amarillo — estado/acción pendiente, semántico, sin cambios */
-.btn-yellow { background: #e8c56a; color: #333333; }
+.btn-blue   { background: var(--color-info);    color: white; }
+.btn-green  { background: var(--color-success); color: white; }
+.btn-red    { background: #dc3545;              color: white; }
+.btn-yellow { background: var(--color-cta);     color: #12100E; }
+.btn-gray   { background: var(--color-surface2); color: var(--color-text); border: 1px solid var(--color-border); }
 
-/* Badge verde: estado Completada — semántico, sin cambios */
-.status-green { color: #7eb56a; font-weight: 700; }
-/* Badge amarillo: estado Pendiente — semántico, sin cambios */
-.status-yellow { color: #e8c56a; font-weight: 700; }
-/* Badge rojo: estado Cancelada — semántico, sin cambios */
-.status-red { color: #dc3545; font-weight: 700; }
+/* ESTADOS */
+.status-green  { color: #4ade80; font-weight: 700; }
+.status-yellow { color: var(--color-cta); font-weight: 700; }
+.status-red    { color: #f87171; font-weight: 700; }
 
 /* INPUT / SELECT */
 input, select {
     padding: 8px 12px;
-    border: 1.5px solid var(--color-metal);
+    border: 1.5px solid var(--color-border);
     border-radius: 6px;
     font-size: 13px;
     color: var(--color-text);
+    background: var(--color-surface2);
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--color-metal);
+    border-color: var(--color-cta);
 }
+
+input::placeholder {
+    color: var(--color-metal-text);
+}
+
+/* Agenda (disponibilidad.html): fecha fija entre Anterior/Siguiente y grilla con alto acotado */
+.grilla-nav { align-items: center; }
+.grilla-nav .grilla-fecha-btn { min-width: 220px; justify-content: center; text-align: center; }
+.grilla-card .grilla-scroll { max-height: 460px; overflow-y: auto; }

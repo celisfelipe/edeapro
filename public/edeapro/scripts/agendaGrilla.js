@@ -28,6 +28,7 @@
 /* ── Estado de la grilla ──────────────────────────────────────────────────── */
 let diaOffset = 0;   // 0 = hoy, -1 = ayer, +1 = mañana, …
 let urlAgenda = null; // función fecha → URL del endpoint (la define iniciarGrilla)
+let solicitudGrilla = 0; // id de la última carga; descarta respuestas viejas si se navega rápido
 
 /* ── Configuración de la grilla ──────────────────────────────────────────── */
 const HORA_INICIO   = 8;    // 8 AM
@@ -60,6 +61,39 @@ function cambiarDia(delta) {
 function irHoy() {
     diaOffset = 0;
     renderGrilla();
+}
+
+/**
+ * Salta directo a una fecha (la usa el calendario del botón de fecha).
+ * Convierte la fecha en un `diaOffset` respecto a hoy, así cambiarDia()
+ * sigue funcionando igual desde ese día.
+ * @param {string} fecha  YYYY-MM-DD
+ */
+function irAFecha(fecha) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha || '')) return;
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    const destino = new Date(anio, mes - 1, dia);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    // Math.round por si en medio hay un cambio de horario (días de 23/25 h)
+    diaOffset = Math.round((destino - hoy) / 86400000);
+    renderGrilla();
+}
+
+/**
+ * Abre el calendario nativo del input oculto #grilla-fecha-input.
+ * showPicker() es la forma confiable; .click() queda como respaldo para
+ * navegadores que no lo soportan.
+ */
+function abrirCalendarioGrilla() {
+    const input = document.getElementById('grilla-fecha-input');
+    if (!input) return;
+    input.value = fechaActual();
+    try {
+        input.showPicker();
+    } catch (e) {
+        input.click();
+    }
 }
 
 /**
@@ -106,17 +140,30 @@ function renderGrilla() {
 
     const label = document.getElementById('grilla-fecha-label');
     if (label) {
+        // Formato "Sábado, 17 Oct 2026"
         const d = new Date(fecha + 'T00:00:00');
-        label.textContent = d.toLocaleDateString('es-CO', {
-            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
+        const diaSemana = d.toLocaleDateString('es-CO', { weekday: 'long' });
+        const mesCorto  = d.toLocaleDateString('es-CO', { month: 'short' }).replace('.', '');
+        label.textContent = `${diaSemana[0].toUpperCase()}${diaSemana.slice(1)}, `
+            + `${d.getDate()} ${mesCorto[0].toUpperCase()}${mesCorto.slice(1)} ${d.getFullYear()}`;
     }
 
-    mostrarMensajeGrilla(grilla, 'Cargando agenda…');
+    // Si ya hay una agenda dibujada se deja visible (atenuada) mientras llega
+    // la del nuevo día, y se reemplaza de una sola vez: así no parpadea.
+    // Solo en la primera carga (grilla vacía o con mensaje) se muestra "Cargando".
+    const solicitud = ++solicitudGrilla;
+    if (grilla.querySelector('.grilla-fila')) {
+        grilla.classList.add('grilla-cargando');
+    } else {
+        mostrarMensajeGrilla(grilla, 'Cargando agenda…');
+    }
 
     fetchAuth(urlAgenda(fecha))
         .then(res => res.json())
         .then(data => {
+            if (solicitud !== solicitudGrilla) return;   // llegó tarde: ya se pidió otro día
+            grilla.classList.remove('grilla-cargando');
+
             if (!data.ok) {
                 mostrarMensajeGrilla(grilla, 'No se pudo cargar la agenda.');
                 return;
@@ -130,11 +177,14 @@ function renderGrilla() {
             }
 
             grilla.style.gridTemplateColumns = `76px repeat(${estilistas.length}, minmax(140px, 1fr))`;
-            grilla.innerHTML = '';
-            grilla.appendChild(construirCabecera(estilistas));
-            construirFilasSlots(estilistas, citas).forEach(fila => grilla.appendChild(fila));
+            // Reemplazo en un solo paso (sin vaciar antes) para no dejar un frame en blanco
+            grilla.replaceChildren(construirCabecera(estilistas), ...construirFilasSlots(estilistas, citas));
         })
-        .catch(() => mostrarMensajeGrilla(grilla, 'Error al conectar con el servidor.'));
+        .catch(() => {
+            if (solicitud !== solicitudGrilla) return;
+            grilla.classList.remove('grilla-cargando');
+            mostrarMensajeGrilla(grilla, 'Error al conectar con el servidor.');
+        });
 }
 
 /**

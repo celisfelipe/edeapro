@@ -31,34 +31,65 @@ function cargarEmpleados() {
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
-        const tbody = document.getElementById('tabla-empleados');
+
+        const grid = document.getElementById('grid-empleados');
+
         if (data.empleados.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6">No hay empleados registrados</td></tr>';
+            grid.innerHTML = '<p class="emp-cargando">No hay estilistas registrados.</p>';
             return;
         }
-        tbody.innerHTML = '';
+
+        grid.innerHTML = '';
+
         data.empleados.forEach(e => {
-            const iniciales   = ((e.nombre_estilista || '')[0] || '') + ((e.apellido_estilista || '')[0] || '');
-            const rolClase    = e.rol === 'Administrador' ? 'rol-administrador' : 'rol-peluquero';
-            const rolIcono    = e.rol === 'Administrador' ? 'fa-user-shield' : 'fa-scissors';
-            const estadoClase = e.estado === 'Activo' ? 'activo' : 'inactivo';
-            tbody.innerHTML += `
-                <tr>
-                    <td>
-                        <div class="cliente-info">
-                            <span class="avatar-circle">${iniciales.toUpperCase()}</span>
-                            ${e.nombre_estilista} ${e.apellido_estilista}
+            const iniciales = ((e.nombre_estilista || '')[0] || '') +
+                              ((e.apellido_estilista || '')[0] || '');
+
+            const avatarHTML = e.foto
+                ? `<div class="emp-avatar"><img src="http://127.0.0.1:8000/storage/${e.foto}" alt="${e.nombre_estilista}"></div>`
+                : `<div class="emp-avatar">${iniciales.toUpperCase()}</div>`;
+
+            const rolClase = e.rol === 'Administrador' ? 'rol-administrador' : 'rol-peluquero';
+            const rolIcono = e.rol === 'Administrador' ? 'fa-user-shield' : 'fa-scissors';
+
+            const estadoDot = e.estado === 'Activo' ? 'activo' : 'inactivo';
+
+            const card = `
+                <div class="emp-card">
+                    <div class="emp-header">
+                        ${avatarHTML}
+                        <div>
+                            <p class="emp-nombre">${e.nombre_estilista} ${e.apellido_estilista}</p>
+                            <span class="badge-rol ${rolClase}">
+                                <i class="fa-solid ${rolIcono}"></i> ${e.rol}
+                            </span>
                         </div>
-                    </td>
-                    <td><span class="badge-rol ${rolClase}"><i class="fa-solid ${rolIcono}"></i> ${e.rol}</span></td>
-                    <td>${e.telefono_estilista}</td>
-                    <td>${e.correo}</td>
-                    <td><span class="badge-estado"><span class="dot ${estadoClase}"></span> ${e.estado}</span></td>
-                    <td>
-                        <button class="btn btn-blue" onclick="editarEstilista(${e.id_estilista}, '${e.nombre_estilista}', '${e.apellido_estilista}', '${e.telefono_estilista}', '${e.correo}', '${e.rol}')"><i class="fa-solid fa-pen"></i> Editar</button>
-                        <button class="btn btn-red" onclick="eliminarEmpleado(${e.id_estilista})"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                    </td>
-                </tr>`;
+                    </div>
+
+                    <div class="emp-contacto">
+                        <span><i class="fa-solid fa-envelope"></i> ${e.correo}</span>
+                        <span><i class="fa-solid fa-phone"></i> ${e.telefono_estilista}</span>
+                    </div>
+
+                    <div class="emp-footer">
+                        <span class="badge-estado">
+                            <span class="dot ${estadoDot}"></span>
+                            ${e.estado}
+                        </span>
+                        <div class="emp-btns">
+                            <button class="btn btn-blue"
+                                onclick="editarEstilista(${e.id_estilista},'${e.nombre_estilista}','${e.apellido_estilista}','${e.telefono_estilista}','${e.correo}','${e.rol}','${e.estado}')">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button class="btn btn-red"
+                                onclick="eliminarEmpleado(${e.id_estilista})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+
+            grid.innerHTML += card;
         });
     });
 }
@@ -148,7 +179,7 @@ function agregarEmpleado() {
  * @param {string} rol      - 'Administrador' | 'Peluquero'
  * @returns {void}
  */
-function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
+function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado) {
     const overlay = document.getElementById('modal-editar-empleado');
 
     // Prellenar el formulario con los datos actuales
@@ -156,6 +187,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
     document.getElementById('edit-emp-apellido').value = apellido;
     document.getElementById('edit-emp-telefono').value = telefono;
     document.getElementById('edit-emp-correo').value   = correo;
+    document.getElementById('edit-emp-estado').value   = estado;
     overlay.classList.add('open');
 
     document.getElementById('edit-empleado-ok').onclick = function () {
@@ -183,6 +215,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol) {
         editFormData.append('telefono', document.getElementById('edit-emp-telefono').value);
         editFormData.append('correo',   document.getElementById('edit-emp-correo').value);
         editFormData.append('rol',      rol);
+        editFormData.append('estado',   document.getElementById('edit-emp-estado').value); 
 
         const editFoto = document.getElementById('edit-emp-foto');
         if (editFoto.files.length > 0) {
@@ -235,3 +268,4 @@ function eliminarEmpleado(id) {
         });
     });
 }
+

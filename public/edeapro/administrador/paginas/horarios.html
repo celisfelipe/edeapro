@@ -50,11 +50,13 @@
                 <div class="grilla-topbar-left">
                     <h2><i class="fa-solid fa-calendar-days"></i> Agenda</h2>
                     <div class="grilla-nav">
-                        <button class="btn" onclick="cambiarDia(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button class="btn" onclick="irHoy()">Hoy</button>
-                        <button class="btn" onclick="cambiarDia(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                        <button class="btn" onclick="cambiarDia(-1)"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                        <button class="btn grilla-fecha-btn" onclick="abrirCalendarioGrilla()">
+                            <span id="grilla-fecha-label">Cargando...</span> <i class="fa-solid fa-caret-down"></i>
+                        </button>
+                        <input type="date" id="grilla-fecha-input" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;" onchange="irAFecha(this.value)">
+                        <button class="btn" onclick="cambiarDia(1)">Siguiente <i class="fa-solid fa-chevron-right"></i></button>
                     </div>
-                    <span id="grilla-fecha-label">Cargando...</span>
                 </div>
                 <div class="grilla-leyenda">
                     <span class="leyenda-item leyenda-pendiente">Pendiente</span>
@@ -65,22 +67,6 @@
             <div class="grilla-scroll">
                 <div class="grilla-agenda" id="grilla-agenda"></div>
             </div>
-        </div>
-
-        <!-- Tabla de disponibilidad de estilistas -->
-        <div class="card">
-            <h2><i class="fa-solid fa-user-clock"></i> Disponibilidad de Estilistas</h2>
-            <br>
-            <table>
-                <tr>
-                    <th>Estilista</th>
-                    <th>Disponibilidad</th>
-                    <th>Acciones</th>
-                </tr>
-                <tbody id="tabla-disponibilidad">
-                    <tr><td colspan="3">Cargando...</td></tr>
-                </tbody>
-            </table>
         </div>
 
         <!-- Bloqueos temporales de disponibilidad (ej. vacaciones) -->

@@ -5,18 +5,17 @@
     <title>Empleados - Administrador</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="stylesheet" href="../estilos/empleados.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <script>
-        // Aplicar el estado guardado del sidebar ANTES de pintar, para evitar el parpadeo
-        // (aparece expandido un instante y luego se colapsa) al navegar entre páginas.
         if (window.innerWidth > 900 && localStorage.getItem('sidebarCollapsed') === '1') {
             document.body.classList.add('sidebar-collapsed');
         }
     </script>
-0
+
     <div class="sidebar">
         <h2>Administrador</h2>
         <ul>
@@ -45,43 +44,34 @@
 
         <div class="card">
             <button class="btn btn-green" onclick="mostrarFormulario()"><i class="fa-solid fa-plus"></i> Agregar estilista</button>
-            <br><br>
 
             <!-- Formulario para agregar nuevo estilista (oculto por defecto) -->
-            <div id="formulario" style="display:none; background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px;">
-                <h3><i class="fa-solid fa-user-plus"></i> Nuevo Empleado</h3><br>
+            <div id="formulario" class="emp-form">
+                <h3><i class="fa-solid fa-user-plus"></i> Nuevo Estilista</h3>
                 <input type="text"     id="inp-nombre"     placeholder="Nombre">
                 <input type="text"     id="inp-apellido"   placeholder="Apellido">
                 <input type="text"     id="inp-telefono"   placeholder="Teléfono">
                 <input type="email"    id="inp-correo"     placeholder="Correo">
                 <input type="password" id="inp-contrasena" placeholder="Contraseña">
                 <select id="inp-rol">
-                    <div style="margin-top:10px;">
-                        <label style="font-size:13px;font-weight:600;">Foto del estilista</label><br>
-                        <input type="file" id="inp-foto" accept="image/*" style="margin-top:5px;">
-                        <small style="color:#888;">Opcional · JPG o PNG · máx 2MB</small>
-                    </div>
                     <option value="Peluquero">Peluquero</option>
                     <option value="Administrador">Administrador</option>
                 </select>
-                <br><br>
-                <button class="btn btn-green" onclick="agregarEmpleado()">Guardar</button>
-                <button class="btn" onclick="ocultarFormulario()">Cancelar</button>
+                <div class="emp-form-foto">
+                    <label class="emp-form-label">Foto del estilista</label>
+                    <input type="file" id="inp-foto" accept="image/*" class="emp-form-file">
+                    <small class="emp-form-hint">Opcional · JPG o PNG · máx 2MB</small>
+                </div>
+                <div class="emp-form-actions">
+                    <button class="btn btn-green" onclick="agregarEmpleado()">Guardar</button>
+                    <button class="btn" onclick="ocultarFormulario()">Cancelar</button>
+                </div>
             </div>
 
-            <table>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Rol</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                <tbody id="tabla-empleados">
-                    <tr><td colspan="6">Cargando empleados...</td></tr>
-                </tbody>
-            </table>
+            <!-- Grid de cards de estilistas -->
+            <div id="grid-empleados" class="emp-grid">
+                <p class="emp-cargando">Cargando estilistas...</p>
+            </div>
         </div>
 
     </div>
@@ -106,8 +96,20 @@
                 <label>Correo</label>
                 <input type="email" id="edit-emp-correo">
             </div>
+            <div class="modal-form-group">
+                <label>Estado</label>
+                    <select id="edit-emp-estado">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+            </div>
+            <div class="modal-form-group">
+                <label>Foto</label>
+                <input type="file" id="edit-emp-foto" accept="image/*">
+                <small class="emp-form-hint">Dejar vacío para mantener la foto actual</small>
+            </div>
             <div class="modal-footer">
-                <button class="btn" style="background:#eee;" id="edit-empleado-cancel">Cancelar</button>
+                <button class="btn btn-gray" id="edit-empleado-cancel">Cancelar</button>
                 <button class="btn btn-blue" id="edit-empleado-ok">Guardar</button>
             </div>
         </div>
@@ -119,7 +121,7 @@
             <h3>Confirmar acción</h3>
             <p id="modal-confirmar-msg"></p>
             <div class="modal-footer">
-                <button class="btn" style="background:#eee;" id="modal-confirmar-cancel">Cancelar</button>
+                <button class="btn btn-gray" id="modal-confirmar-cancel">Cancelar</button>
                 <button class="btn btn-red" id="modal-confirmar-ok">Confirmar</button>
             </div>
         </div>
