@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-09-2026 a las 04:24:58
+-- Tiempo de generación: 18-10-2026 a las 02:18:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -87,8 +87,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:4;', 1790212777),
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1790212777;', 1790212777);
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1792278963),
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1792278963;', 1792278963);
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,10 @@ INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_ra
 (14, 3, 2, 2, NULL, 3, '2026-05-29', '09:00:00', 'Cancelada', NULL),
 (9202, 3, 2, 1, 9, 2, '2026-07-10', '09:00:00', 'Cancelada', 'presento accidente'),
 (9203, 3, 2, 1, 9, 2, '2026-07-11', '09:00:00', 'Cancelada', 'me dio diarrea'),
-(9204, 3, 2, 1, 9, 2, '2026-07-20', '09:00:00', 'Cancelada', 'no puedo ir');
+(9204, 3, 2, 1, 9, 2, '2026-07-20', '09:00:00', 'Cancelada', 'no puedo ir'),
+(9205, 3, 2, 1, 1, 2, '2026-10-01', '09:00:00', 'Pendiente', NULL),
+(9206, 3, 2, 1, 9, 2, '2026-10-01', '12:00:00', 'Pendiente', NULL),
+(9207, 3, 2, 1, 9, 3, '2026-10-01', '09:00:00', 'Pendiente', NULL);
 
 --
 -- Disparadores `cita`
@@ -247,8 +250,7 @@ CREATE TABLE `cliente` (
 
 INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `contrasena`, `telefono`, `correo`, `direccion`) VALUES
 (1, 'jose', 'lopez', '$2y$12$ueMwAeEv98tT2zlK2Rww0ukGvkCtOy/h0DZAG3cYRMYe7jwpMaZKy', '3218403116', 'pruebaedea15@gmail.com', ''),
-(3, 'felipe', 'celis', '$2y$12$TJw5UBK1xuweO9kvzsdbA.v5DVeTqB63I896OzW.5j4YP7qYmQuxK', '3156412211', 'theblasflo14@gmail.com', NULL),
-(4, 'fernada', 'avendaño', '$2y$12$fLVPWt7DSzMXqJZqa5kvIe5LhLZv78QROx0bWwxzB.YkRc4t2eH9a', '3218403565', 'fernanda@gmail.com', NULL),
+(3, 'felipe', 'celis', '$2y$12$Bkxl.4.8WAjLSvRcFEuCceeuGUfq4UkNVmRQQTyYFL8Uiv4gSsxPy', '3156412211', 'theblasflo14@gmail.com', NULL),
 (5, 'blessd', 'el bendito', '$2y$12$ULngQhzgrspQkl4oFoq.cOwpjplD9ttK3OQ4etEM3Ru4Bwb/OMH6u', '3156459812', 'blessd@gmail.com', '');
 
 -- --------------------------------------------------------
@@ -294,6 +296,7 @@ CREATE TABLE `estilista` (
   `id_estilista` int(11) NOT NULL,
   `nombre_estilista` varchar(30) DEFAULT NULL,
   `apellido_estilista` varchar(30) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
   `telefono_estilista` varchar(30) DEFAULT NULL,
   `rol` varchar(20) DEFAULT NULL,
   `estado` varchar(20) DEFAULT NULL,
@@ -306,10 +309,10 @@ CREATE TABLE `estilista` (
 -- Volcado de datos para la tabla `estilista`
 --
 
-INSERT INTO `estilista` (`id_estilista`, `nombre_estilista`, `apellido_estilista`, `telefono_estilista`, `rol`, `estado`, `disponibilidad`, `correo`, `contrasena`) VALUES
-(1, 'Santiago', 'Torres', '3127896540', 'Administrador', 'Activo', 'Disponible', 'santiago@edea.com', '$2y$12$o50ctPKWMgKje7OKz0blqO8hTP1j/vTxVWq1B9GMbkL/RQX/H9Uue'),
-(2, 'Paola', 'Díaz', '3119876543', 'Peluquero', 'Activo', 'Disponible', 'paola@edea.com', '$2y$12$i1ALdsf64X/D5N1ZqZAJm.F4K9P1k684PnlpkyDJmlPstQ9ngfLna'),
-(3, 'Carlos', 'Pérez', '3006547891', 'Peluquero', 'Activo', 'Disponible', 'carlos@edea.com', '$2y$12$/D.5EhHAWyEcCMBkPiw/AO4E1tVqOw3T1CczQW6YQRXRWWfLaZkPK');
+INSERT INTO `estilista` (`id_estilista`, `nombre_estilista`, `apellido_estilista`, `foto`, `telefono_estilista`, `rol`, `estado`, `disponibilidad`, `correo`, `contrasena`) VALUES
+(1, 'Santiago', 'Torres', 'fotos/l1IAhQjLYIpn6erbD1r5OnwUBTmZjWPjuXElYwNe.jpg', '3127896540', 'Administrador', 'Activo', 'Disponible', 'santiago@edea.com', '$2y$12$o50ctPKWMgKje7OKz0blqO8hTP1j/vTxVWq1B9GMbkL/RQX/H9Uue'),
+(2, 'Paola', 'Díaz', NULL, '3119876543', 'Peluquero', 'Activo', 'Disponible', 'paola@edea.com', '$2y$12$i1ALdsf64X/D5N1ZqZAJm.F4K9P1k684PnlpkyDJmlPstQ9ngfLna'),
+(3, 'Carlos', 'Pérez', NULL, '3006547891', 'Peluquero', 'Activo', 'Disponible', 'carlos@edea.com', '$2y$12$/D.5EhHAWyEcCMBkPiw/AO4E1tVqOw3T1CczQW6YQRXRWWfLaZkPK');
 
 --
 -- Disparadores `estilista`
@@ -395,8 +398,6 @@ CREATE TABLE `mascota` (
 INSERT INTO `mascota` (`id_mascota`, `id_cliente`, `id_raza`, `nombre`, `especie`, `edad`, `genero`) VALUES
 (1, 1, NULL, 'penelope', 'Canino', 3, 'Hembra'),
 (2, 3, NULL, 'max', 'perro', 10, 'macho'),
-(3, 4, NULL, 'lucas', 'perro', 10, 'macho'),
-(4, 4, NULL, 'luna', 'gato', 5, 'hembra'),
 (5, 5, NULL, 'loco', 'gato', 2, 'macho');
 
 -- --------------------------------------------------------
@@ -449,7 +450,24 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2026_04_29_031058_create_personal_access_tokens_table', 2);
+(4, '2026_04_29_031058_create_personal_access_tokens_table', 2),
+(5, '2026_10_17_115952_add_foto_to_empleados_table', 3),
+(6, '2026_10_17_000001_create_raza_table', 3),
+(7, '2026_10_17_000002_create_servicio_table', 3),
+(8, '2026_10_17_000003_create_adicional_table', 3),
+(9, '2026_10_17_000004_create_promocion_table', 3),
+(10, '2026_10_17_000005_create_estilista_table', 3),
+(11, '2026_10_17_000006_create_cliente_table', 3),
+(12, '2026_10_17_000007_create_recuperacion_contrasena_table', 3),
+(13, '2026_10_17_000008_create_mascota_table', 3),
+(14, '2026_10_17_000009_create_cita_table', 3),
+(15, '2026_10_17_000010_create_resena_table', 3),
+(16, '2026_10_17_000011_create_pago_table', 3),
+(17, '2026_10_17_000012_create_notificacion_table', 3),
+(18, '2026_10_17_000013_create_disponibilidad_estilista_table', 3),
+(19, '2026_10_17_000014_create_adicional_cita_table', 3),
+(20, '2026_10_17_000015_create_cliente_promocion_table', 3),
+(21, '2026_10_17_000016_create_raza_servicio_table', 3);
 
 -- --------------------------------------------------------
 
@@ -487,7 +505,10 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (13, 9203, 3, 'Cita del 2026-07-11 a las 09:00:00 fue cancelada. Motivo: me dio diarrea', 'Cancelación', 'Cita cancelada', 'Leída'),
 (14, 9204, 3, 'Tu cita fue agendada para el 2026-07-17 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (15, 9204, 3, 'Cita reagendada para el 2026-07-18 a las 09:00:00', 'Reagendamiento', 'Cita reagendada', 'Leída'),
-(16, 9204, 3, 'Cita del 2026-07-20 a las 09:00:00 fue cancelada. Motivo: no puedo ir', 'Cancelación', 'Cita cancelada', 'No leída');
+(16, 9204, 3, 'Cita del 2026-07-20 a las 09:00:00 fue cancelada. Motivo: no puedo ir', 'Cancelación', 'Cita cancelada', 'Leída'),
+(17, 9205, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(18, 9206, 3, 'Tu cita fue agendada para el 2026-10-01 a las 12:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(19, 9207, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
 
 -- --------------------------------------------------------
 
@@ -583,8 +604,9 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
 (88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48'),
-(100, 'cliente', 3, 'auth_token', '5d8583770efb0e1a94c685391eba255d85fe2ad9d7ea686804f4c60043178358', '[\"cliente\"]', NULL, '2026-07-17 05:35:20', '2026-07-16 05:35:20', '2026-07-16 05:35:20'),
-(101, 'estilista', 1, 'auth_token', 'ed1401f4db4a4893ef0da25bcf4ba86d5bea44ee2eb530c92d4fdb39c846e014', '[\"administrador\"]', NULL, '2026-09-25 06:19:33', '2026-09-24 06:19:33', '2026-09-24 06:19:33');
+(118, 'cliente', 3, 'auth_token', 'b906ffb3160d947f0d506fbe02f2cd8f27259729861105c181a26a471d67fd2c', '[\"cliente\"]', NULL, '2026-10-18 21:57:39', '2026-10-17 21:57:39', '2026-10-17 21:57:39'),
+(120, 'estilista', 2, 'auth_token', '851f55dcd2b444b577974cbd131879217d16c13989d592c316a873b709cf4315', '[\"peluquero\"]', NULL, '2026-10-18 23:06:47', '2026-10-17 23:06:47', '2026-10-17 23:06:47'),
+(121, 'estilista', 1, 'auth_token', '12c0e986a4a4622c6e94c8d32d664aa70d1b7ae061be927eeeb02e2ce0f5a501', '[\"administrador\"]', NULL, '2026-10-18 23:15:04', '2026-10-17 23:15:04', '2026-10-17 23:15:04');
 
 -- --------------------------------------------------------
 
@@ -1077,7 +1099,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9205;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9208;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -1095,7 +1117,7 @@ ALTER TABLE `disponibilidad_estilista`
 -- AUTO_INCREMENT de la tabla `estilista`
 --
 ALTER TABLE `estilista`
-  MODIFY `id_estilista` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_estilista` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`
@@ -1119,7 +1141,7 @@ ALTER TABLE `mascota`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -1131,13 +1153,13 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT de la tabla `recuperacion_contrasena`
 --
 ALTER TABLE `recuperacion_contrasena`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
