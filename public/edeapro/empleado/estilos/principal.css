@@ -13,6 +13,10 @@
     height: 100vh;
     padding: 20px;
     position: fixed;
+    /* Columna flex: el <ul> crece y el pie (Cerrar sesión) queda abajo */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 .sidebar h2 {
@@ -23,6 +27,7 @@
 
 .sidebar ul {
     list-style: none;
+    flex: 1;
 }
 
 .sidebar ul li {
@@ -36,7 +41,9 @@
 }
 
 .sidebar a {
-    display: block;
+    /* flex (como en base.css y el admin): separa ícono/texto y permite
+       centrar el ícono cuando el sidebar está colapsado */
+    display: flex;
     padding: 12px;
     color: var(--color-light);
     text-decoration: none;
@@ -214,3 +221,68 @@ input::placeholder {
 .grilla-nav { align-items: center; }
 .grilla-nav .grilla-fecha-btn { min-width: 220px; justify-content: center; text-align: center; }
 .grilla-card .grilla-scroll { max-height: 460px; overflow-y: auto; }
+
+/* PIE DEL SIDEBAR: Cerrar sesión (mismo estilo que los links del menú) */
+.sidebar-footer {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--color-light);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-logout:hover {
+    background: rgba(220,53,69,0.15);
+    color: #ff6b7a;
+}
+
+.sidebar-logout:focus-visible {
+    outline: 2px solid var(--color-cta);
+    outline-offset: 2px;
+}
+
+/* REPORTES */
+.reportes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.reporte-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.reporte-card p {
+    font-size: 14px;
+    color: var(--color-metal-text);
+    margin-bottom: 16px;
+}
+
+.reporte-acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.reporte-card .reporte-estado {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: #ff6b7a;
+}
+
+.reporte-estado:empty { display: none; }
+
+.btn:disabled { opacity: 0.6; cursor: progress; }

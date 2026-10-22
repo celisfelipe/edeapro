@@ -18,6 +18,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Estilista;
+use Illuminate\Support\Facades\Storage;
 
 class EmpleadoAdminController extends Controller
 {
@@ -27,8 +29,14 @@ class EmpleadoAdminController extends Controller
     public function index()
     {
         $empleados = DB::select(
-            "SELECT id_estilista, nombre_estilista, apellido_estilista, telefono_estilista, rol, estado, correo FROM estilista"
+            "SELECT id_estilista, nombre_estilista, apellido_estilista, telefono_estilista, rol, estado, correo, foto FROM estilista"
         );
+
+        // URL lista para usar en el <img> (null si el archivo no está en este PC)
+        foreach ($empleados as $e) {
+            $e->foto_url = Estilista::urlFoto($e->foto);
+            unset($e->foto);
+        }
         return response()->json(['ok' => true, 'empleados' => $empleados]);
     }
 
@@ -37,11 +45,12 @@ class EmpleadoAdminController extends Controller
      */
     public function agregar(Request $request)
     {
-        // Si el usuario subió una foto, la guardamos en storage/app/public/fotos/
+        // Si el usuario subió una foto, la guardamos en public/uploads/fotos/
+        // (disco "uploads", versionado en git, sin storage:link).
         // store() devuelve la ruta relativa: "fotos/nombrealeatorio.jpg"
         $rutaFoto = null;
         if ($request->hasFile('foto')) {
-            $rutaFoto = $request->file('foto')->store('fotos', 'public');
+            $rutaFoto = $request->file('foto')->store('fotos', 'uploads');
     }
 
         DB::table('estilista')->insert([
@@ -80,10 +89,28 @@ class EmpleadoAdminController extends Controller
         }
     
         if ($request->hasFile('foto')) {
-            $rutaFoto = $request->file('foto')->store('fotos', 'public');
+            // Borrar la foto anterior para no dejar archivos huérfanos
+            $fotoAnterior = DB::table('estilista')->where('id_estilista', $id)->value('foto');
+            if ($fotoAnterior) {
+                Storage::disk('uploads')->delete($fotoAnterior);
+            }
+
+            $rutaFoto = $request->file('foto')->store('fotos', 'uploads');
             DB::update(
                 "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, estado=?, foto=? WHERE id_estilista=?",
                 [$nombre, $apellido, $telefono, $correo, $rol, $estado, $rutaFoto, $id]
+            );
+        } elseif ($request->input('eliminar_foto') === '1') {
+            // El admin pulsó "Eliminar foto" en el modal: se borra el archivo
+            // y la columna vuelve a NULL (la tarjeta mostrará las iniciales)
+            $fotoAnterior = DB::table('estilista')->where('id_estilista', $id)->value('foto');
+            if ($fotoAnterior) {
+                Storage::disk('uploads')->delete($fotoAnterior);
+            }
+
+            DB::update(
+                "UPDATE estilista SET nombre_estilista=?, apellido_estilista=?, telefono_estilista=?, correo=?, rol=?, estado=?, foto=NULL WHERE id_estilista=?",
+                [$nombre, $apellido, $telefono, $correo, $rol, $estado, $id]
             );
         } else {
             DB::update(
@@ -113,6 +140,12 @@ class EmpleadoAdminController extends Controller
                 'ok'    => false,
                 'error' => 'No se puede eliminar el estilista porque tiene citas pendientes o reagendadas.'
             ], 422);
+        }
+
+        // Borrar también su foto, para no dejar archivos huérfanos en uploads/
+        $foto = DB::table('estilista')->where('id_estilista', $id)->value('foto');
+        if ($foto) {
+            Storage::disk('uploads')->delete($foto);
         }
 
         DB::delete("DELETE FROM estilista WHERE id_estilista = ?", [$id]);

@@ -8,8 +8,6 @@
  * API Laravel:
  *   GET  /api/admin/citas          → lista todas las citas (vista citas_completas)
  *   POST /api/admin/citas/cancelar → cambia estado a Cancelada
- *   GET  /api/reportes/{tipo}/pdf  → descarga reporte PDF
- *   GET  /api/reportes/{tipo}/excel → descarga reporte Excel
  *
  * Depende de: fetchToken.js (fetchAuth), formatoHora.js (formatoHora12),
  *             sesion.js (verificarSesionAdmin, cerrarSesion),
@@ -18,19 +16,6 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionAdmin()) return;
-
-    // Menú desplegable de exportación (Citas/Pagos/Clientes × PDF/Excel)
-    const exportDropdown = document.getElementById('exportDropdown');
-    const exportToggle   = document.getElementById('exportToggle');
-    if (exportDropdown && exportToggle) {
-        exportToggle.addEventListener('click', function (e) {
-            e.stopPropagation();
-            exportDropdown.classList.toggle('open');
-        });
-        document.addEventListener('click', function (e) {
-            if (!exportDropdown.contains(e.target)) exportDropdown.classList.remove('open');
-        });
-    }
 
     // Cerrar modal de detalles al hacer clic en la X o fuera del panel
     document.getElementById('modal-detalle-close').addEventListener('click', cerrarDetalle);
@@ -247,53 +232,4 @@ function cancelarCita(id) {
             }
         });
     });
-}
-
-/**
- * Descarga un reporte generado por Laravel (PDF o Excel).
- * Se usa fetch con el token en el header (un <a href> normal no puede
- * enviarlo), se recibe el archivo como blob y se fuerza la descarga.
- *
- * @param {string} tipo    - 'citas', 'pagos' o 'clientes'
- * @param {string} formato - 'pdf' o 'excel'
- * @returns {void}
- */
-function descargarArchivo(tipo, formato) {
-    const extension = formato === 'excel' ? 'xlsx' : 'pdf';
-    const nombre    = formato === 'excel' ? 'reporte Excel' : 'reporte';
-    const token     = localStorage.getItem('token');
-
-    fetch(`http://127.0.0.1:8000/api/reportes/${tipo}/${formato}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => {
-        if (!res.ok) { modalError(`Error al generar el ${nombre}`); return; }
-        return res.blob();
-    })
-    .then(blob => {
-        if (!blob) return;
-        const url  = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href     = url;
-        link.download = `reporte-${tipo}.${extension}`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(() => modalError(`Error de conexión al generar el ${nombre}`));
-}
-
-/**
- * Descarga el reporte en PDF (llamada desde el menú "Exportar").
- * @param {string} tipo - 'citas', 'pagos' o 'clientes'
- */
-function descargarReporte(tipo) {
-    descargarArchivo(tipo, 'pdf');
-}
-
-/**
- * Descarga el reporte en Excel (llamada desde el menú "Exportar").
- * @param {string} tipo - 'citas', 'pagos' o 'clientes'
- */
-function descargarExcel(tipo) {
-    descargarArchivo(tipo, 'excel');
 }

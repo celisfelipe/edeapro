@@ -29,7 +29,12 @@
             <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
             <li><a href="estadisticas.html"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
             <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
+            <li><a href="reportes.html"><i class="fa-solid fa-file-lines"></i><span class="label">Reportes</span></a></li>
         </ul>
+        <!-- Pie del sidebar: siempre al final de la navegación -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Cerrar sesión</span></button>
+        </div>
     </div>
     <div class="sidebar-overlay"></div>
 
@@ -41,7 +46,6 @@
                 <h1>Horarios</h1>
             </div>
             <p id="nombre-admin">Cargando...</p>
-            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
         <!-- Grilla de agenda por estilista -->

@@ -156,6 +156,19 @@ body {
     transform: scale(1.06);
 }
 
+/* Iniciales cuando el estilista no tiene foto (o el archivo no está en este PC) */
+.card-iniciales {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #F0AB06, #B87D03);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1A1612;
+}
+
 /* Info debajo de la foto */
 .card-info {
     padding: var(--space-4) var(--space-5) var(--space-5);

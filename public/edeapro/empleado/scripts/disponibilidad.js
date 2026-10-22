@@ -8,7 +8,7 @@
  *
  * A diferencia del admin, aquí no se cambia la disponibilidad ni se
  * administran bloqueos temporales (esas rutas son solo de administrador).
- * Verifica que el usuario tenga rol "peluquero" en localStorage.
+ * La sesión (rol "peluquero") la verifica sesion.js.
  *
  * Conecta con la API de Laravel:
  *   GET /api/empleado/agenda?fecha=YYYY-MM-DD → citas del día del estilista
@@ -20,22 +20,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'peluquero') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-empleado').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionEmpleado()) return;
 
     iniciarGrilla(fecha => `http://127.0.0.1:8000/api/empleado/agenda?fecha=${fecha}`);
 });
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
-}

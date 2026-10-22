@@ -125,9 +125,64 @@
     color: var(--color-text);
 }
 
-.emp-form-file {
+/* ── Selector de foto: vista previa + Subir / Eliminar ── */
+.emp-foto-picker {
+    display: flex;
+    align-items: center;
+    gap: 14px;
     margin-top: 4px;
+}
+
+.emp-foto-preview {
+    flex-shrink: 0;
+}
+
+/* Ícono de "sin foto" en tono apagado sobre el degradado del avatar */
+.emp-foto-preview i {
+    font-size: 1.3rem;
+    opacity: 0.55;
+}
+
+.emp-foto-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* El <label for> funciona como botón "Subir foto". Se anulan los estilos de
+   .modal-form-group label (mayúsculas, 11px, gris) para que dentro del modal
+   se vea igual que el botón "Eliminar foto" */
+.emp-foto-picker .emp-foto-subir {
+    display: inline-flex;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
     color: var(--color-text);
+    cursor: pointer;
+}
+
+/* .btn usa display: inline-flex, que anula el atributo hidden */
+.emp-foto-eliminar[hidden] {
+    display: none;
+}
+
+/* Input real oculto pero accesible (lo abre el label; sigue enfocable con teclado) */
+.emp-foto-picker .emp-foto-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Foco visible en el botón "Subir foto" cuando se navega con teclado */
+.emp-foto-picker:has(.emp-foto-input:focus-visible) .emp-foto-subir {
+    outline: 2px solid var(--color-cta);
+    outline-offset: 2px;
 }
 
 /* Antes: color: #888 fijo */

@@ -506,54 +506,65 @@ input::placeholder {
     margin-left: 8px;
 }
 
-/* ── EXPORTAR ── */
-.export-bar { display: flex; justify-content: flex-end; margin-bottom: 14px; }
-.export-dropdown { position: relative; }
-
-.export-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: calc(100% + 6px);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    box-shadow: var(--shadow-md);
-    padding: 10px;
-    min-width: 190px;
-    z-index: 50;
+/* ── PIE DEL SIDEBAR: Cerrar sesión ── */
+/* El <ul> tiene flex: 1, así que el pie queda siempre al final del sidebar */
+.sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
 }
 
-.export-dropdown.open .export-menu { display: block; }
-
-.export-group {
-    padding: 6px 4px 10px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.export-group:last-child { border-bottom: none; padding-bottom: 4px; }
-
-.export-group-title {
+/* Mismo tamaño y ritmo que los links del menú; rojo solo al pasar el mouse */
+.sidebar-logout {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(200,191,179,0.65);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-logout:hover {
+    background: rgba(220,38,38,0.12);
+    color: #F87171;
+}
+
+.sidebar-logout:focus-visible {
+    outline: 2px solid var(--color-cta);
+    outline-offset: 2px;
+}
+
+/* ── REPORTES ── */
+.reportes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.reporte-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.reporte-card p {
+    flex: 1;
+    font-size: 13.5px;
     color: var(--color-metal-text);
-    margin-bottom: 6px;
+    margin-bottom: 16px;
 }
 
-.export-menu button {
-    display: flex; align-items: center; gap: 8px;
-    width: 100%; background: none; border: none;
-    text-align: left; padding: 7px 8px; border-radius: 6px;
-    font-size: 13px; color: var(--color-text);
-    cursor: pointer; transition: background 0.15s;
-}
+.reporte-acciones { display: flex; gap: 10px; flex-wrap: wrap; }
 
-.export-menu button:hover { background: var(--color-surface2); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
 
 /* ── AVATAR ── */
 .cliente-info { display: flex; align-items: center; gap: 10px; }
