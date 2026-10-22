@@ -81,6 +81,22 @@ class AuthController extends Controller
     }
 
     /**
+     * Logout — revoca el token con el que se hizo la petición.
+     * Ruta: POST /api/logout (detrás de verificar.token, así que el token ya es válido).
+     * Sin esto el token seguía sirviendo hasta expirar aunque el usuario cerrara sesión.
+     */
+    public function logout(Request $request)
+    {
+        $plainToken = substr($request->header('Authorization'), 7);
+
+        DB::table('personal_access_tokens')
+            ->where('token', hash('sha256', $plainToken))
+            ->delete();
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
      * Genera un token único y lo guarda en personal_access_tokens.
      * Elimina tokens anteriores del mismo usuario antes de crear uno nuevo.
      */

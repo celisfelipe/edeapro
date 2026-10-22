@@ -31,6 +31,7 @@ Route::get('/resenas',           [App\Http\Controllers\ResenaController::class, 
 
 // ── Rutas que requieren cualquier sesión activa ───────────────
 Route::middleware('verificar.token')->group(function () {
+    Route::post('/logout',        [App\Http\Controllers\AuthController::class, 'logout']);
     Route::post('/citas/crear',   [App\Http\Controllers\CitaController::class, 'crear']);
     Route::post('/resenas/crear', [App\Http\Controllers\ResenaController::class, 'crear']);
 });
@@ -86,6 +87,12 @@ Route::middleware('verificar.token:administrador,peluquero')->group(function () 
     Route::get('/empleado/agenda',         [App\Http\Controllers\Empleado\EmpleadoController::class, 'agenda']);
 });
 
+// ── Reportes del estilista (solo sus propias citas, id tomado del token) ──
+Route::middleware('verificar.token:peluquero')->group(function () {
+    Route::get('/empleado/reportes/citas/pdf',   [App\Http\Controllers\ReporteController::class, 'misCitasPdf']);
+    Route::get('/empleado/reportes/citas/excel', [App\Http\Controllers\ReporteController::class, 'misCitasExcel']);
+});
+
 // ── Rutas solo para cliente ───────────────────────────────────
 Route::middleware('verificar.token:cliente')->group(function () {
     Route::get('/cliente/perfil',             [App\Http\Controllers\Cliente\ClienteController::class, 'perfil']);
@@ -101,16 +108,21 @@ Route::middleware('verificar.token:cliente')->group(function () {
 });
 
 
+// ── Equipo público (tarjetas de nosotros.html) ───────────────
+// Devuelve foto_url ya resuelta (null si el archivo no existe en este PC)
+// y el rol normalizado ("PELUQUERO" → "Peluquero"), porque el trigger de la
+// BD lo pasa a mayúsculas solo en los registros nuevos.
 Route::get('/estilistas', function () {
-    $estilistas = Estilista:: where ('estado', 'activo')
-    ->select([
-        'id_estilista',
-        'nombre_estilista',
-        'apellido_estilista',
-        'rol',
-        'foto',
-    ])
-    ->get();
+    $estilistas = Estilista::where('estado', 'activo')
+        ->select(['id_estilista', 'nombre_estilista', 'apellido_estilista', 'rol', 'foto'])
+        ->get()
+        ->map(fn ($e) => [
+            'id_estilista'       => $e->id_estilista,
+            'nombre_estilista'   => $e->nombre_estilista ?? '',
+            'apellido_estilista' => $e->apellido_estilista ?? '',
+            'rol'                => mb_convert_case((string) $e->rol, MB_CASE_TITLE, 'UTF-8'),
+            'foto_url'           => Estilista::urlFoto($e->foto),
+        ]);
 
     return response()->json($estilistas);
 });

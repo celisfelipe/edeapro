@@ -14,11 +14,106 @@
  *             modal.js (modalExito, modalError, modalConfirmar).
  */
 
+/** Selectores de foto del formulario "Nuevo estilista" y del modal de edición */
+let selectorFotoNuevo  = null;
+let selectorFotoEditar = null;
+
 document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionAdmin()) return;
 
+    // Se crean una sola vez: los listeners no se acumulan al reabrir el modal
+    selectorFotoNuevo  = iniciarSelectorFoto('inp-foto');
+    selectorFotoEditar = iniciarSelectorFoto('edit-emp-foto');
+
     cargarEmpleados();
 });
+
+/**
+ * Conecta un bloque .emp-foto-picker: vista previa, botón "Subir foto"
+ * (label del input) y botón "Eliminar foto", visible solo si hay imagen.
+ * Usa los ids {prefijo}, {prefijo}-preview y {prefijo}-eliminar.
+ *
+ * El archivo elegido sigue viviendo en el <input type="file">, así que
+ * agregarEmpleado() y editarEstilista() lo leen igual que antes.
+ *
+ * @param {string} prefijo - id del input de archivo ('inp-foto' | 'edit-emp-foto')
+ * @returns {{cargar: function(?string), reset: function(), fotoEliminada: function(): boolean}}
+ */
+function iniciarSelectorFoto(prefijo) {
+    const input      = document.getElementById(prefijo);
+    const preview    = document.getElementById(prefijo + '-preview');
+    const btnElim    = document.getElementById(prefijo + '-eliminar');
+    const textoSubir = document.querySelector(`label[for="${prefijo}"] span`);
+
+    let urlGuardada = null;   // foto que ya tiene el estilista en el servidor
+    let urlTemporal = null;   // object URL de la imagen recién elegida
+    let eliminada   = false;  // el admin quitó la foto guardada
+
+    // Libera la vista previa anterior para no acumular blobs en memoria
+    function liberarUrlTemporal() {
+        if (urlTemporal) {
+            URL.revokeObjectURL(urlTemporal);
+            urlTemporal = null;
+        }
+    }
+
+    // Pinta la vista previa y ajusta los botones según haya imagen o no
+    function mostrar(url) {
+        if (url) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'Vista previa de la foto';
+            preview.replaceChildren(img);
+        } else {
+            const icono = document.createElement('i');
+            icono.className = 'fa-solid fa-user';
+            preview.replaceChildren(icono);
+        }
+        btnElim.hidden = !url;
+        textoSubir.textContent = url ? 'Cambiar foto' : 'Subir foto';
+    }
+
+    input.addEventListener('change', function () {
+        liberarUrlTemporal();
+        const archivo = input.files[0];
+        if (archivo) {
+            urlTemporal = URL.createObjectURL(archivo);
+            mostrar(urlTemporal);
+        } else {
+            // Se canceló el diálogo: volver a lo que había antes
+            mostrar(eliminada ? null : urlGuardada);
+        }
+    });
+
+    btnElim.addEventListener('click', function () {
+        input.value = '';
+        liberarUrlTemporal();
+        if (urlGuardada) eliminada = true;
+        mostrar(null);
+    });
+
+    function reset() {
+        input.value = '';
+        liberarUrlTemporal();
+        urlGuardada = null;
+        eliminada   = false;
+        mostrar(null);
+    }
+
+    return {
+        /** Deja el selector limpio y muestra la foto actual (o ninguna) */
+        cargar(url) {
+            reset();
+            urlGuardada = url || null;
+            mostrar(urlGuardada);
+        },
+        reset,
+        /** true si hay que pedir al servidor que borre la foto guardada */
+        fotoEliminada() {
+            return eliminada && input.files.length === 0;
+        }
+    };
+}
 
 /**
  * Trae todos los estilistas desde Laravel y los dibuja en #tabla-empleados
@@ -45,8 +140,9 @@ function cargarEmpleados() {
             const iniciales = ((e.nombre_estilista || '')[0] || '') +
                               ((e.apellido_estilista || '')[0] || '');
 
-            const avatarHTML = e.foto
-                ? `<div class="emp-avatar"><img src="http://127.0.0.1:8000/storage/${e.foto}" alt="${e.nombre_estilista}"></div>`
+            // foto_url llega ya resuelta desde la API (null si no hay foto o no existe el archivo)
+            const avatarHTML = e.foto_url
+                ? `<div class="emp-avatar"><img src="${e.foto_url}" alt="${e.nombre_estilista}"></div>`
                 : `<div class="emp-avatar">${iniciales.toUpperCase()}</div>`;
 
             const rolClase = e.rol === 'Administrador' ? 'rol-administrador' : 'rol-peluquero';
@@ -78,7 +174,7 @@ function cargarEmpleados() {
                         </span>
                         <div class="emp-btns">
                             <button class="btn btn-blue"
-                                onclick="editarEstilista(${e.id_estilista},'${e.nombre_estilista}','${e.apellido_estilista}','${e.telefono_estilista}','${e.correo}','${e.rol}','${e.estado}')">
+                                onclick="editarEstilista(${e.id_estilista},'${e.nombre_estilista}','${e.apellido_estilista}','${e.telefono_estilista}','${e.correo}','${e.rol}','${e.estado}','${e.foto_url || ''}')">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
                             <button class="btn btn-red"
@@ -99,9 +195,10 @@ function mostrarFormulario() {
     document.getElementById('formulario').style.display = 'block';
 }
 
-/** Oculta el formulario de agregar, sin guardar. */
+/** Oculta el formulario de agregar, sin guardar, y descarta la foto elegida. */
 function ocultarFormulario() {
     document.getElementById('formulario').style.display = 'none';
+    selectorFotoNuevo.reset();
 }
 
 /**
@@ -177,10 +274,15 @@ function agregarEmpleado() {
  * @param {string} telefono
  * @param {string} correo
  * @param {string} rol      - 'Administrador' | 'Peluquero'
+ * @param {string} estado   - 'Activo' | 'Inactivo'
+ * @param {string} fotoUrl  - URL de la foto actual ('' si no tiene)
  * @returns {void}
  */
-function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado) {
+function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado, fotoUrl) {
     const overlay = document.getElementById('modal-editar-empleado');
+
+    // Limpia lo que quedó de una edición anterior y muestra la foto actual
+    selectorFotoEditar.cargar(fotoUrl);
 
     // Prellenar el formulario con los datos actuales
     document.getElementById('edit-emp-nombre').value   = nombre;
@@ -220,6 +322,9 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado) {
         const editFoto = document.getElementById('edit-emp-foto');
         if (editFoto.files.length > 0) {
         editFormData.append('foto', editFoto.files[0]);
+        } else if (selectorFotoEditar.fotoEliminada()) {
+            // "Eliminar foto": el servidor borra el archivo y deja foto en NULL
+            editFormData.append('eliminar_foto', '1');
         }
 
         fetchAuth('http://127.0.0.1:8000/api/admin/empleados/editar', {
@@ -229,6 +334,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado) {
         .then(res => res.json())
         .then(data => {
             overlay.classList.remove('open');
+            selectorFotoEditar.reset();
             if (data.ok) {
                 modalExito('Empleado actualizado correctamente.');
                 setTimeout(() => cargarEmpleados(), 500);
@@ -240,6 +346,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado) {
 
     document.getElementById('edit-empleado-cancel').onclick = function () {
         overlay.classList.remove('open');
+        selectorFotoEditar.reset();  // descarta la foto elegida o eliminada sin guardar
     };
 }
 

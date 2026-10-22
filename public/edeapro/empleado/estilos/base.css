@@ -64,7 +64,8 @@ a {
     gap: 12px;
 }
 
-.sidebar a i {
+.sidebar a i,
+.sidebar-logout i {
     font-size: 16px;
     width: 20px;
     text-align: center;
@@ -106,11 +107,13 @@ body.sidebar-collapsed .sidebar {
 }
 
 body.sidebar-collapsed .sidebar h2,
-body.sidebar-collapsed .sidebar a .label {
+body.sidebar-collapsed .sidebar a .label,
+body.sidebar-collapsed .sidebar-logout .label {
     display: none;
 }
 
-body.sidebar-collapsed .sidebar a {
+body.sidebar-collapsed .sidebar a,
+body.sidebar-collapsed .sidebar-logout {
     justify-content: center;
 }
 
@@ -132,11 +135,13 @@ body.sidebar-collapsed .main {
     }
 
     body .sidebar h2,
-    body .sidebar a .label {
+    body .sidebar a .label,
+    body .sidebar-logout .label {
         display: block;
     }
 
-    body .sidebar a {
+    body .sidebar a,
+    body .sidebar-logout {
         justify-content: flex-start;
     }
 

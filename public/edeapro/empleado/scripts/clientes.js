@@ -3,7 +3,7 @@
  * =========================================
  * Muestra la lista de clientes registrados en el sistema (solo lectura).
  * El empleado puede ver pero no editar ni eliminar clientes.
- * Verifica que el usuario tenga rol "peluquero" en localStorage.
+ * La sesión (rol "peluquero") la verifica sesion.js.
  *
  * Conecta con la API de Laravel:
  *   GET /api/admin/clientes → todos los clientes (ruta compartida con el admin)
@@ -14,15 +14,7 @@ let todosLosClientes = [];
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'peluquero') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    document.getElementById('nombre-empleado').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionEmpleado()) return;
 
     // Cargar todos los clientes del sistema
     fetchAuth('http://127.0.0.1:8000/api/admin/clientes-empleado')
@@ -66,11 +58,4 @@ function mostrarClientes(clientes) {
                 <td>${c.correo}</td>
             </tr>`;
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

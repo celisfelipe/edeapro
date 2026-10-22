@@ -47,6 +47,17 @@ return [
             'report' => false,
         ],
 
+        // Fotos de estilistas: se guardan directo en public/uploads, que el
+        // servidor sirve sin enlace simbólico (storage:link) y que git versiona,
+        // así las fotos viajan con el proyecto al abrirlo en otro PC.
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

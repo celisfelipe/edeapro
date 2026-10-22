@@ -12,6 +12,9 @@
  *   GET /api/reportes/citas/excel    → Excel de citas
  *   GET /api/reportes/pagos/excel    → Excel de pagos
  *   GET /api/reportes/clientes/excel → Excel de clientes
+ *
+ *   GET /api/empleado/reportes/citas/pdf   → PDF con las citas del estilista autenticado
+ *   GET /api/empleado/reportes/citas/excel → Excel con las citas del estilista autenticado
  */
 
 namespace App\Http\Controllers;
@@ -29,14 +32,18 @@ class ReporteController extends Controller
      */
     public function citasPdf()
     {
-        $citas = DB::select("SELECT * FROM citas_completas ORDER BY fecha DESC, hora ASC");
+        return $this->pdfCitas($this->consultarCitas(), 'reporte-citas.pdf');
+    }
 
-        $pdf = Pdf::loadView('reportes.citas', [
-            'citas' => $citas,
-            'fecha' => now()->format('d/m/Y H:i')
-        ]);
+    /**
+     * Reporte PDF de las citas del estilista autenticado (panel empleado).
+     * El id sale del token (VerificarToken), nunca del request.
+     */
+    public function misCitasPdf(Request $request)
+    {
+        $id_estilista = intval($request->attributes->get('auth_tokenable_id'));
 
-        return $pdf->download('reporte-citas.pdf');
+        return $this->pdfCitas($this->consultarCitas($id_estilista), 'mis-citas.pdf');
     }
 
     /**
@@ -92,41 +99,18 @@ class ReporteController extends Controller
  */
 public function citasExcel()
 {
-    $citas = DB::select("SELECT * FROM citas_completas ORDER BY fecha DESC, hora ASC");
+    return $this->excelCitas($this->consultarCitas(), 'reporte-citas.xlsx');
+}
 
-    return Excel::download(new class($citas) implements \Maatwebsite\Excel\Concerns\FromArray,
-        \Maatwebsite\Excel\Concerns\WithHeadings,
-        \Maatwebsite\Excel\Concerns\WithStyles {
+/**
+ * Reporte Excel de las citas del estilista autenticado (panel empleado).
+ * El id sale del token (VerificarToken), nunca del request.
+ */
+public function misCitasExcel(Request $request)
+{
+    $id_estilista = intval($request->attributes->get('auth_tokenable_id'));
 
-        private $citas;
-
-        public function __construct($citas) {
-            $this->citas = $citas;
-        }
-
-        public function headings(): array {
-            return ['Fecha', 'Hora', 'Cliente', 'Mascota', 'Servicio', 'Estilista', 'Estado'];
-        }
-
-        public function array(): array {
-            return array_map(fn($c) => [
-                $c->fecha,
-                date('g:i A', strtotime($c->hora)), // 12h, ej. 2:30 PM
-                $c->nombre_cliente . ' ' . $c->apellido_cliente,
-                $c->mascota,
-                $c->nombre_servicio,
-                $c->nombre_estilista,
-                $c->estado
-            ], $this->citas);
-        }
-
-        public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
-            return [
-                1 => ['font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                      'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'AF9D81']]]
-            ];
-        }
-    }, 'reporte-citas.xlsx');
+    return $this->excelCitas($this->consultarCitas($id_estilista), 'mis-citas.xlsx');
 }
 
 /**
@@ -223,5 +207,73 @@ public function clientesExcel()
             ];
         }
     }, 'reporte-clientes.xlsx');
+}
+
+/**
+ * Citas de la vista citas_completas, opcionalmente solo las de un estilista.
+ * La vista no expone id_estilista, por eso se filtra uniendo con cita.
+ */
+private function consultarCitas(?int $id_estilista = null): array
+{
+    if ($id_estilista === null) {
+        return DB::select("SELECT * FROM citas_completas ORDER BY fecha DESC, hora ASC");
+    }
+
+    return DB::select("
+        SELECT cc.*
+        FROM citas_completas cc
+        JOIN cita c ON c.id_cita = cc.id_cita
+        WHERE c.id_estilista = ?
+        ORDER BY cc.fecha DESC, cc.hora ASC
+    ", [$id_estilista]);
+}
+
+/** Genera el PDF de citas con la vista reportes.citas */
+private function pdfCitas(array $citas, string $nombreArchivo)
+{
+    $pdf = Pdf::loadView('reportes.citas', [
+        'citas' => $citas,
+        'fecha' => now()->format('d/m/Y H:i')
+    ]);
+
+    return $pdf->download($nombreArchivo);
+}
+
+/** Genera el Excel de citas (mismas columnas y estilo para admin y empleado) */
+private function excelCitas(array $citas, string $nombreArchivo)
+{
+    return Excel::download(new class($citas) implements \Maatwebsite\Excel\Concerns\FromArray,
+        \Maatwebsite\Excel\Concerns\WithHeadings,
+        \Maatwebsite\Excel\Concerns\WithStyles {
+
+        private $citas;
+
+        public function __construct($citas) {
+            $this->citas = $citas;
+        }
+
+        public function headings(): array {
+            return ['Fecha', 'Hora', 'Cliente', 'Mascota', 'Servicio', 'Estilista', 'Estado'];
+        }
+
+        public function array(): array {
+            return array_map(fn($c) => [
+                $c->fecha,
+                date('g:i A', strtotime($c->hora)), // 12h, ej. 2:30 PM
+                $c->nombre_cliente . ' ' . $c->apellido_cliente,
+                $c->mascota,
+                $c->nombre_servicio,
+                $c->nombre_estilista,
+                $c->estado
+            ], $this->citas);
+        }
+
+        public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
+            return [
+                1 => ['font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+                      'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'AF9D81']]]
+            ];
+        }
+    }, $nombreArchivo);
 }
 }

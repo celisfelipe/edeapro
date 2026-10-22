@@ -27,7 +27,12 @@
             <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
             <li><a href="estadisticas.html"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
             <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
+            <li><a href="reportes.html"><i class="fa-solid fa-file-lines"></i><span class="label">Reportes</span></a></li>
         </ul>
+        <!-- Pie del sidebar: siempre al final de la navegación -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Cerrar sesión</span></button>
+        </div>
     </div>
     <div class="sidebar-overlay"></div>
 
@@ -39,7 +44,6 @@
                 <h1>Estilistas</h1>
             </div>
             <p id="nombre-admin">Cargando...</p>
-            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
         <div class="card">
@@ -58,8 +62,16 @@
                     <option value="Administrador">Administrador</option>
                 </select>
                 <div class="emp-form-foto">
-                    <label class="emp-form-label">Foto del estilista</label>
-                    <input type="file" id="inp-foto" accept="image/*" class="emp-form-file">
+                    <span class="emp-form-label">Foto del estilista</span>
+                    <!-- Vista previa + Subir / Eliminar (lógica en iniciarSelectorFoto, empleados.js) -->
+                    <div class="emp-foto-picker">
+                        <div class="emp-avatar emp-foto-preview" id="inp-foto-preview"><i class="fa-solid fa-user"></i></div>
+                        <div class="emp-foto-acciones">
+                            <label for="inp-foto" class="btn btn-gray emp-foto-subir"><i class="fa-solid fa-camera"></i> <span>Subir foto</span></label>
+                            <button type="button" class="btn btn-red emp-foto-eliminar" id="inp-foto-eliminar" hidden><i class="fa-solid fa-trash"></i> Eliminar foto</button>
+                        </div>
+                        <input type="file" id="inp-foto" accept="image/*" class="emp-foto-input">
+                    </div>
                     <small class="emp-form-hint">Opcional · JPG o PNG · máx 2MB</small>
                 </div>
                 <div class="emp-form-actions">
@@ -105,8 +117,17 @@
             </div>
             <div class="modal-form-group">
                 <label>Foto</label>
-                <input type="file" id="edit-emp-foto" accept="image/*">
-                <small class="emp-form-hint">Dejar vacío para mantener la foto actual</small>
+                <!-- Mismo selector que el formulario de agregar; "Eliminar foto" solo
+                     aparece si el estilista tiene foto o se eligió una nueva -->
+                <div class="emp-foto-picker">
+                    <div class="emp-avatar emp-foto-preview" id="edit-emp-foto-preview"><i class="fa-solid fa-user"></i></div>
+                    <div class="emp-foto-acciones">
+                        <label for="edit-emp-foto" class="btn btn-gray emp-foto-subir"><i class="fa-solid fa-camera"></i> <span>Subir foto</span></label>
+                        <button type="button" class="btn btn-red emp-foto-eliminar" id="edit-emp-foto-eliminar" hidden><i class="fa-solid fa-trash"></i> Eliminar foto</button>
+                    </div>
+                    <input type="file" id="edit-emp-foto" accept="image/*" class="emp-foto-input">
+                </div>
+                <small class="emp-form-hint">Los cambios en la foto se aplican al pulsar Guardar</small>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-gray" id="edit-empleado-cancel">Cancelar</button>

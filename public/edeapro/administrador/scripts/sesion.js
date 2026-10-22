@@ -49,12 +49,20 @@ function verificarSesionAdmin() {
 }
 
 /**
- * Cierra la sesión: borra usuario, rol y token del localStorage
- * y redirige al login. Se llama desde el botón "Cerrar sesión" del header.
+ * Cierra la sesión: revoca el token en el servidor, borra usuario, rol y
+ * token del localStorage y redirige al login. Se llama desde el botón
+ * "Cerrar sesión" del pie del sidebar.
+ *
+ * La revocación es "best effort": si el servidor no responde, igual se
+ * limpia la sesión local para que el usuario pueda salir.
  */
 function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    localStorage.removeItem('token');
-    window.location.href = LOGIN_URL;
+    fetchAuth('http://127.0.0.1:8000/api/logout', { method: 'POST', keepalive: true })
+        .catch(() => {})
+        .finally(() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('rol');
+            localStorage.removeItem('token');
+            window.location.href = LOGIN_URL;
+        });
 }

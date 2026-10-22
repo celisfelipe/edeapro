@@ -3,7 +3,7 @@
  * =========================================
  * Muestra las citas asignadas al estilista que inició sesión.
  * Filtra por el id_estilista guardado en localStorage.
- * Verifica que el usuario tenga rol "peluquero" en localStorage.
+ * La sesión (rol "peluquero") la verifica sesion.js.
  *
  * Conecta con la API de Laravel:
  *   GET /api/empleado/citas?id_estilista=X → citas del estilista
@@ -11,16 +11,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol  = localStorage.getItem('rol');
-
-    if (!user || rol !== 'peluquero') {
-        window.location.href = '../../paginas/login.html';
-        return;
-    }
-
-    // Mostrar nombre del estilista en el header
-    document.getElementById('nombre-empleado').textContent = user.nombre_estilista + ' ' + user.apellido_estilista;
+    if (!verificarSesionEmpleado()) return;
 
     cargarServicios();
 });
@@ -58,11 +49,4 @@ function cargarServicios() {
                 </tr>`;
         });
     });
-}
-
-/** Elimina la sesión del localStorage y redirige al login */
-function cerrarSesion() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    window.location.href = '../../paginas/login.html';
 }

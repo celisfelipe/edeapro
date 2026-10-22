@@ -29,41 +29,22 @@
             <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
             <li><a href="estadisticas.html"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
             <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
+            <li><a href="reportes.html"><i class="fa-solid fa-file-lines"></i><span class="label">Reportes</span></a></li>
         </ul>
+        <!-- Pie del sidebar: siempre al final de la navegación -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Cerrar sesión</span></button>
+        </div>
     </div>
     <div class="sidebar-overlay"></div>
 
     <div class="main">
-        <div class="export-bar">
-            <div class="export-dropdown" id="exportDropdown">
-                <button class="btn btn-blue" id="exportToggle" type="button"><i class="fa-solid fa-download"></i> Exportar <i class="fa-solid fa-chevron-down"></i></button>
-                <div class="export-menu" id="exportMenu">
-                    <div class="export-group">
-                        <span class="export-group-title"><i class="fa-solid fa-calendar-check"></i> Citas</span>
-                        <button type="button" onclick="descargarReporte('citas')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                        <button type="button" onclick="descargarExcel('citas')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    </div>
-                    <div class="export-group">
-                        <span class="export-group-title"><i class="fa-solid fa-credit-card"></i> Pagos</span>
-                        <button type="button" onclick="descargarReporte('pagos')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                        <button type="button" onclick="descargarExcel('pagos')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    </div>
-                    <div class="export-group">
-                        <span class="export-group-title"><i class="fa-solid fa-users"></i> Clientes</span>
-                        <button type="button" onclick="descargarReporte('clientes')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                        <button type="button" onclick="descargarExcel('clientes')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="header">
             <div class="header-title">
                 <button class="hamburger-btn" id="sidebarToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
                 <h1>Citas</h1>
             </div>
             <p id="nombre-admin">Cargando...</p>
-            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
         <div class="stats-cards" id="citas-resumen">

@@ -25,11 +25,16 @@
             <li><a href="horarios.html"><i class="fa-solid fa-clock"></i><span class="label">Horarios / Disponibilidad</span></a></li>
             <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span class="label">Clientes</span></a></li>
             <li><a href="servicios.html"><i class="fa-solid fa-scissors"></i><span class="label">Servicios</span></a></li>
-            <li><a href="empleados.html"><i class="fa-solid fa-user-tie"></i><span class="label">Estilistas</span></a></li>
+            <li><a href="empleados.html"><i class="fa-solid fa-user-tie"></i><span class="label">Empleados</span></a></li>
             <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
             <li><a href="estadisticas.html" class="active"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
             <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
+            <li><a href="reportes.html"><i class="fa-solid fa-file-lines"></i><span class="label">Reportes</span></a></li>
         </ul>
+        <!-- Pie del sidebar: siempre al final de la navegación -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Cerrar sesión</span></button>
+        </div>
     </div>
     <div class="sidebar-overlay"></div>
 
@@ -41,7 +46,6 @@
                 <h1>Estadísticas</h1>
             </div>
             <p id="nombre-admin">Cargando...</p>
-            <button class="btn btn-red" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
 
         <!-- Tarjetas de resumen -->

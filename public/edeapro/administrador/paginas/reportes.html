@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reportes - Administrador</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <script>
+        // Aplicar el estado guardado del sidebar ANTES de pintar, para evitar el parpadeo
+        // (aparece expandido un instante y luego se colapsa) al navegar entre páginas.
+        if (window.innerWidth > 900 && localStorage.getItem('sidebarCollapsed') === '1') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    </script>
+
+    <div class="sidebar">
+        <h2>Administrador</h2>
+        <ul>
+            <li><a href="inicio.html"><i class="fa-solid fa-calendar-check"></i><span class="label">Citas</span></a></li>
+            <li><a href="horarios.html"><i class="fa-solid fa-clock"></i><span class="label">Horarios / Disponibilidad</span></a></li>
+            <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span class="label">Clientes</span></a></li>
+            <li><a href="servicios.html"><i class="fa-solid fa-scissors"></i><span class="label">Servicios</span></a></li>
+            <li><a href="empleados.html"><i class="fa-solid fa-user-tie"></i><span class="label">Empleados</span></a></li>
+            <li><a href="notificaciones.html"><i class="fa-solid fa-bell"></i><span class="label">Notificaciones</span></a></li>
+            <li><a href="estadisticas.html"><i class="fa-solid fa-chart-line"></i><span class="label">Estadísticas</span></a></li>
+            <li><a href="pagos.html"><i class="fa-solid fa-credit-card"></i><span class="label">Pagos</span></a></li>
+            <li><a href="reportes.html" class="active"><i class="fa-solid fa-file-lines"></i><span class="label">Reportes</span></a></li>
+        </ul>
+        <!-- Pie del sidebar: siempre al final de la navegación -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i><span class="label">Cerrar sesión</span></button>
+        </div>
+    </div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+
+        <div class="header">
+            <div class="header-title">
+                <button class="hamburger-btn" id="sidebarToggle" aria-label="Alternar menú"><i class="fa-solid fa-bars"></i></button>
+                <h1>Reportes</h1>
+            </div>
+            <p id="nombre-admin">Cargando...</p>
+        </div>
+
+        <!-- Una tarjeta por reporte; cada una descarga en PDF o Excel -->
+        <div class="reportes-grid">
+            <div class="card reporte-card">
+                <h2><i class="fa-solid fa-calendar-check"></i> Citas</h2>
+                <p>Todas las citas con cliente, mascota, servicio, estilista y estado.</p>
+                <div class="reporte-acciones">
+                    <button type="button" class="btn btn-red" onclick="descargarReporte('citas', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button type="button" class="btn btn-green" onclick="descargarReporte('citas', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                </div>
+            </div>
+
+            <div class="card reporte-card">
+                <h2><i class="fa-solid fa-credit-card"></i> Pagos</h2>
+                <p>Historial de pagos con cliente, servicio, método y estado.</p>
+                <div class="reporte-acciones">
+                    <button type="button" class="btn btn-red" onclick="descargarReporte('pagos', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button type="button" class="btn btn-green" onclick="descargarReporte('pagos', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                </div>
+            </div>
+
+            <div class="card reporte-card">
+                <h2><i class="fa-solid fa-users"></i> Clientes</h2>
+                <p>Clientes registrados con datos de contacto y total de citas.</p>
+                <div class="reporte-acciones">
+                    <button type="button" class="btn btn-red" onclick="descargarReporte('clientes', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button type="button" class="btn btn-green" onclick="descargarReporte('clientes', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../../scripts/fetchToken.js"></script>
+    <script src="../scripts/sesion.js"></script>
+    <script src="../scripts/modal.js"></script>
+    <script src="../../scripts/descargas.js"></script>
+    <script src="../scripts/reportes.js"></script>
+    <script src="../../scripts/sidebar-toggle.js"></script>
+</body>
+</html>
