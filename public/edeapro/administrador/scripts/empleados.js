@@ -25,6 +25,15 @@ document.addEventListener('DOMContentLoaded', function () {
     selectorFotoNuevo  = iniciarSelectorFoto('inp-foto');
     selectorFotoEditar = iniciarSelectorFoto('edit-emp-foto');
 
+    // Botón "Editar" de cada tarjeta: un solo listener en el grid (delegación).
+    // Los datos viajan en data-* y se leen con dataset (data-foto-url → fotoUrl).
+    document.getElementById('grid-empleados').addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-editar');
+        if (!btn) return;
+        const d = btn.dataset;
+        editarEstilista(Number(d.id), d.nombre, d.apellido, d.telefono, d.correo, d.rol, d.estado, d.fotoUrl);
+    });
+
     cargarEmpleados();
 });
 
@@ -142,8 +151,8 @@ function cargarEmpleados() {
 
             // foto_url llega ya resuelta desde la API (null si no hay foto o no existe el archivo)
             const avatarHTML = e.foto_url
-                ? `<div class="emp-avatar"><img src="${e.foto_url}" alt="${e.nombre_estilista}"></div>`
-                : `<div class="emp-avatar">${iniciales.toUpperCase()}</div>`;
+                ? `<div class="emp-avatar"><img src="${escaparHTML(e.foto_url)}" alt="${escaparHTML(e.nombre_estilista)}"></div>`
+                : `<div class="emp-avatar">${escaparHTML(iniciales.toUpperCase())}</div>`;
 
             const rolClase = e.rol === 'Administrador' ? 'rol-administrador' : 'rol-peluquero';
             const rolIcono = e.rol === 'Administrador' ? 'fa-user-shield' : 'fa-scissors';
@@ -155,26 +164,33 @@ function cargarEmpleados() {
                     <div class="emp-header">
                         ${avatarHTML}
                         <div>
-                            <p class="emp-nombre">${e.nombre_estilista} ${e.apellido_estilista}</p>
+                            <p class="emp-nombre">${escaparHTML(e.nombre_estilista)} ${escaparHTML(e.apellido_estilista)}</p>
                             <span class="badge-rol ${rolClase}">
-                                <i class="fa-solid ${rolIcono}"></i> ${e.rol}
+                                <i class="fa-solid ${rolIcono}"></i> ${escaparHTML(e.rol)}
                             </span>
                         </div>
                     </div>
 
                     <div class="emp-contacto">
-                        <span><i class="fa-solid fa-envelope"></i> ${e.correo}</span>
-                        <span><i class="fa-solid fa-phone"></i> ${e.telefono_estilista}</span>
+                        <span><i class="fa-solid fa-envelope"></i> ${escaparHTML(e.correo)}</span>
+                        <span><i class="fa-solid fa-phone"></i> ${escaparHTML(e.telefono_estilista)}</span>
                     </div>
 
                     <div class="emp-footer">
                         <span class="badge-estado">
                             <span class="dot ${estadoDot}"></span>
-                            ${e.estado}
+                            ${escaparHTML(e.estado)}
                         </span>
                         <div class="emp-btns">
-                            <button class="btn btn-blue"
-                                onclick="editarEstilista(${e.id_estilista},'${e.nombre_estilista}','${e.apellido_estilista}','${e.telefono_estilista}','${e.correo}','${e.rol}','${e.estado}','${e.foto_url || ''}')">
+                            <button class="btn btn-blue btn-editar"
+                                data-id="${e.id_estilista}"
+                                data-nombre="${escaparHTML(e.nombre_estilista)}"
+                                data-apellido="${escaparHTML(e.apellido_estilista)}"
+                                data-telefono="${escaparHTML(e.telefono_estilista)}"
+                                data-correo="${escaparHTML(e.correo)}"
+                                data-rol="${escaparHTML(e.rol)}"
+                                data-estado="${escaparHTML(e.estado)}"
+                                data-foto-url="${escaparHTML(e.foto_url || '')}">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
                             <button class="btn btn-red"

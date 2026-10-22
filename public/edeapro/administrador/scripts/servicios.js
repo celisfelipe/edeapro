@@ -18,6 +18,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cargarServicios();
 
+    // Clics dentro de los acordeones: un solo listener en el contenedor
+    // (delegación). Los datos viajan en data-* y se leen con dataset.
+    document.getElementById('contenedor-servicios').addEventListener('click', function (e) {
+        const btnEditar = e.target.closest('.btn-editar');
+        if (btnEditar) {
+            const d = btnEditar.dataset;
+            editarServicio(Number(d.idRaza), Number(d.idServicio), d.duracion, Number(d.precio));
+            return;
+        }
+
+        const header = e.target.closest('.acordeon-header');
+        if (header) toggleAcordeon(header.dataset.id);
+    });
+
     // Filtrar razas por nombre dentro del acordeón que esté abierto
     document.getElementById('buscar-raza').addEventListener('input', function () {
         const termino = this.value.trim().toLowerCase();
@@ -62,12 +76,12 @@ function cargarServicios() {
 
             contenedor.innerHTML += `
                 <div class="acordeon">
-                    <div class="acordeon-header" onclick="toggleAcordeon('${id}')">
-                        <span><i class="fa-solid fa-paw"></i> ${cat}</span>
+                    <div class="acordeon-header" data-id="${escaparHTML(id)}">
+                        <span><i class="fa-solid fa-paw"></i> ${escaparHTML(cat)}</span>
                         <span class="badge">${razas.length} razas</span>
-                        <span class="flecha" id="flecha-${id}"><i class="fa-solid fa-chevron-down"></i></span>
+                        <span class="flecha" id="flecha-${escaparHTML(id)}"><i class="fa-solid fa-chevron-down"></i></span>
                     </div>
-                    <div class="acordeon-body" id="body-${id}" style="display:none">
+                    <div class="acordeon-body" id="body-${escaparHTML(id)}" style="display:none">
                         <table>
                             <tr>
                                 <th>Raza</th>
@@ -77,11 +91,15 @@ function cargarServicios() {
                             </tr>
                             ${razas.map(s => `
                                 <tr>
-                                    <td>${s.nombre_raza}</td>
-                                    <td>${s.duracion}</td>
+                                    <td>${escaparHTML(s.nombre_raza)}</td>
+                                    <td>${escaparHTML(s.duracion)}</td>
                                     <td>$${Number(s.precio).toLocaleString('es-CO')}</td>
                                     <td>
-                                        <button class="btn btn-blue" onclick="editarServicio(${s.id_raza}, ${s.id_servicio}, '${s.duracion}', ${s.precio})"><i class="fa-solid fa-pen"></i> Editar</button>
+                                        <button class="btn btn-blue btn-editar"
+                                            data-id-raza="${s.id_raza}"
+                                            data-id-servicio="${s.id_servicio}"
+                                            data-duracion="${escaparHTML(s.duracion)}"
+                                            data-precio="${s.precio}"><i class="fa-solid fa-pen"></i> Editar</button>
                                     </td>
                                 </tr>`).join('')}
                         </table>

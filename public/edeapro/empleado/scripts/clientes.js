@@ -53,9 +53,9 @@ function mostrarClientes(clientes) {
     clientes.forEach(c => {
         tbody.innerHTML += `
             <tr>
-                <td>${c.nombre} ${c.apellido}</td>
-                <td>${c.telefono}</td>
-                <td>${c.correo}</td>
+                <td>${escaparHTML(c.nombre)} ${escaparHTML(c.apellido)}</td>
+                <td>${escaparHTML(c.telefono)}</td>
+                <td>${escaparHTML(c.correo)}</td>
             </tr>`;
     });
 }

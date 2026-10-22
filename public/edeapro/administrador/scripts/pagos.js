@@ -62,12 +62,12 @@ function cargarPagos() {
             const montoTexto = p.monto !== null ? '$' + Number(p.monto).toLocaleString('es-CO') : '—';
             tbody.innerHTML += `
                 <tr>
-                    <td>${p.fecha_pago}</td>
-                    <td>${p.nombre_cliente} ${p.apellido_cliente}</td>
-                    <td>${p.nombre_servicio}</td>
+                    <td>${escaparHTML(p.fecha_pago)}</td>
+                    <td>${escaparHTML(p.nombre_cliente)} ${escaparHTML(p.apellido_cliente)}</td>
+                    <td>${escaparHTML(p.nombre_servicio)}</td>
                     <td>${montoTexto}</td>
-                    <td><span class="badge-metodo-pago"><i class="fa-solid ${iconoMetodoPago(p.metodo_pago)}"></i> ${p.metodo_pago}</span></td>
-                    <td class="status-green"><i class="fa-solid fa-check"></i> ${p.estado_pago}</td>
+                    <td><span class="badge-metodo-pago"><i class="fa-solid ${iconoMetodoPago(p.metodo_pago)}"></i> ${escaparHTML(p.metodo_pago)}</span></td>
+                    <td class="status-green"><i class="fa-solid fa-check"></i> ${escaparHTML(p.estado_pago)}</td>
                 </tr>`;
         });
     });
@@ -97,10 +97,10 @@ function cargarCitasSinPago() {
         sinPago.forEach(c => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${c.nombre_cliente} ${c.apellido_cliente}</td>
-                    <td>${c.nombre_servicio}</td>
-                    <td>${c.fecha}</td>
-                    <td>${formatoHora12(c.hora)}</td>
+                    <td>${escaparHTML(c.nombre_cliente)} ${escaparHTML(c.apellido_cliente)}</td>
+                    <td>${escaparHTML(c.nombre_servicio)}</td>
+                    <td>${escaparHTML(c.fecha)}</td>
+                    <td>${escaparHTML(formatoHora12(c.hora))}</td>
                     <td>
                         <select id="metodo-${c.id_cita}">
                             <option value="Efectivo">Efectivo</option>

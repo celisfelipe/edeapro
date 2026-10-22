@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cargarClientes();
 
+    // Botón "Editar" de cada fila: un solo listener en el <tbody> (delegación).
+    // Los datos viajan en data-* y se leen con dataset, así un nombre con
+    // comillas o apóstrofes (ej. O'Brien) ya no rompe el botón.
+    document.getElementById('tabla-clientes').addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-editar');
+        if (!btn) return;
+        const d = btn.dataset;
+        editarCliente(Number(d.id), d.nombre, d.apellido, d.telefono, d.correo);
+    });
+
     // Filtrar la tabla en tiempo real mientras el usuario escribe
     document.getElementById('buscador').addEventListener('input', function () {
         const texto = this.value.toLowerCase();
@@ -72,11 +82,16 @@ function mostrarClientes(clientes) {
     clientes.forEach(c => {
         tbody.innerHTML += `
             <tr>
-                <td>${c.nombre} ${c.apellido}</td>
-                <td>${c.telefono}</td>
-                <td>${c.correo}</td>
+                <td>${escaparHTML(c.nombre)} ${escaparHTML(c.apellido)}</td>
+                <td>${escaparHTML(c.telefono)}</td>
+                <td>${escaparHTML(c.correo)}</td>
                 <td>
-                    <button class="btn btn-blue" onclick="editarCliente(${c.id_cliente}, '${c.nombre}', '${c.apellido}', '${c.telefono}', '${c.correo}')"><i class="fa-solid fa-pen"></i> Editar</button>
+                    <button class="btn btn-blue btn-editar"
+                        data-id="${c.id_cliente}"
+                        data-nombre="${escaparHTML(c.nombre)}"
+                        data-apellido="${escaparHTML(c.apellido)}"
+                        data-telefono="${escaparHTML(c.telefono)}"
+                        data-correo="${escaparHTML(c.correo)}"><i class="fa-solid fa-pen"></i> Editar</button>
                     <button class="btn btn-red" onclick="eliminarCliente(${c.id_cliente})"><i class="fa-solid fa-trash"></i> Eliminar</button>
                 </td>
             </tr>`;
