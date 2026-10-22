@@ -41,11 +41,11 @@ function cargarServicios() {
                            c.estado === 'Pendiente'  ? 'fa-clock' : 'fa-xmark';
             tbody.innerHTML += `
                 <tr>
-                    <td>${c.nombre_cliente} ${c.apellido_cliente}</td>
-                    <td>${c.nombre_servicio}</td>
-                    <td>${c.fecha}</td>
-                    <td>${formatoHora12(c.hora)}</td>
-                    <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${c.estado}</td>
+                    <td>${escaparHTML(c.nombre_cliente)} ${escaparHTML(c.apellido_cliente)}</td>
+                    <td>${escaparHTML(c.nombre_servicio)}</td>
+                    <td>${escaparHTML(c.fecha)}</td>
+                    <td>${escaparHTML(formatoHora12(c.hora))}</td>
+                    <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${escaparHTML(c.estado)}</td>
                 </tr>`;
         });
     });

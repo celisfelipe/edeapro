@@ -28,7 +28,7 @@ function cargarEstilistasSelect() {
         if (!data.ok) return;
         const select = document.getElementById('bloqueo-estilista');
         select.innerHTML = data.estilistas.map(e =>
-            `<option value="${e.id_estilista}">${e.nombre_estilista}</option>`
+            `<option value="${e.id_estilista}">${escaparHTML(e.nombre_estilista)}</option>`
         ).join('');
     });
 }
@@ -51,10 +51,10 @@ function cargarBloqueos() {
         data.bloqueos.forEach(b => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${b.nombre_estilista} ${b.apellido_estilista}</td>
-                    <td>${b.fecha_inicio}</td>
-                    <td>${b.fecha_fin}</td>
-                    <td>${b.motivo || '—'}</td>
+                    <td>${escaparHTML(b.nombre_estilista)} ${escaparHTML(b.apellido_estilista)}</td>
+                    <td>${escaparHTML(b.fecha_inicio)}</td>
+                    <td>${escaparHTML(b.fecha_fin)}</td>
+                    <td>${escaparHTML(b.motivo || '—')}</td>
                     <td>
                         <button class="btn btn-red" onclick="eliminarBloqueo(${b.id_disponibilidad})">
                             <i class="fa-solid fa-trash"></i> Eliminar

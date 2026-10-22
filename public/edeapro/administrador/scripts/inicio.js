@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) cerrarDetalle();
     });
 
+    // Botón "Detalles" de cada fila: un solo listener en el <tbody> (delegación).
+    // La cita viaja en data-cita (JSON con encodeURIComponent) y se lee con dataset.
+    document.getElementById('tabla-citas').addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-detalle');
+        if (btn) verDetalle(btn.dataset.cita);
+    });
+
     // Traer todas las citas desde Laravel
     fetchAuth('http://127.0.0.1:8000/api/admin/citas')
         .then(res => res.json())
@@ -104,23 +111,23 @@ function renderTablaCitas() {
 
         tbody.innerHTML += `
             <tr>
-                <td>${cita.fecha}</td>
-                <td>${formatoHora12(cita.hora)}</td>
+                <td>${escaparHTML(cita.fecha)}</td>
+                <td>${escaparHTML(formatoHora12(cita.hora))}</td>
                 <td>
                     <div class="cliente-info">
-                        <span class="avatar-circle">${inicialesCliente(cita.nombre_cliente, cita.apellido_cliente).toUpperCase()}</span>
-                        ${cita.nombre_cliente} ${cita.apellido_cliente}
+                        <span class="avatar-circle">${escaparHTML(inicialesCliente(cita.nombre_cliente, cita.apellido_cliente).toUpperCase())}</span>
+                        ${escaparHTML(cita.nombre_cliente)} ${escaparHTML(cita.apellido_cliente)}
                     </div>
                 </td>
-                <td>${cita.mascota}</td>
-                <td>${cita.nombre_servicio}</td>
-                <td>${cita.nombre_estilista}</td>
-                <td class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${cita.estado}</td>
+                <td>${escaparHTML(cita.mascota)}</td>
+                <td>${escaparHTML(cita.nombre_servicio)}</td>
+                <td>${escaparHTML(cita.nombre_estilista)}</td>
+                <td class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${escaparHTML(cita.estado)}</td>
                 <td class="acciones-cell">
                     <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})">
                         <i class="fa-solid fa-xmark"></i> Cancelar
                     </button>
-                    <button class="btn btn-blue" onclick="verDetalle('${citaJson}')">
+                    <button class="btn btn-blue btn-detalle" data-cita="${citaJson}">
                         <i class="fa-solid fa-eye"></i> Detalles
                     </button>
                 </td>
@@ -192,7 +199,7 @@ function verDetalle(citaEncoded) {
     document.getElementById('detalle-fecha').textContent     = fechaFormateada;
     document.getElementById('detalle-hora').textContent      = formatoHora12(cita.hora);
     document.getElementById('detalle-estado').innerHTML      =
-        `<span class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${cita.estado}</span>`;
+        `<span class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${escaparHTML(cita.estado)}</span>`;
 
     // Mostrar el overlay y el panel con animación (clase 'open' en CSS)
     document.getElementById('modal-detalle-overlay').classList.add('open');

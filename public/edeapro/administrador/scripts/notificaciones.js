@@ -51,10 +51,10 @@ function cargarNotificaciones() {
 
             contenedor.innerHTML += `
                 <div class="notif ${noLeida ? 'no-leida' : ''}">
-                    <h3><i class="fa-solid ${noLeida ? 'fa-bell' : 'fa-bell-slash'}"></i> ${n.titulo} ${noLeida ? '<span class="badge-noleida">Nueva</span>' : ''}
+                    <h3><i class="fa-solid ${noLeida ? 'fa-bell' : 'fa-bell-slash'}"></i> ${escaparHTML(n.titulo)} ${noLeida ? '<span class="badge-noleida">Nueva</span>' : ''}
                     </h3>
-                    <p>${horasA12h(n.mensaje)}</p>
-                    <small><i class="fa-solid ${tipoIcono}"></i> Cliente: ${n.nombre_cliente} ${n.apellido_cliente} · ${n.tipo}</small>
+                    <p>${escaparHTML(horasA12h(n.mensaje))}</p>
+                    <small><i class="fa-solid ${tipoIcono}"></i> Cliente: ${escaparHTML(n.nombre_cliente)} ${escaparHTML(n.apellido_cliente)} · ${escaparHTML(n.tipo)}</small>
                     ${noLeida ? `<br><button class="btn btn-blue" style="margin-top:8px" onclick="marcarLeida(${n.id_notificacion})"><i class="fa-solid fa-check"></i> Marcar como leída</button>` : ''}
                 </div>`;
         });
