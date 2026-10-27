@@ -61,22 +61,28 @@ class ClienteController extends Controller
      * El cliente puede cambiar nombre, apellido, teléfono y correo.
      */
     public function actualizar(Request $request)
-    {
-        $id = $this->idClienteAutenticado($request);
+{
+    $id = $this->idClienteAutenticado($request);
 
-        DB::update(
-            "UPDATE cliente SET nombre=?, apellido=?, telefono=?, correo=? WHERE id_cliente=?",
-            [
-                $request->input('nombre'),
-                $request->input('apellido'),
-                $request->input('telefono'),
-                $request->input('correo'),
-                $id
-            ]
-        );
+    $request->validate([
+        'nombre'   => ['required', 'string', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/'],
+        'apellido' => ['required', 'string', 'max:100', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,}$/'],
+        'telefono' => ['required', 'regex:/^\d{10}$/'],
+        'correo'   => ['required', 'email', 'max:150'],
+    ]);
 
-        return response()->json(['ok' => true]);
-    }
+    $nombre   = strip_tags(trim($request->input('nombre')));
+    $apellido = strip_tags(trim($request->input('apellido')));
+    $telefono = strip_tags(trim($request->input('telefono')));
+    $correo   = filter_var(trim($request->input('correo')), FILTER_SANITIZE_EMAIL);
+
+    DB::update(
+        "UPDATE cliente SET nombre=?, apellido=?, telefono=?, correo=? WHERE id_cliente=?",
+        [$nombre, $apellido, $telefono, $correo, $id]
+    );
+
+    return response()->json(['ok' => true]);
+}
 
     /**
      * Devuelve las mascotas registradas para el cliente autenticado.
