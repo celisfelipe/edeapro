@@ -113,7 +113,7 @@ Route::middleware('verificar.token:cliente')->group(function () {
 // y el rol normalizado ("PELUQUERO" → "Peluquero"), porque el trigger de la
 // BD lo pasa a mayúsculas solo en los registros nuevos.
 Route::get('/estilistas', function () {
-    $estilistas = Estilista::where('estado', 'activo')
+    $estilistas = Estilista::where('estado', 'Activo')
         ->select(['id_estilista', 'nombre_estilista', 'apellido_estilista', 'rol', 'foto'])
         ->get()
         ->map(fn ($e) => [

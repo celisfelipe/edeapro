@@ -555,7 +555,12 @@ function reagendarCita(id_cita) {
 
 /** Elimina la sesión del localStorage y redirige al login */
 function cerrarSesion() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("rol");
-    window.location.href = "../paginas/login.html";
+    fetchAuth(`${API_BASE}/api/logout`, { method: 'POST', keepalive: true })
+        .catch(() => {})
+        .finally(() => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("rol");
+            localStorage.removeItem("token");
+            window.location.href = "../paginas/login.html";
+        });
 }
