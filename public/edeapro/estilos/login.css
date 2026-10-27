@@ -1,28 +1,20 @@
 /* ================================================
    login.css — Página de Login y Registro
    ================================================
-   Estilos del formulario de inicio de sesión y registro
-   en login.html. Usa Bootstrap 5 como base y sobreescribe
-   con la paleta de marca del proyecto (ver
-   docs/MODERNIZACION-VISUAL.md).
-
-   Diseño: pantalla dividida (izquierda: panel oscuro con
-   degradado #050505→#333333 y detalles metálicos, derecha:
-   formulario sobre panel #f4f4f4).
-   Página standalone: no carga principal.css, por eso define
-   sus propias variables de color.
+   Estilos del formulario de inicio de sesión y registro.
+   Colores: tokens de estilos/identidad.css.
 ================================================ */
 
 :root {
-    --color-bg: #f4f3ea;
-    --color-surface: #f4f4f4;
-    --color-metal: #ae9d81;
-    --color-metal-text: #8B6F4E;
-    --color-text: #333333;
-    --color-heading: #050505;
-    --color-dark-surface: #2A211A;
-    --color-cta: #f0ab06;
-    --color-cta-dark: #d69a05;
+    --color-bg: var(--ivory);
+    --color-surface: var(--white);
+    --color-metal: var(--gold);
+    --color-metal-text: var(--muted);
+    --color-text: var(--graphite);
+    --color-heading: var(--graphite);
+    --color-dark-surface: var(--graphite);
+    --color-cta: var(--gold);
+    --color-cta-dark: var(--gold-dark);
 }
 
 * {
@@ -46,15 +38,15 @@ body {
     width: 900px;
     max-width: 100%;
     min-height: 550px;
-    border-radius: 20px;
+    border-radius: 28px;
     overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    box-shadow: 0 28px 64px rgba(51, 49, 47, 0.18);
 }
 
-/* PANEL IZQUIERDO — degradado oscuro con detalle metálico */
+/* PANEL IZQUIERDO — grafito profundo con detalle metálico bronce */
 .welcome-panel {
     width: 40%;
-    background: linear-gradient(135deg, var(--color-dark-surface), #3d342a);
+    background: linear-gradient(145deg, #33312F 0%, #3A3835 60%, #45423F 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,11 +55,11 @@ body {
     text-align: center;
     color: white;
     position: relative;
-    border-right: 2px solid var(--color-metal);
+    border-right: 2px solid rgba(242, 174, 0, 0.3);
     overflow: hidden;
 }
 
-/* Resplandor metálico decorativo */
+/* Resplandor dorado decorativo */
 .welcome-panel::after {
     content: '';
     position: absolute;
@@ -75,8 +67,19 @@ body {
     right: -30%;
     width: 70%;
     height: 70%;
-    background: radial-gradient(circle, rgba(174,157,129,0.25) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(242, 174, 0, 0.18) 0%, transparent 70%);
     pointer-events: none;
+}
+
+/* Borde inferior decorativo dorado */
+.welcome-panel::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(242, 174, 0, 0.5), transparent);
 }
 
 .welcome-panel .logo {
@@ -97,14 +100,16 @@ body {
     letter-spacing: 1px;
     position: relative;
     z-index: 1;
+    color: #F5F4EC;
 }
 
 .welcome-panel p {
     font-size: 14px;
-    opacity: 0.85;
+    opacity: 0.78;
     line-height: 1.6;
     position: relative;
     z-index: 1;
+    color: #CFCCC4;
 }
 
 .welcome-panel .paws {
@@ -183,8 +188,8 @@ body {
 .input-group select {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid var(--color-metal);
-    border-radius: 8px;
+    border: 1.5px solid var(--input-border);
+    border-radius: 12px;
     font-size: 14px;
     background: white;
     color: var(--color-heading);
@@ -195,8 +200,8 @@ body {
 .input-group input:focus,
 .input-group select:focus {
     outline: none;
-    border-color: var(--color-metal);
-    box-shadow: 0 0 0 3px rgba(174, 157, 129, 0.25);
+    border-color: var(--gold-dark);
+    box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
 }
 
 .password-wrap {
@@ -228,11 +233,11 @@ body {
 }
 
 .mascota-section {
-    background: white;
+    background: var(--color-bg);
     border-radius: 10px;
     padding: 15px;
     margin: 15px 0;
-    border: 1px solid var(--color-metal);
+    border: 1px solid rgba(120, 116, 108, 0.35);
 }
 
 .mascota-section h3 {
@@ -242,25 +247,41 @@ body {
     font-weight: 700;
 }
 
-/* Botón principal — CTA dorado */
+/* Botón principal — CTA dorado EDEA PRO */
 .btn-primary {
     width: 100%;
-    padding: 11px;
+    padding: 12px;
     background: var(--color-cta);
-    color: var(--color-heading);
+    color: #33312F;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
     font-family: 'Inter', sans-serif;
     margin-top: 8px;
     flex-shrink: 0;
+    box-shadow: var(--shadow-gold);
+    letter-spacing: 0.2px;
 }
 
 .btn-primary:hover {
     background: var(--color-cta-dark);
+    box-shadow: 0 12px 26px rgba(242, 174, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Estado "Verificando..." (el botón se deshabilita mientras responde el servidor) */
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Mensaje de error o éxito debajo del formulario */
@@ -268,21 +289,21 @@ body {
     font-size: 13px;
     margin-top: 10px;
     padding: 8px 12px;
-    border-radius: 6px;
+    border-radius: 10px;
     display: none;
 }
 
 /* Mensaje de error: colores semánticos, sin cambios */
 .mensaje.error {
-    background: #fde8e8;
-    color: #c0392b;
+    background: #F6DDD8;
+    color: #8E3324;
     display: block;
 }
 
 /* Mensaje de éxito: colores semánticos, sin cambios */
 .mensaje.success {
-    background: #e8f5e9;
-    color: #27ae60;
+    background: #DCEFE2;
+    color: #2F7A4E;
     display: block;
 }
 
@@ -307,26 +328,40 @@ body {
     margin-bottom: 12px;
 }
 
-/* Botón secundario: agregar mascota */
+/* Botón secundario: agregar mascota (fondo blanco, borde Grafito) */
 .btn-agregar {
-    background: var(--color-metal);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    background: white;
+    color: var(--color-heading);
+    border: 1.5px solid var(--color-heading);
+    padding: 6px 14px;
+    border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-agregar:hover {
+    background: var(--color-heading);
+    color: var(--color-bg);
+}
+
+.btn-agregar:focus-visible,
+.btn-quitar:focus-visible,
+.switch-text span:focus-visible,
+.btn-volver-login:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
 /* Bloque de campos de una mascota en el registro */
 .mascota-item {
-    background: white;
+    background: #F8F7F8;
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 10px;
-    border: 1.5px solid var(--color-metal);
+    border: 1.5px solid rgba(120, 116, 108, 0.35);
     position: relative;
 }
 
@@ -342,7 +377,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #e74c3c;
+    background: var(--danger);
     color: white;
     border: none;
     border-radius: 50%;

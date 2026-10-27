@@ -2,11 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicios - Administrador</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../estilos/identidad.css">
 </head>
 <body>
     <script>
@@ -72,7 +76,7 @@
                 <input type="number" id="edit-svc-precio">
             </div>
             <div class="modal-footer">
-                <button class="btn" style="background:#eee;" id="edit-servicio-cancel">Cancelar</button>
+                <button class="btn btn-gray" id="edit-servicio-cancel">Cancelar</button>
                 <button class="btn btn-blue" id="edit-servicio-ok">Guardar</button>
             </div>
         </div>
@@ -84,7 +88,7 @@
             <h3>Confirmar acción</h3>
             <p id="modal-confirmar-msg"></p>
             <div class="modal-footer">
-                <button class="btn" style="background:#eee;" id="modal-confirmar-cancel">Cancelar</button>
+                <button class="btn btn-gray" id="modal-confirmar-cancel">Cancelar</button>
                 <button class="btn btn-red" id="modal-confirmar-ok">Confirmar</button>
             </div>
         </div>
@@ -112,6 +116,7 @@
         </div>
     </div>
 
+    <script src="../../scripts/config.js"></script>
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/sesion.js"></script>
     <script src="../scripts/modal.js"></script>

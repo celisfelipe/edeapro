@@ -63,7 +63,7 @@ async function genSlots(){
 
   if (S.groomer !== null && S.date) {
     try {
-      const res  = await fetch(`http://127.0.0.1:8000/api/citas/slots?id_estilista=${S.groomer}&fecha=${S.date}&duracion=${dur}`);
+      const res  = await fetch(`${API_BASE}/api/citas/slots?id_estilista=${S.groomer}&fecha=${S.date}&duracion=${dur}`);
       const data = await res.json();
       if (data.ok) disponibles = data.disponibles;
     } catch(e) {}
@@ -300,7 +300,7 @@ async function renderStep4(){
   let mascotaHtml = "";
   if (user && user.id_cliente) {
     try {
-      const res  = await fetchAuth(`http://127.0.0.1:8000/api/cliente/mascotas?id_cliente=${user.id_cliente}`);
+      const res  = await fetchAuth(`${API_BASE}/api/cliente/mascotas?id_cliente=${user.id_cliente}`);
       const data = await res.json();
       MASCOTAS = (data.ok && data.mascotas) ? data.mascotas : [];
     } catch(e) { MASCOTAS = []; }
@@ -373,7 +373,7 @@ async function renderStep4(){
     }
     const id_cliente = user.id_cliente;
 
-    fetchAuth('http://127.0.0.1:8000/api/citas/crear', {
+    fetchAuth('${API_BASE}/api/citas/crear', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams({
@@ -421,9 +421,9 @@ function resetApp(){
 async function iniciar(){
   try {
     const [resSvcs, resAds, resGrm] = await Promise.all([
-      fetch('http://127.0.0.1:8000/api/citas/servicios').then(r=>r.json()),
-      fetch('http://127.0.0.1:8000/api/citas/adicionales').then(r=>r.json()),
-      fetch('http://127.0.0.1:8000/api/citas/estilistas').then(r=>r.json())
+      fetch('${API_BASE}/api/citas/servicios').then(r=>r.json()),
+      fetch('${API_BASE}/api/citas/adicionales').then(r=>r.json()),
+      fetch('${API_BASE}/api/citas/estilistas').then(r=>r.json())
     ]);
 
     SVCS = {};

@@ -16,7 +16,7 @@
 .emp-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     padding: 22px;
     display: flex;
     flex-direction: column;
@@ -37,19 +37,19 @@
     gap: 14px;
 }
 
-/* Avatar con fondo dorado para iniciales — si tiene foto, la imagen lo cubre */
+/* Avatar Grafito con iniciales doradas — si tiene foto, la imagen lo cubre */
 .emp-avatar {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #F0AB06, #B87D03);
+    background: linear-gradient(135deg, #45423F, var(--graphite));
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Outfit', sans-serif;
     font-size: 1.2rem;
     font-weight: 800;
-    color: #1A1612;
+    color: var(--gold);
     flex-shrink: 0;
     overflow: hidden; /* la img dentro no se sale del círculo */
 }
@@ -107,7 +107,7 @@
     background: var(--color-surface2);
     border: 1px solid var(--color-border);
     padding: 18px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     margin-top: 14px;
     margin-bottom: 15px;
 }
@@ -181,8 +181,8 @@
 
 /* Foco visible en el botón "Subir foto" cuando se navega con teclado */
 .emp-foto-picker:has(.emp-foto-input:focus-visible) .emp-foto-subir {
-    outline: 2px solid var(--color-cta);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
 /* Antes: color: #888 fijo */

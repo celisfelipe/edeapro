@@ -2,11 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagos - Administrador</title>
     <link rel="stylesheet" href="../estilos/base.css">
     <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../estilos/identidad.css">
 </head>
 <body>
     <script>
@@ -54,7 +58,7 @@
                 <p>Total de pagos</p>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(126,181,106,0.18); color:#5a8a48;"><i class="fa-solid fa-coins"></i></div>
+                <div class="stat-icon" style="background:rgba(75,174,110,0.16); color:var(--success-text);"><i class="fa-solid fa-coins"></i></div>
                 <h3 id="stat-total-recaudado">$0</h3>
                 <p>Total recaudado</p>
             </div>
@@ -105,7 +109,7 @@
             <h3>Confirmar acción</h3>
             <p id="modal-confirmar-msg"></p>
             <div class="modal-footer">
-                <button class="btn" style="background:#eee;" id="modal-confirmar-cancel">Cancelar</button>
+                <button class="btn btn-gray" id="modal-confirmar-cancel">Cancelar</button>
                 <button class="btn btn-green" id="modal-confirmar-ok">Confirmar</button>
             </div>
         </div>
@@ -133,6 +137,7 @@
         </div>
     </div>
 
+    <script src="../../scripts/config.js"></script>
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/sesion.js"></script>
     <script src="../../scripts/formatoHora.js"></script>

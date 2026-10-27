@@ -6,8 +6,8 @@
  * Se alternan con mostrarRegistro() y mostrarLogin() sin recargar.
  *
  * Conecta con la API de Laravel:
- *   POST http://127.0.0.1:8000/api/login    → iniciarSesion()
- *   POST http://127.0.0.1:8000/api/registro → registrarse()
+ *   POST ${API_BASE}/api/login    → iniciarSesion()
+ *   POST ${API_BASE}/api/registro → registrarse()
  *
  * Al iniciar sesión guarda en localStorage:
  *   'user' → objeto con los datos del usuario
@@ -67,7 +67,7 @@ function iniciarSesion() {
     if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
     mostrarMsg(msg, '', '');
 
-    fetch('http://127.0.0.1:8000/api/login', {
+    fetch('${API_BASE}/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ correo, contrasena })
@@ -208,7 +208,7 @@ function registrarse() {
         return;
     }
 
-    fetch('http://127.0.0.1:8000/api/registro', {
+    fetch('${API_BASE}/api/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -274,7 +274,7 @@ async function enviarRecuperacion() {
     mostrarMsg(msg, 'Enviando...', '');
 
     try {
-        const res  = await fetch('http://127.0.0.1:8000/api/recuperar-contrasena', {
+        const res  = await fetch('${API_BASE}/api/recuperar-contrasena', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ correo })

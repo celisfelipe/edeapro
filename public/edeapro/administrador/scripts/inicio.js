@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Traer todas las citas desde Laravel
-    fetchAuth('http://127.0.0.1:8000/api/admin/citas')
+    fetchAuth('${API_BASE}/api/admin/citas')
         .then(res => res.json())
         .then(data => {
             const tbody = document.getElementById('tabla-citas');
@@ -224,7 +224,7 @@ function cerrarDetalle() {
  */
 function cancelarCita(id) {
     modalConfirmar('¿Seguro que deseas cancelar esta cita?', function () {
-        fetchAuth('http://127.0.0.1:8000/api/admin/citas/cancelar', {
+        fetchAuth('${API_BASE}/api/admin/citas/cancelar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_cita: id })

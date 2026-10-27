@@ -30,7 +30,7 @@ function descargarMisCitas(formato, boton) {
     estado.textContent = '';
     boton.disabled = true;
 
-    descargarArchivo(`http://127.0.0.1:8000/api/empleado/reportes/citas/${formato}`, `mis-citas.${extension}`)
+    descargarArchivo(`${API_BASE}/api/empleado/reportes/citas/${formato}`, `mis-citas.${extension}`)
         .catch(() => { estado.textContent = `No se pudo generar el reporte (${extension.toUpperCase()}). Intenta de nuevo.`; })
         .finally(() => { boton.disabled = false; });
 }

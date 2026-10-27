@@ -2,47 +2,51 @@
    base.css — Reset del Panel Administrador
    ================================================ */
 
+/* Variables del panel. Todas apuntan a los tokens de
+   estilos/identidad.css (fuente única de la marca): fondo Marfil,
+   tarjetas Blanco frío, sidebar Grafito y Dorado para acciones. */
 :root {
     /* Fondos */
-    --color-bg:           #12100E;
-    --color-surface:      #1E1A17;
-    --color-surface2:     #252018;
-    --color-border:       #302A24;
+    --color-bg:           var(--ivory);
+    --color-surface:      var(--white);
+    --color-surface2:     var(--ivory-strong);
+    --color-border:       var(--border);
+    --color-input:        #FFFFFF;
 
     /* Texto */
-    --color-heading:      #F0EBE4;
-    --color-text:         #C8BFB3;
-    --color-light:        #F0EBE4;
+    --color-heading:      var(--graphite);
+    --color-text:         var(--graphite);
+    --color-light:        var(--white);
 
     /* Sidebar */
-    --color-dark-surface: #0D0B09;
+    --color-dark-surface: var(--graphite);
 
     /* Acentos */
-    --color-metal:        #ae9d81;
-    --color-metal-text:   #9B8F84;
-    --color-cta:          #F0AB06;
-    --color-cta-dark:     #B87D03;
-    --color-cta-soft:     rgba(240,171,6,0.13);
+    --color-metal:        var(--gold);
+    --color-metal-text:   var(--muted);
+
+    /* Dorado: acción principal, enlace activo, selección y foco */
+    --color-cta:          var(--gold);
+    --color-cta-dark:     var(--gold-dark);
+    --color-cta-soft:     var(--gold-soft);
+    --color-on-cta:       var(--graphite);
 
     /* Semánticos */
-    --color-info:         #0284C7;
-    --color-success:      #16A34A;
-    --color-special:      #7671a6;
+    --color-info:         #00A7B5;
+    --color-success:      var(--success-text);
+    --color-warning:      #8A6100;
+    --color-danger:       var(--danger);
 
-    /* Sombras */
-    --shadow-sm:  0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-    --shadow-md:  0 4px 16px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.2);
+    /* Forma y sombras */
+    --radius-pill:        var(--pill);
+    --shadow-sm:          var(--shadow-soft);
+    --shadow-md:          var(--shadow);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
 }
 
 body {
@@ -93,14 +97,14 @@ a {
 }
 
 .hamburger-btn:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(51,49,47,0.06);
 }
 
 .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 150;
 }
 

@@ -51,7 +51,7 @@ function verificarSesionEmpleado() {
  * limpia la sesión local para que el usuario pueda salir.
  */
 function cerrarSesion() {
-    fetchAuth('http://127.0.0.1:8000/api/logout', { method: 'POST', keepalive: true })
+    fetchAuth('${API_BASE}/api/logout', { method: 'POST', keepalive: true })
         .catch(() => {})
         .finally(() => {
             localStorage.removeItem('user');

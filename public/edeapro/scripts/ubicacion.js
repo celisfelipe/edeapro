@@ -62,7 +62,7 @@ function verificarSesion() {
  * Si no hay conexión muestra reseñas de ejemplo.
  */
 function cargarResenas() {
-    fetch('http://127.0.0.1:8000/api/resenas')
+    fetch('${API_BASE}/api/resenas')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -183,7 +183,7 @@ function enviarResena() {
         return;
     }
 
-    fetchAuth('http://127.0.0.1:8000/api/resenas/crear', {
+    fetchAuth('${API_BASE}/api/resenas/crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({

@@ -13,6 +13,7 @@
     height: 100vh;
     padding: 20px;
     position: fixed;
+    border-right: 1px solid rgba(242, 174, 0, 0.2);
     /* Columna flex: el <ul> crece y el pie (Cerrar sesión) queda abajo */
     display: flex;
     flex-direction: column;
@@ -32,12 +33,12 @@
 
 .sidebar ul li {
     margin-bottom: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: background 0.2s;
 }
 
 .sidebar ul li:hover {
-    background: rgba(255,255,255,0.07);
+    background: rgba(245, 244, 236, 0.07);
 }
 
 .sidebar a {
@@ -45,18 +46,20 @@
        centrar el ícono cuando el sidebar está colapsado */
     display: flex;
     padding: 12px;
-    color: var(--color-light);
+    color: rgba(248, 247, 248, 0.82);
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
-    border-radius: 5px;
+    border-radius: 10px;
     position: relative;
+    transition: color 0.2s;
 }
 
-/* Enlace activo: fondo dorado suave + borde izquierdo dorado
-   (igual que el panel administrador) */
+.sidebar a:hover { color: var(--color-light); }
+
+/* Enlace activo: dorado + borde izquierdo dorado */
 .sidebar a.active {
-    background: rgba(240,171,6,0.12);
+    background: rgba(242, 174, 0, 0.1);
     color: var(--color-cta);
 }
 
@@ -86,7 +89,7 @@
     margin-bottom: 20px;
     background: var(--color-surface);
     padding: 15px 20px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
 }
@@ -107,7 +110,7 @@
 .card {
     background: var(--color-surface);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--radius);
     margin-bottom: 20px;
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
@@ -154,12 +157,14 @@ table {
 }
 
 table th {
-    background: var(--color-surface2);
-    color: var(--color-heading);
-    padding: 10px;
+    background: var(--table-tint);
+    color: var(--color-metal-text);
+    padding: 12px 10px;
     text-align: left;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -171,46 +176,58 @@ table td {
 }
 
 table tr:hover {
-    background: var(--color-surface2);
+    background: var(--table-tint);
 }
 
-/* BOTONES */
+/* BOTONES — mismas variantes y aspecto que el panel administrador */
 .btn {
-    padding: 6px 14px;
-    border: none;
-    border-radius: 6px;
+    padding: 6px 16px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-    transition: opacity 0.2s;
+    font-family: inherit;
+    transition: background 0.2s, opacity 0.2s, box-shadow 0.2s, transform 0.1s;
 }
 
-.btn:hover { opacity: 0.85; }
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 
-.btn-blue   { background: var(--color-info);    color: white; }
-.btn-green  { background: var(--color-success); color: white; }
-.btn-red    { background: #dc3545;              color: white; }
-.btn-yellow { background: var(--color-cta);     color: #12100E; }
-.btn-gray   { background: var(--color-surface2); color: var(--color-text); border: 1px solid var(--color-border); }
+.btn-green { background: #16A34A; color: #FFFFFF; }
+.btn-red   { background: var(--color-danger); color: #FFFFFF; }
+.btn-blue  { background: var(--color-heading); color: var(--white); }
+.btn-blue:hover { background: var(--gold); color: var(--graphite); opacity: 1; }
+.btn-gray  { background: #FFFFFF; color: var(--color-heading); border-color: var(--color-border); }
 
 /* ESTADOS */
-.status-green  { color: #4ade80; font-weight: 700; }
-.status-yellow { color: var(--color-cta); font-weight: 700; }
-.status-red    { color: #f87171; font-weight: 700; }
+.status-green  { color: var(--color-success); font-weight: 700; }
+.status-yellow { color: var(--color-warning); font-weight: 700; }
+.status-red    { color: var(--color-danger); font-weight: 700; }
 
 /* INPUT / SELECT */
-input, select {
-    padding: 8px 12px;
-    border: 1.5px solid var(--color-border);
-    border-radius: 6px;
-    font-size: 13px;
+/* Inputs: blancos, 50px de alto, radio 12px */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]), select) {
+    min-height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
     color: var(--color-text);
-    background: var(--color-surface2);
+    background: #FFFFFF;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--color-cta);
+    border-color: var(--gold-dark);
+    box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
+}
+
+input:disabled, select:disabled {
+    background: var(--color-surface2);
+    color: var(--color-metal-text);
+    cursor: not-allowed;
 }
 
 input::placeholder {
@@ -225,7 +242,7 @@ input::placeholder {
 /* PIE DEL SIDEBAR: Cerrar sesión (mismo estilo que los links del menú) */
 .sidebar-footer {
     padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(245, 244, 236, 0.10);
 }
 
 .sidebar-logout {
@@ -235,9 +252,9 @@ input::placeholder {
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     background: transparent;
-    color: var(--color-light);
+    color: rgba(248, 247, 248, 0.82);
     font: inherit;
     font-size: 14px;
     font-weight: 600;
@@ -247,13 +264,8 @@ input::placeholder {
 }
 
 .sidebar-logout:hover {
-    background: rgba(220,53,69,0.15);
-    color: #ff6b7a;
-}
-
-.sidebar-logout:focus-visible {
-    outline: 2px solid var(--color-cta);
-    outline-offset: 2px;
+    background: rgba(239, 68, 68, 0.14);
+    color: #F4A99C;
 }
 
 /* REPORTES */
@@ -280,9 +292,17 @@ input::placeholder {
 .reporte-card .reporte-estado {
     margin: 12px 0 0;
     font-size: 13px;
-    color: #ff6b7a;
+    color: var(--color-danger);
 }
 
 .reporte-estado:empty { display: none; }
 
-.btn:disabled { opacity: 0.6; cursor: progress; }
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; box-shadow: none; }
+
+/* ── RESPONSIVE DEL PANEL ──
+   Las tablas se desplazan dentro de su tarjeta (no la página completa). */
+.card:has(table) { overflow-x: auto; }
+
+@media (max-width: 900px) {
+    .main { padding: 20px 20px 32px; }
+}

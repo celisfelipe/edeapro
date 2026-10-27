@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * @returns {void}
  */
 function cargarServicios() {
-    fetchAuth('http://127.0.0.1:8000/api/admin/servicios')
+    fetchAuth('${API_BASE}/api/admin/servicios')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -146,7 +146,7 @@ function editarServicio(id_raza, id_servicio, duracion, precio) {
     overlay.classList.add('open');
 
     document.getElementById('edit-servicio-ok').onclick = function () {
-        fetchAuth('http://127.0.0.1:8000/api/admin/servicios/editar', {
+        fetchAuth('${API_BASE}/api/admin/servicios/editar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({

@@ -19,7 +19,7 @@
 .detalle-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(51, 49, 47, 0.45);
     z-index: 1000;
     display: flex;              /* siempre en el DOM */
     justify-content: flex-end;
@@ -34,13 +34,13 @@
 }
 
 .detalle-panel {
-    background: white;
+    background: var(--color-surface, #F8F7F8);
     width: 360px;
     max-width: 95vw;
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    box-shadow: -8px 0 32px rgba(51, 49, 47, 0.14);
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -54,7 +54,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 22px;
-    border-bottom: 1px solid #f0ece6;
+    border-bottom: 1px solid var(--color-border, #E2DFD5);
 }
 
 .detalle-header h3 {
@@ -74,13 +74,18 @@
     cursor: pointer;
     color: var(--color-metal-text);
     padding: 4px 8px;
-    border-radius: 6px;
+    border-radius: 999px;
     transition: background 0.15s, color 0.15s;
 }
 
 .detalle-close:hover {
-    background: var(--color-surface);
+    background: var(--color-surface2, #EFEDE4);
     color: var(--color-heading);
+}
+
+.detalle-close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
 .detalle-body {
@@ -96,7 +101,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    border-bottom: 1px solid #f0ece6;
+    border-bottom: 1px solid var(--color-border, #E2DFD5);
     padding-bottom: 14px;
 }
 
@@ -136,7 +141,7 @@
     flex-wrap: wrap;
     gap: 12px;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--color-border, #e2e0db);
+    border-bottom: 1px solid var(--color-border, #E2DFD5);
 }
 
 .grilla-topbar-left {
@@ -163,7 +168,7 @@
 #grilla-fecha-label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-metal-text, #6b6860);
+    color: var(--color-metal-text, #6B6761);
 }
 
 .grilla-leyenda {
@@ -177,7 +182,7 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: var(--color-metal-text, #6b6860);
+    color: var(--color-metal-text, #6B6761);
 }
 
 .leyenda-item::before {
@@ -188,9 +193,9 @@
     border-radius: 50%;
 }
 
-.leyenda-pendiente::before  { background: #e8c56a; }
-.leyenda-completada::before { background: #7eb56a; }
-.leyenda-cancelada::before  { background: #dc3545; }
+.leyenda-pendiente::before  { background: var(--gold); }
+.leyenda-completada::before { background: var(--success); }
+.leyenda-cancelada::before  { background: var(--danger); }
 
 .grilla-scroll {
     overflow-x: auto;
@@ -226,8 +231,8 @@
 
 /* Cabecera: celda esquina + una celda por estilista */
 .grilla-head-cell {
-    background: var(--color-bg, #f7f6f3);
-    border-bottom: 2px solid var(--color-border, #e2e0db);
+    background: var(--color-bg, #F5F4EC);
+    border-bottom: 2px solid var(--color-border, #E2DFD5);
 }
 
 .grilla-col-estilista {
@@ -235,7 +240,7 @@
     text-align: center;
     font-size: 13px;
     font-weight: 600;
-    border-left: 1px solid var(--color-border, #e2e0db);
+    border-left: 1px solid var(--color-border, #E2DFD5);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -247,8 +252,8 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(126,181,106,0.15);
-    color: #5a9448;
+    background: var(--gold-soft);
+    color: var(--graphite);
     font-size: 13px;
     font-weight: 700;
     display: flex;
@@ -273,13 +278,13 @@
 }
 
 .grilla-badge-disponible {
-    background: rgba(126,181,106,0.15);
-    color: #5a9448;
+    background: rgba(75, 174, 110, 0.16);
+    color: var(--success-text);
 }
 
 .grilla-badge-no-disponible {
-    background: rgba(220,53,69,0.12);
-    color: #dc3545;
+    background: rgba(220, 38, 38, 0.10);
+    color: #B91C1C;
 }
 
 /* Filas de slots: como el wrapper es display: contents, el alto y los
@@ -288,7 +293,7 @@
    :30 (.media-hora) es la siguiente hora en punto (continuo). */
 .grilla-fila-slot > * {
     height: 48px;
-    border-bottom: 1px dashed var(--color-border, #e2e0db);
+    border-bottom: 1px dashed var(--color-border, #E2DFD5);
 }
 
 .grilla-fila-slot.media-hora > * {
@@ -299,19 +304,19 @@
     padding: 8px 8px 0 8px;
     font-size: 11px;
     font-weight: 600;
-    color: var(--color-metal-text, #6b6860);
+    color: var(--color-metal-text, #6B6761);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
 
 .grilla-celda {
-    border-left: 1px solid var(--color-border, #e2e0db);
+    border-left: 1px solid var(--color-border, #E2DFD5);
     position: relative;
     transition: background .1s;
 }
 
 .grilla-celda:hover {
-    background: rgba(126,181,106,0.08);
+    background: var(--gold-08);
 }
 
 /* Bloque de cita dentro de la celda */
@@ -320,7 +325,7 @@
     left: 4px;
     right: 4px;
     top: 3px;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 5px 8px;
     font-size: 12px;
     font-weight: 500;
@@ -336,9 +341,9 @@
     transform: scale(1.01);
 }
 
-.cita-bloque.pendiente  { background: #e8c56a; color: #3d2e00; }
-.cita-bloque.completada { background: #7eb56a; color: #fff; }
-.cita-bloque.cancelada  { background: #dc3545; color: #fff; }
+.cita-bloque.pendiente  { background: #FCEBC0; color: var(--graphite); border-left: 3px solid var(--gold); }
+.cita-bloque.completada { background: #DDF1E4; color: #1F5A39; border-left: 3px solid var(--success); }
+.cita-bloque.cancelada  { background: #FBE0E0; color: #8E1F1F; border-left: 3px solid var(--danger); }
 
 .cita-bloque-hora    { font-size: 10px; opacity: .75; }
 .cita-bloque-nombre  { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

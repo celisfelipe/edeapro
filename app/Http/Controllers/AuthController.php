@@ -76,11 +76,11 @@ class AuthController extends Controller
                 'ok'    => true,
                 'rol'   => $rol,
                 'user'  => [
-                    'id'       => $estilista->id_estilista,
-                    'nombre'   => $estilista->nombre,
-                    'apellido' => $estilista->apellido,
-                    'correo'   => $estilista->correo,
-                    'rol'      => $rol
+                    'id_estilista'       => $estilista->id_estilista,
+                    'nombre_estilista'   => $estilista->nombre_estilista,
+                    'apellido_estilista' => $estilista->apellido_estilista,
+                    'correo'             => $estilista->correo,
+                    'rol'                => $rol
                 ],
                 'token' => $token
             ]);
