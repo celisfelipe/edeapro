@@ -22,5 +22,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!verificarSesionEmpleado()) return;
 
-    iniciarGrilla(fecha => `http://127.0.0.1:8000/api/empleado/agenda?fecha=${fecha}`);
+    iniciarGrilla(fecha => `${API_BASE}/api/empleado/agenda?fecha=${fecha}`);
 });

@@ -14,8 +14,8 @@
  * Ambos endpoints devuelven { ok, citas: [...], estilistas: [...] }.
  *
  * Uso desde la página:
- *   iniciarGrilla(fecha => `http://127.0.0.1:8000/api/.../?fecha=${fecha}`);
- * Los botones ‹ Hoy › del HTML llaman a cambiarDia(-1|1) e irHoy().
+ *   iniciarGrilla(fecha => `${API_BASE}/api/.../?fecha=${fecha}`);
+ * Los botones Anterior / Siguiente del HTML llaman a cambiarDia(-1|1).
  *
  * HTML necesario: #grilla-fecha-label, #grilla-agenda y el panel de detalle
  * (#modal-detalle-overlay, #modal-detalle-close, #detalle-cliente,
@@ -54,12 +54,6 @@ function iniciarGrilla(construirUrl) {
  */
 function cambiarDia(delta) {
     diaOffset += delta;
-    renderGrilla();
-}
-
-/** Vuelve al día de hoy. */
-function irHoy() {
-    diaOffset = 0;
     renderGrilla();
 }
 

@@ -30,7 +30,7 @@ function descargarReporte(tipo, formato, boton) {
     const extension = formato === 'excel' ? 'xlsx' : 'pdf';
     boton.disabled = true;
 
-    descargarArchivo(`http://127.0.0.1:8000/api/reportes/${tipo}/${formato}`, `reporte-${tipo}.${extension}`)
+    descargarArchivo(`${API_BASE}/api/reportes/${tipo}/${formato}`, `reporte-${tipo}.${extension}`)
         .catch(() => modalError(`No se pudo generar el reporte de ${tipo} (${extension.toUpperCase()}).`))
         .finally(() => { boton.disabled = false; });
 }

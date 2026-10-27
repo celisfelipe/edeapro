@@ -1,0 +1,138 @@
+/* ================================================
+   identidad.css — Sistema de diseño EDEA PRO
+   ================================================
+   Única fuente de verdad de la marca. Se carga AL FINAL
+   en todas las páginas (sitio público, agenda, perfil de
+   cliente, panel administrador y panel empleado).
+
+   Cómo funciona:
+   - Aquí se definen los tokens (--ivory, --gold, --graphite…).
+   - Cada hoja de área (principal.css, base.css, agenda.css,
+     login.css…) declara sus propias variables (--color-cta,
+     --caramel, --ink…) apuntando a estos tokens. Para cambiar
+     la marca en todo el sitio basta con editar este bloque.
+   - Las reglas globales de este archivo usan :where() para
+     no subir la especificidad; los componentes de cada hoja
+     siempre pueden ajustarlas.
+
+   Puntos de corte del proyecto (las variables CSS no se
+   pueden usar dentro de @media, por eso se documentan aquí):
+      900px  tablets; el sidebar de los paneles pasa a menú deslizable
+      768px  navegación móvil y columnas apiladas
+      640px  móviles: formularios y agenda en una columna
+================================================ */
+
+:root {
+    /* ── Tokens del sistema visual EDEA PRO ──
+       Reglas: nunca texto blanco sobre dorado (sobre dorado, Grafito);
+       las sombras siempre tintadas con Grafito (51,49,47), nunca negro. */
+    --ivory:       #F5F4EC;                  /* fondo de página */
+    --white:       #F8F7F8;                  /* superficies: tarjetas, header, inputs */
+    --graphite:    #33312F;                  /* texto, títulos, footer, sidebar, botones oscuros */
+    --gold:        #F2AE00;                  /* CTA, estados activos, precios, acentos */
+    --gold-dark:   #C98B00;                  /* hover de CTA, eyebrows, iconos */
+    --gold-soft:   rgba(242, 174, 0, 0.14);
+    --muted:       #706B63;                  /* texto secundario */
+    --border:      rgba(51, 49, 47, 0.14);
+    --success:     #4BAE6E;
+    --shadow-soft: 0 5px 18px rgba(51, 49, 47, 0.08);
+    --shadow:      0 14px 36px rgba(51, 49, 47, 0.11);
+    --radius:      18px;
+    --radius-sm:   12px;
+    --pill:        999px;
+    --ease:        cubic-bezier(.16, 1, .3, 1);
+
+    /* Complementos del sistema */
+    --ivory-strong:  #EFEDE4;                /* franjas */
+    --table-tint:    #F1F0EA;                /* cabecera y hover de tablas */
+    --input-border:  rgba(51, 49, 47, 0.2);
+    --success-text:  #2F7A4E;                /* éxito como texto (contraste AA) */
+    --danger:        #DC2626;
+
+    /* ── Opacidades del dorado ── */
+    --gold-08: rgba(242, 174, 0, 0.08);
+    --gold-16: rgba(242, 174, 0, 0.16);
+    --gold-25: rgba(242, 174, 0, 0.25);
+    --gold-42: rgba(242, 174, 0, 0.42);
+
+    /* ── Sombra dorada de los botones principales ── */
+    --shadow-gold: 0 7px 20px rgba(242, 174, 0, 0.25);
+
+    /* ── Foco (navegación con teclado) ──
+       Outline dorado de 3px separado 4px del elemento. --focus-ring
+       reproduce el mismo anillo con box-shadow para los componentes
+       que ya dibujan el suyo. */
+    --focus-outline: 3px solid rgba(242, 174, 0, 0.8);
+    --focus-ring: 0 0 0 4px var(--ivory), 0 0 0 7px rgba(242, 174, 0, 0.8);
+
+    /* ── Tipografía ── */
+    --font-heading: 'Outfit', 'Inter', Arial, sans-serif;
+    --font-body:    'Inter', Arial, sans-serif;
+
+    --text-xs:   11px;
+    --text-sm:   13px;
+    --text-base: 15px;
+    --text-md:   17px;
+    --text-lg:   20px;
+    --text-xl:   24px;
+    --text-2xl:  32px;
+    --text-3xl:  40px;
+    --text-4xl:  52px;
+
+    --text-hero:    clamp(2.65rem, 4.7vw, 5rem);   /* titular de portada */
+    --text-section: clamp(2rem, 4vw, 3.35rem);     /* títulos de sección */
+    --tracking-eyebrow: 0.16em;                     /* etiquetas en mayúsculas */
+}
+
+/* ── Tipografía base ── */
+body {
+    font-family: var(--font-body);
+}
+
+:where(h1, h2, h3, h4, h5, h6, .brand-name, .header-title, .sidebar h2) {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+}
+
+/* Los navegadores no heredan la fuente en los controles de formulario */
+:where(button, input, select, textarea) {
+    font-family: var(--font-body);
+}
+
+::selection {
+    background: var(--gold-25);
+    color: var(--graphite);
+}
+
+/* ── Foco visible global (solo con teclado) ── */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 4px;
+}
+
+/* ── Estado presionado común a todos los botones ── */
+:where(button, .btn, .login, .carrusel-cta, .service-card-btn,
+       .submit-btn, .btn-accion, .btn-filtro, .btn-asim, .btn-go,
+       .btn-primary, .btn-sec, .btn-nueva, .slot-pill, .rtab, .page-btn):active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+/* ── Estado deshabilitado común (los componentes pueden afinarlo) ── */
+:where(button, .btn, input, select, textarea):disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ── Movimiento reducido: aplica a todas las áreas, paneles incluidos ── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

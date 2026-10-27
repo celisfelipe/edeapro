@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const id = user.id_cliente;
 
     // ── Cargar datos del perfil ───────────────────────────────
-    fetchAuth(`http://127.0.0.1:8000/api/cliente/perfil?id_cliente=${id}`)
+    fetchAuth(`${API_BASE}/api/cliente/perfil?id_cliente=${id}`)
         .then((res) => res.json())
         .then((data) => {
             if (data.ok) {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cargarCitas(id);
 
     // ── Cargar historial de pagos ─────────────────────────────
-    fetchAuth(`http://127.0.0.1:8000/api/cliente/pagos?id_cliente=${id}`)
+    fetchAuth(`${API_BASE}/api/cliente/pagos?id_cliente=${id}`)
         .then((res) => res.json())
         .then((data) => {
             const tbody = document.getElementById("pagosBody");
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param {number} id - id_cliente del usuario logueado
  */
 function cargarMascotas(id) {
-    fetchAuth(`http://127.0.0.1:8000/api/cliente/mascotas?id_cliente=${id}`)
+    fetchAuth(`${API_BASE}/api/cliente/mascotas?id_cliente=${id}`)
         .then((res) => res.json())
         .then((data) => {
             if (!data.ok) return;
@@ -165,7 +165,7 @@ function verHistorialMascota(id_mascota, nombreMascota) {
     document.getElementById("modal-historial-mascota").classList.add("open");
 
     fetchAuth(
-        `http://127.0.0.1:8000/api/cliente/mascotas/historial?id_mascota=${id_mascota}&id_cliente=${user.id_cliente}`,
+        `${API_BASE}/api/cliente/mascotas/historial?id_mascota=${id_mascota}&id_cliente=${user.id_cliente}`,
     )
         .then((res) => res.json())
         .then((data) => {
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            fetchAuth("http://127.0.0.1:8000/api/cliente/mascotas/agregar", {
+            fetchAuth("${API_BASE}/api/cliente/mascotas/agregar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param {number} id - id_cliente del usuario logueado
  */
 function cargarCitas(id) {
-    fetchAuth(`http://127.0.0.1:8000/api/cliente/citas?id_cliente=${id}`)
+    fetchAuth(`${API_BASE}/api/cliente/citas?id_cliente=${id}`)
         .then((res) => res.json())
         .then((data) => {
             citasCliente = data.ok && data.citas ? data.citas : [];
@@ -392,7 +392,7 @@ document.getElementById("btnActualizar").addEventListener("click", () => {
         return;
     }
 
-    fetchAuth("http://127.0.0.1:8000/api/cliente/actualizar", {
+    fetchAuth("${API_BASE}/api/cliente/actualizar", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ nombre, apellido, telefono, correo }),
@@ -433,7 +433,7 @@ function cancelarCita(id_cita) {
             }
 
             const user = JSON.parse(localStorage.getItem("user"));
-            fetchAuth("http://127.0.0.1:8000/api/cliente/cancelar-cita", {
+            fetchAuth("${API_BASE}/api/cliente/cancelar-cita", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -492,7 +492,7 @@ function reagendarCita(id_cita) {
 
         try {
             const res = await fetchAuth(
-                `http://127.0.0.1:8000/api/cliente/reagendar-horarios?id_cita=${id_cita}&fecha=${fecha}`,
+                `${API_BASE}/api/cliente/reagendar-horarios?id_cita=${id_cita}&fecha=${fecha}`,
             );
             const data = await res.json();
 
@@ -535,7 +535,7 @@ function reagendarCita(id_cita) {
         }
 
         const user = JSON.parse(localStorage.getItem("user"));
-        fetchAuth("http://127.0.0.1:8000/api/cliente/reagendar-cita", {
+        fetchAuth("${API_BASE}/api/cliente/reagendar-cita", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({ id_cita, fecha, hora }),

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../estilos/principal.css">
     <link rel="stylesheet" href="../estilos/nosotros.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../estilos/identidad.css">
 </head>
 <body>
 
@@ -172,6 +173,7 @@
         </div>
     </footer>
 
+    <script src="../scripts/config.js"></script>
     <script src="../scripts/navbar.js"></script>
     <script>
     /* Fade-up al scroll */
@@ -232,7 +234,7 @@
         return tarjeta;
     }
 
-    fetch('http://127.0.0.1:8000/api/estilistas')
+    fetch(`${API_BASE}/api/estilistas`)
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();
@@ -248,7 +250,7 @@
         })
         .catch(() => {
             document.getElementById('equipo-container').innerHTML =
-                '<p style="text-align:center;color:#999;">No se pudo cargar el equipo.</p>';
+                '<p style="text-align:center;color:#6B6761;">No se pudo cargar el equipo.</p>';
         });
     </script>
 </body>

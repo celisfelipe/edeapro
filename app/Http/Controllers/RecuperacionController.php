@@ -39,7 +39,7 @@ class RecuperacionController extends Controller
         ]);
 
         // Enlace de recuperación
-        $enlace = "http://127.0.0.1:8000/edeapro/paginas/nueva-contrasena.html?token={$token}&correo=" . urlencode($correo);
+        $enlace = env('FRONTEND_URL') . "/edeapro/paginas/nueva-contrasena.html?token={$token}&correo=" . urlencode($correo);
 
         // Enviar email
         Mail::raw(

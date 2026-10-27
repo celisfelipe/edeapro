@@ -131,7 +131,7 @@ function iniciarSelectorFoto(prefijo) {
  * @returns {void}
  */
 function cargarEmpleados() {
-    fetchAuth('http://127.0.0.1:8000/api/admin/empleados')
+    fetchAuth('${API_BASE}/api/admin/empleados')
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -264,7 +264,7 @@ function agregarEmpleado() {
 
     // Con FormData NO se pone Content-Type manualmente
     // El navegador lo configura solo con el boundary correcto
-    fetchAuth('http://127.0.0.1:8000/api/admin/empleados/agregar', {
+    fetchAuth('${API_BASE}/api/admin/empleados/agregar', {
         method: 'POST',
         body: formData
     })
@@ -343,7 +343,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado, fo
             editFormData.append('eliminar_foto', '1');
         }
 
-        fetchAuth('http://127.0.0.1:8000/api/admin/empleados/editar', {
+        fetchAuth('${API_BASE}/api/admin/empleados/editar', {
             method: 'POST',
             body: editFormData
 })
@@ -375,7 +375,7 @@ function editarEstilista(id, nombre, apellido, telefono, correo, rol, estado, fo
  */
 function eliminarEmpleado(id) {
     modalConfirmar('¿Seguro que deseas eliminar este empleado?', function () {
-        fetchAuth('http://127.0.0.1:8000/api/admin/empleados/eliminar', {
+        fetchAuth('${API_BASE}/api/admin/empleados/eliminar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_estilista: id })
