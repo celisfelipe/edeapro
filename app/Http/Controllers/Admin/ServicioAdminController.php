@@ -53,4 +53,63 @@ class ServicioAdminController extends Controller
 
         return response()->json(['ok' => true]);
     }
+        /**
+     * Crea una raza nueva y genera una fila en raza_servicio
+     * para cada tipo de servicio existente con el precio y duración dados.
+     */
+        public function agregar(Request $request)
+    {
+        $request->validate([
+            'nombre_raza' => ['required', 'string', 'max:30'],
+            'servicios'   => ['required', 'array', 'min:1'],
+        ]);
+
+        $nombre    = strip_tags(trim($request->input('nombre_raza')));
+        $servicios = $request->input('servicios');
+
+        // Insertar la raza nueva y obtener su ID
+        $id_raza = DB::table('raza')->insertGetId([
+            'nombre_raza' => $nombre
+        ]);
+
+        // Insertar solo en los servicios que el admin marcó
+        foreach ($servicios as $item) {
+            DB::table('raza_servicio')->insert([
+                'id_raza'     => $id_raza,
+                'id_servicio' => intval($item['id_servicio']),
+                'precio'      => floatval($item['precio']),
+                'duracion'    => strip_tags(trim($item['duracion'])),
+            ]);
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function listaCategorias()
+    {
+        $servicios = DB::table('servicio')
+            ->select('id_servicio', 'nombre_servicio')
+            ->get();
+
+        return response()->json(['ok' => true, 'servicios' => $servicios]);
+    }
+
+    /**
+     * Elimina una raza y sus precios en raza_servicio.
+     * Solo se puede eliminar si no tiene citas asociadas.
+     */
+    public function eliminar(Request $request)
+    {
+        $id_raza = intval($request->input('id_raza'));
+
+        $citasAsociadas = DB::table('cita')->where('id_raza', $id_raza)->count();
+        if ($citasAsociadas > 0) {
+            return response()->json(['ok' => false, 'error' => 'No se puede eliminar: hay citas asociadas a esta raza.']);
+        }
+
+        DB::table('raza_servicio')->where('id_raza', $id_raza)->delete();
+        DB::table('raza')->where('id_raza', $id_raza)->delete();
+
+        return response()->json(['ok' => true]);
+    }
 }

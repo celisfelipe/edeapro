@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * Antes esto lo hacía cargarDisponibilidad(), que ya no existe en este archivo.
  */
 function cargarEstilistasSelect() {
-    fetchAuth('${API_BASE}/api/admin/horarios?fecha=' + new Date().toISOString().split('T')[0])
+    fetchAuth(`${API_BASE}/api/admin/horarios?fecha=` + new Date().toISOString().split('T')[0])
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -38,7 +38,7 @@ function cargarEstilistasSelect() {
    ══════════════════════════════════════════════════════════════════════════ */
 
 function cargarBloqueos() {
-    fetchAuth('${API_BASE}/api/admin/disponibilidad-temporal')
+    fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal`)
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
@@ -76,7 +76,7 @@ function agregarBloqueo() {
         return;
     }
 
-    fetchAuth('${API_BASE}/api/admin/disponibilidad-temporal/agregar', {
+    fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal/agregar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_estilista, fecha_inicio, fecha_fin, motivo })
@@ -97,7 +97,7 @@ function agregarBloqueo() {
 function eliminarBloqueo(id) {
     if (!confirm('¿Eliminar este bloqueo de disponibilidad?')) return;
 
-    fetchAuth('${API_BASE}/api/admin/disponibilidad-temporal/eliminar', {
+    fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal/eliminar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_disponibilidad: id })

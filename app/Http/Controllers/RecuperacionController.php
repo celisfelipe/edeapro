@@ -91,9 +91,29 @@ class RecuperacionController extends Controller
             DB::table('estilista')->where('correo', $correo)->update(['contrasena' => $nueva]);
         }
 
-        // Eliminar el token usado
+        // Verificar que no haya más de 3 intentos en la última hora
+        $intentos = DB::table('recuperacion_contrasena')
+            ->where('correo', $correo)
+            ->where('created_at', '>=', now()->subHour())
+            ->count();
+
+        if ($intentos >= 3) {
+            return response()->json(['ok' => false, 'error' => 'Demasiados intentos. Espera una hora antes de intentar de nuevo.']);
+        }
+
+        // Eliminar tokens anteriores del mismo correo
         DB::table('recuperacion_contrasena')->where('correo', $correo)->delete();
 
+        // Cerrar todas las sesiones activas de este usuario
+        $tabla     = $cliente ? 'cliente' : 'estilista';
+        $id_campo  = $cliente ? 'id_cliente' : 'id_estilista';
+        $id_valor  = $cliente ? $cliente->id_cliente : DB::table('estilista')->where('correo', $correo)->first()->id_estilista;
+
+        DB::table('personal_access_tokens')
+            ->where('tokenable_type', $tabla)
+            ->where('tokenable_id', $id_valor)
+            ->delete();
+
         return response()->json(['ok' => true, 'mensaje' => 'Contraseña actualizada correctamente.']);
-    }
+        }
 }

@@ -1,62 +1,47 @@
 /**
  * servicios.js — Panel Administrador / Servicios
- * ===============================================
- * Carga los servicios agrupados por categoría en un acordeón.
- * Permite editar el precio y la duración de cada servicio por raza.
- * Solo accesible con sesión de administrador (ver sesion.js).
- *
- * Conecta con la API de Laravel:
- *   GET  /api/admin/servicios        → cargar servicios
- *   POST /api/admin/servicios/editar → actualizar precio y duración
- *
- * Depende de: fetchToken.js (fetchAuth), sesion.js (verificarSesionAdmin, cerrarSesion),
- *             modal.js (modalExito, modalError).
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    if (!verificarSesionAdmin()) return;
+function cargarCheckboxesServicios() {
+    fetchAuth(`${API_BASE}/api/admin/servicios/lista-categorias`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data.ok) return;
+        const contenedor = document.getElementById('servicios-checkboxes');
+        contenedor.innerHTML = data.servicios.map(s => `
+            <div style="border:1px solid #ddd; border-radius:8px; padding:10px; margin-bottom:8px;">
+                <label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer;">
+                    <input type="checkbox" class="chk-servicio" data-id="${s.id_servicio}" value="${s.id_servicio}">
+                    ${escaparHTML(s.nombre_servicio)}
+                </label>
+                <div class="campos-servicio" data-id="${s.id_servicio}" style="display:none; margin-top:8px;">
+                    <div class="modal-form-group" style="margin-bottom:6px;">
+                        <label>Precio</label>
+                        <input type="number" class="campo-precio" data-id="${s.id_servicio}" placeholder="Ej: 50000">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Duración</label>
+                        <input type="text" class="campo-duracion" data-id="${s.id_servicio}" placeholder="Ej: 60 min">
+                    </div>
+                </div>
+            </div>
+        `).join('');
 
-    cargarServicios();
-
-    // Clics dentro de los acordeones: un solo listener en el contenedor
-    // (delegación). Los datos viajan en data-* y se leen con dataset.
-    document.getElementById('contenedor-servicios').addEventListener('click', function (e) {
-        const btnEditar = e.target.closest('.btn-editar');
-        if (btnEditar) {
-            const d = btnEditar.dataset;
-            editarServicio(Number(d.idRaza), Number(d.idServicio), d.duracion, Number(d.precio));
-            return;
-        }
-
-        const header = e.target.closest('.acordeon-header');
-        if (header) toggleAcordeon(header.dataset.id);
-    });
-
-    // Filtrar razas por nombre dentro del acordeón que esté abierto
-    document.getElementById('buscar-raza').addEventListener('input', function () {
-        const termino = this.value.trim().toLowerCase();
-        document.querySelectorAll('#contenedor-servicios .acordeon-body table tr').forEach(function (fila) {
-            if (fila.querySelector('th')) return; // saltar la fila de encabezado
-            const raza = fila.querySelector('td').textContent.toLowerCase();
-            fila.style.display = raza.includes(termino) ? '' : 'none';
+        contenedor.querySelectorAll('.chk-servicio').forEach(chk => {
+            chk.addEventListener('change', function() {
+                const campos = contenedor.querySelector(`.campos-servicio[data-id="${this.dataset.id}"]`);
+                campos.style.display = this.checked ? 'block' : 'none';
+            });
         });
     });
-});
+}
 
-/**
- * Trae todos los servicios y los agrupa por categoría (nombre_servicio).
- * Cada categoría se muestra como un acordeón cerrado con la tabla de
- * razas (duración, precio y botón Editar) adentro.
- *
- * @returns {void}
- */
 function cargarServicios() {
-    fetchAuth('${API_BASE}/api/admin/servicios')
+    fetchAuth(`${API_BASE}/api/admin/servicios`)
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
 
-        // Agrupar los servicios por nombre_servicio (ej: "Pelo corto", "Gatos")
         const categorias = {};
         data.servicios.forEach(s => {
             if (!categorias[s.nombre_servicio]) {
@@ -68,10 +53,8 @@ function cargarServicios() {
         const contenedor = document.getElementById('contenedor-servicios');
         contenedor.innerHTML = '';
 
-        // Crear un acordeón por cada categoría de servicio
         Object.keys(categorias).forEach(cat => {
             const razas = categorias[cat];
-            // Crear un id único para el acordeón a partir del nombre
             const id = cat.replace(/\s+/g, '-').toLowerCase();
 
             contenedor.innerHTML += `
@@ -100,6 +83,9 @@ function cargarServicios() {
                                             data-id-servicio="${s.id_servicio}"
                                             data-duracion="${escaparHTML(s.duracion)}"
                                             data-precio="${s.precio}"><i class="fa-solid fa-pen"></i> Editar</button>
+                                        <button class="btn btn-red btn-eliminar-svc"
+                                            data-id-raza="${s.id_raza}"
+                                            data-nombre="${escaparHTML(s.nombre_raza)}"><i class="fa-solid fa-trash"></i> Eliminar</button>
                                     </td>
                                 </tr>`).join('')}
                         </table>
@@ -109,12 +95,6 @@ function cargarServicios() {
     });
 }
 
-/**
- * Abre o cierra el cuerpo de un acordeón y gira su flecha (chevron) 180°.
- *
- * @param {string} id - id de la categoría (nombre en minúsculas con guiones)
- * @returns {void}
- */
 function toggleAcordeon(id) {
     const body   = document.getElementById('body-' + id);
     const flecha = document.getElementById('flecha-' + id);
@@ -127,26 +107,15 @@ function toggleAcordeon(id) {
     }
 }
 
-/**
- * Abre el modal para editar el precio y la duración de un servicio.
- * El registro se identifica por la combinación id_raza + id_servicio.
- *
- * @param {number} id_raza
- * @param {number} id_servicio
- * @param {string} duracion - duración actual (ej. "45 min")
- * @param {number} precio   - precio actual
- * @returns {void}
- */
 function editarServicio(id_raza, id_servicio, duracion, precio) {
     const overlay = document.getElementById('modal-editar-servicio');
 
-    // Prellenar el modal con los valores actuales
     document.getElementById('edit-svc-duracion').value = duracion;
     document.getElementById('edit-svc-precio').value   = precio;
     overlay.classList.add('open');
 
     document.getElementById('edit-servicio-ok').onclick = function () {
-        fetchAuth('${API_BASE}/api/admin/servicios/editar', {
+        fetchAuth(`${API_BASE}/api/admin/servicios/editar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -160,7 +129,7 @@ function editarServicio(id_raza, id_servicio, duracion, precio) {
         .then(data => {
             overlay.classList.remove('open');
             if (data.ok) {
-                cargarServicios(); // Refrescar el acordeón con los nuevos datos
+                cargarServicios();
                 modalExito('Servicio actualizado correctamente.');
             } else {
                 modalError('Error: ' + data.error);
@@ -172,3 +141,97 @@ function editarServicio(id_raza, id_servicio, duracion, precio) {
         overlay.classList.remove('open');
     };
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (!verificarSesionAdmin()) return;
+
+    cargarServicios();
+
+    document.getElementById('contenedor-servicios').addEventListener('click', function (e) {
+        const btnEditar = e.target.closest('.btn-editar');
+        if (btnEditar) {
+            const d = btnEditar.dataset;
+            editarServicio(Number(d.idRaza), Number(d.idServicio), d.duracion, Number(d.precio));
+            return;
+        }
+
+        const btnEliminar = e.target.closest('.btn-eliminar-svc');
+        if (btnEliminar) {
+            const nombre = btnEliminar.dataset.nombre;
+            const id     = btnEliminar.dataset.idRaza;
+            if (!confirm(`¿Seguro que quieres eliminar la raza "${nombre}"? Se eliminará de todos los servicios.`)) return;
+            fetchAuth(`${API_BASE}/api/admin/servicios/eliminar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id_raza: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    cargarServicios();
+                    modalExito('Raza eliminada correctamente.');
+                } else {
+                    modalError('Error: ' + data.error);
+                }
+            });
+            return;
+        }
+
+        const header = e.target.closest('.acordeon-header');
+        if (header) toggleAcordeon(header.dataset.id);
+    });
+
+    document.getElementById('buscar-raza').addEventListener('input', function () {
+        const termino = this.value.trim().toLowerCase();
+        document.querySelectorAll('#contenedor-servicios .acordeon-body table tr').forEach(function (fila) {
+            if (fila.querySelector('th')) return;
+            const raza = fila.querySelector('td').textContent.toLowerCase();
+            fila.style.display = raza.includes(termino) ? '' : 'none';
+        });
+    });
+
+    document.getElementById('btn-nuevo-servicio').addEventListener('click', function () {
+        document.getElementById('nuevo-svc-nombre').value = '';
+        cargarCheckboxesServicios();
+        document.getElementById('modal-nuevo-servicio').classList.add('open');
+    });
+
+    document.getElementById('nuevo-servicio-cancel').addEventListener('click', function () {
+        document.getElementById('modal-nuevo-servicio').classList.remove('open');
+    });
+
+    document.getElementById('nuevo-servicio-ok').addEventListener('click', function () {
+        const nombre = document.getElementById('nuevo-svc-nombre').value.trim();
+        if (!nombre) { modalError('Ingresa el nombre de la raza.'); return; }
+
+        const seleccionados = [];
+        document.querySelectorAll('.chk-servicio:checked').forEach(chk => {
+            const id = chk.dataset.id;
+            const precio   = document.querySelector(`.campo-precio[data-id="${id}"]`).value;
+            const duracion = document.querySelector(`.campo-duracion[data-id="${id}"]`).value;
+            if (!precio || !duracion) return;
+            seleccionados.push({ id_servicio: id, precio, duracion });
+        });
+
+        if (seleccionados.length === 0) {
+            modalError('Marca al menos un servicio con precio y duración.');
+            return;
+        }
+
+        fetchAuth(`${API_BASE}/api/admin/servicios/agregar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre_raza: nombre, servicios: seleccionados })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('modal-nuevo-servicio').classList.remove('open');
+            if (data.ok) {
+                cargarServicios();
+                modalExito('Raza creada correctamente.');
+            } else {
+                modalError('Error: ' + data.error);
+            }
+        });
+    });
+});

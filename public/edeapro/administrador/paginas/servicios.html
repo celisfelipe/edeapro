@@ -52,7 +52,13 @@
         </div>
 
         <div class="card">
-            <div class="search-wrap">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h2 style="margin:0;">Servicios</h2>
+                <button class="btn btn-blue" id="btn-nuevo-servicio">
+            <i class="fa-solid fa-plus"></i> Nuevo servicio
+        </button>
+    </div>
+    <div class="search-wrap">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="buscar-raza" placeholder="Buscar raza dentro de la categoría abierta...">
             </div>
@@ -78,6 +84,26 @@
             <div class="modal-footer">
                 <button class="btn btn-gray" id="edit-servicio-cancel">Cancelar</button>
                 <button class="btn btn-blue" id="edit-servicio-ok">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal para crear un servicio nuevo -->
+    <div class="modal-overlay" id="modal-nuevo-servicio">
+        <div class="modal">
+            <h3>Nueva raza</h3>
+            <div class="modal-form-group">
+                <label>Nombre de la raza (ej: Golden Retriever)</label>
+                <input type="text" id="nuevo-svc-nombre" placeholder="Nombre de la raza">
+            </div>
+            <p style="margin: 12px 0 6px; font-weight: 600;">¿En qué servicios va a aparecer?</p>
+            <div id="servicios-checkboxes">
+                <!-- Se llenan dinámicamente con JS -->
+                <p style="color:#888; font-size:14px;">Cargando servicios...</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-gray" id="nuevo-servicio-cancel">Cancelar</button>
+                <button class="btn btn-blue" id="nuevo-servicio-ok">Crear raza</button>
             </div>
         </div>
     </div>

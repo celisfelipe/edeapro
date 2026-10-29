@@ -128,7 +128,7 @@ class CitaController extends Controller
      */
     public function crear(Request $request, Disponibilidad $disp)
     {
-        $id_cliente   = intval($request->input('id_cliente'));
+        $id_cliente   = intval($request->attributes->get('id_cliente'));
         $id_mascota   = intval($request->input('id_mascota'));
         $id_estilista = intval($request->input('id_estilista'));
         $fecha        = $request->input('fecha');

@@ -22,7 +22,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionAdmin()) return;
 
-    fetchAuth('${API_BASE}/api/admin/estadisticas')
+    fetchAuth(`${API_BASE}/api/admin/estadisticas`)
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;

@@ -50,8 +50,11 @@ Route::middleware('verificar.token:administrador')->group(function () {
     Route::post('/admin/empleados/editar',   [App\Http\Controllers\Admin\EmpleadoAdminController::class, 'editar']);
     Route::post('/admin/empleados/eliminar', [App\Http\Controllers\Admin\EmpleadoAdminController::class, 'eliminar']);
 
-    Route::get('/admin/servicios',         [App\Http\Controllers\Admin\ServicioAdminController::class, 'index']);
-    Route::post('/admin/servicios/editar', [App\Http\Controllers\Admin\ServicioAdminController::class, 'editar']);
+    Route::get('/admin/servicios',           [App\Http\Controllers\Admin\ServicioAdminController::class, 'index']);
+    Route::get('/admin/servicios/lista-categorias', [App\Http\Controllers\Admin\ServicioAdminController::class, 'listaCategorias']);
+    Route::post('/admin/servicios/editar',   [App\Http\Controllers\Admin\ServicioAdminController::class, 'editar']);
+    Route::post('/admin/servicios/agregar',  [App\Http\Controllers\Admin\ServicioAdminController::class, 'agregar']);
+    Route::post('/admin/servicios/eliminar', [App\Http\Controllers\Admin\ServicioAdminController::class, 'eliminar']);
 
     Route::get('/admin/notificaciones',       [App\Http\Controllers\Admin\NotificacionAdminController::class, 'index']);
     Route::post('/admin/notificaciones/leer', [App\Http\Controllers\Admin\NotificacionAdminController::class, 'leer']);

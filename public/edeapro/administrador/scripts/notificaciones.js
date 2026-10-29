@@ -30,7 +30,7 @@ let notificacionesNoLeidasIds = [];
  * @returns {void}
  */
 function cargarNotificaciones() {
-    fetchAuth('${API_BASE}/api/admin/notificaciones')
+    fetchAuth(`${API_BASE}/api/admin/notificaciones`)
     .then(res => res.json())
     .then(data => {
         const contenedor = document.getElementById('contenedor-notificaciones');
@@ -94,7 +94,7 @@ function actualizarBotonMarcarTodas() {
  * @returns {Promise<Response>}
  */
 function enviarMarcarLeida(id) {
-    return fetchAuth('${API_BASE}/api/admin/notificaciones/leer', {
+    return fetchAuth(`${API_BASE}/api/admin/notificaciones/leer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_notificacion: id })
