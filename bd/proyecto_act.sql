@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-10-2026 a las 02:18:14
+-- Tiempo de generación: 29-10-2026 a las 16:38:37
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -87,8 +87,10 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1792278963),
-('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1792278963;', 1792278963);
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793163912),
+('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793163912;', 1793163912),
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793026648),
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793026648;', 1793026648);
 
 -- --------------------------------------------------------
 
@@ -603,10 +605,7 @@ CREATE TABLE `personal_access_tokens` (
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
-(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48'),
-(118, 'cliente', 3, 'auth_token', 'b906ffb3160d947f0d506fbe02f2cd8f27259729861105c181a26a471d67fd2c', '[\"cliente\"]', NULL, '2026-10-18 21:57:39', '2026-10-17 21:57:39', '2026-10-17 21:57:39'),
-(120, 'estilista', 2, 'auth_token', '851f55dcd2b444b577974cbd131879217d16c13989d592c316a873b709cf4315', '[\"peluquero\"]', NULL, '2026-10-18 23:06:47', '2026-10-17 23:06:47', '2026-10-17 23:06:47'),
-(121, 'estilista', 1, 'auth_token', '12c0e986a4a4622c6e94c8d32d664aa70d1b7ae061be927eeeb02e2ce0f5a501', '[\"administrador\"]', NULL, '2026-10-18 23:15:04', '2026-10-17 23:15:04', '2026-10-17 23:15:04');
+(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48');
 
 -- --------------------------------------------------------
 
@@ -693,7 +692,8 @@ INSERT INTO `raza` (`id_raza`, `nombre_raza`) VALUES
 (44, 'Stripping Teckel'),
 (45, 'Stripping West Highland White'),
 (46, 'Gato pelo corto'),
-(47, 'Gato persa');
+(47, 'Gato persa'),
+(48, 'schanuzer gigante');
 
 -- --------------------------------------------------------
 
@@ -732,6 +732,7 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 (16, 1, NULL, '45 min', 55000.00),
 (17, 1, NULL, '45 min', 58000.00),
 (18, 1, NULL, '75 min', 78000.00),
+(48, 1, NULL, '180min', 60000.00),
 (19, 2, NULL, '180 min', 120000.00),
 (20, 2, NULL, '60 min', 65000.00),
 (21, 2, NULL, '150 min', 98000.00),
@@ -752,6 +753,7 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 (36, 2, NULL, '120 min', 88000.00),
 (37, 2, NULL, '150 min', 88000.00),
 (38, 2, NULL, '120 min', 84000.00),
+(48, 2, NULL, '180min', 60000.00),
 (39, 3, NULL, '150 min', 84000.00),
 (40, 3, NULL, '120 min', 85000.00),
 (41, 3, NULL, '120 min', 90000.00),
@@ -759,8 +761,10 @@ INSERT INTO `raza_servicio` (`id_raza`, `id_servicio`, `descripcion`, `duracion`
 (43, 3, NULL, '90 min', 80000.00),
 (44, 3, NULL, '90 min', 80000.00),
 (45, 3, NULL, '90 min', 80000.00),
+(48, 3, NULL, '180min', 60000.00),
 (46, 4, NULL, '60 min', 70000.00),
-(47, 4, NULL, '120 min', 90000.00);
+(47, 4, NULL, '120 min', 90000.00),
+(48, 4, NULL, '180min', 60000.00);
 
 -- --------------------------------------------------------
 
@@ -842,6 +846,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 ('8HiDrANi9UFFUITFp87Ov37OIQ3mvR9Bjacjn9cA', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoia2hYN29IN0dxRHZBY0dXTXM2U0lxVVVzQ0RLUG9sRUIwY3QwQWhqayI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1778045515),
 ('cPCHLQxrOOK14jqeUMuiKEOMi2wGMa8jAY0pBM2b', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTXJCbkowSjJhZm1KbFhSMjhEVzZQalNhVkd2cUhQMWJuZ0FaVUZ6eSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777426615),
 ('D2QHcIqvrbcqBT1oLfOVcwq9twYhRNDRM7vmnFwd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieVp5Nk1UY0JPekNyak9kZm1YVENEbmlFdW04QkxMZG5pQXlIcFFJcyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1778043780),
+('e445ZigTGjBAfee0FctK4qh4ShjmeDuvMTf3oNfC', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Avast/154.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSDFpNm1HS0h4TFVPazdYYTB6cW5CUlEyN1lZclcwaE5zWnRkTDdsUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793026437),
 ('Z8XaiQfO7iF7HaOIhGykW5pq3maPLJeZDK5UkqVP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZlVyeG5MeUR2cXBQaUc2NUk3RHBwNlhPVDBzRjRoa2pqSjAzNlREciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777963541);
 
 -- --------------------------------------------------------
@@ -1153,7 +1158,13 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+
+--
+-- AUTO_INCREMENT de la tabla `raza`
+--
+ALTER TABLE `raza`
+  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `recuperacion_contrasena`
