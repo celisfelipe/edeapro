@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * @returns {void}
  */
 function cargarClientes() {
-    fetchAuth('${API_BASE}/api/admin/clientes')
+    fetchAuth(`${API_BASE}/api/admin/clientes`)
     .then(res => res.json())
     .then(data => {
         if (data.ok) {
@@ -138,7 +138,7 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
         const vCorreo   = validarCorreo(correo);
         if (!vCorreo.ok)   { modalError(vCorreo.error);   return; }
         
-        fetchAuth('${API_BASE}/api/admin/clientes/editar', {
+        fetchAuth(`${API_BASE}/api/admin/clientes/editar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -176,7 +176,7 @@ function editarCliente(id, nombre, apellido, telefono, correo) {
  */
 function eliminarCliente(id) {
     modalConfirmar('¿Seguro que deseas eliminar este cliente? Esta acción no se puede deshacer.', function () {
-        fetchAuth('${API_BASE}/api/admin/clientes/eliminar', {
+        fetchAuth(`${API_BASE}/api/admin/clientes/eliminar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ id_cliente: id })

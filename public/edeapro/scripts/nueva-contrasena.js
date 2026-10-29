@@ -38,7 +38,7 @@ async function restablecerContrasena() {
     if (!vConfirm.ok) { msg.textContent = vConfirm.error; msg.className = 'mensaje error'; return; }
 
     try {
-        const res  = await fetch('${API_BASE}/api/restablecer-contrasena', {
+        const res  = await fetch(`${API_BASE}/api/restablecer-contrasena`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ correo, token, contrasena })

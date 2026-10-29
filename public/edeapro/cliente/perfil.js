@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            fetchAuth("${API_BASE}/api/cliente/mascotas/agregar", {
+            fetchAuth(`${API_BASE}/api/cliente/mascotas/agregar`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -392,7 +392,7 @@ document.getElementById("btnActualizar").addEventListener("click", () => {
         return;
     }
 
-    fetchAuth("${API_BASE}/api/cliente/actualizar", {
+    fetchAuth(`${API_BASE}/api/cliente/actualizar`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ nombre, apellido, telefono, correo }),
@@ -433,7 +433,7 @@ function cancelarCita(id_cita) {
             }
 
             const user = JSON.parse(localStorage.getItem("user"));
-            fetchAuth("${API_BASE}/api/cliente/cancelar-cita", {
+            fetchAuth(`${API_BASE}/api/cliente/cancelar-cita`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -535,7 +535,7 @@ function reagendarCita(id_cita) {
         }
 
         const user = JSON.parse(localStorage.getItem("user"));
-        fetchAuth("${API_BASE}/api/cliente/reagendar-cita", {
+        fetchAuth(`${API_BASE}/api/cliente/reagendar-cita`, {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({ id_cita, fecha, hora }),

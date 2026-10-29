@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionEmpleado()) return;
 
     // Cargar todos los clientes del sistema
-    fetchAuth('${API_BASE}/api/admin/clientes-empleado')
+    fetchAuth(`${API_BASE}/api/admin/clientes-empleado`)
     .then(res => res.json())
     .then(data => {
         if (data.ok) {

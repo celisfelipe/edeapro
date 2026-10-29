@@ -151,6 +151,7 @@ function renderStep1(){
       <div style="flex:1">
         <div class="race-tabs">
           ${CATS.map(c=>`<button class="rtab ${c===cat?"on":""}" data-c="${c}">${c}</button>`).join("")}
+          ${Object.keys(S.sel).length > 0 ? `<button class="rtab ${cat==="Adicionales"?"on":""}" data-c="Adicionales">Adicionales</button>` : ""}
         </div>
         <div class="svc-list">${lista}</div>
       </div>
@@ -373,7 +374,7 @@ async function renderStep4(){
     }
     const id_cliente = user.id_cliente;
 
-    fetchAuth('${API_BASE}/api/citas/crear', {
+    fetchAuth(`${API_BASE}/api/citas/crear`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams({
@@ -421,9 +422,9 @@ function resetApp(){
 async function iniciar(){
   try {
     const [resSvcs, resAds, resGrm] = await Promise.all([
-      fetch('${API_BASE}/api/citas/servicios').then(r=>r.json()),
-      fetch('${API_BASE}/api/citas/adicionales').then(r=>r.json()),
-      fetch('${API_BASE}/api/citas/estilistas').then(r=>r.json())
+      fetch(`${API_BASE}/api/citas/servicios`).then(r=>r.json()),
+      fetch(`${API_BASE}/api/citas/adicionales`).then(r=>r.json()),
+      fetch(`${API_BASE}/api/citas/estilistas`).then(r=>r.json())
     ]);
 
     SVCS = {};
@@ -432,7 +433,6 @@ async function iniciar(){
       SVCS[s.nombre_servicio].push(s);
     });
     CATS = Object.keys(SVCS);
-    CATS.push("Adicionales");
     S.cat = CATS[0];
 
     ADICIONALES = resAds.adicionales;

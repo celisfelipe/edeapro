@@ -67,7 +67,7 @@ function iniciarSesion() {
     if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
     mostrarMsg(msg, '', '');
 
-    fetch('${API_BASE}/api/login', {
+    fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ correo, contrasena })
@@ -208,7 +208,7 @@ function registrarse() {
         return;
     }
 
-    fetch('${API_BASE}/api/registro', {
+    fetch(`${API_BASE}/api/registro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -252,7 +252,6 @@ function mostrarRecuperar() {
 }
 
 /** Oculta recuperar y vuelve al login — sobreescribe mostrarLogin para limpiar los tres paneles */
-const _mostrarLoginOriginal = mostrarLogin;
 mostrarLogin = function () {
     document.getElementById('recuperar-box').classList.add('hidden');
     document.getElementById('registro-box').classList.add('hidden');
@@ -274,7 +273,7 @@ async function enviarRecuperacion() {
     mostrarMsg(msg, 'Enviando...', '');
 
     try {
-        const res  = await fetch('${API_BASE}/api/recuperar-contrasena', {
+        const res  = await fetch(`${API_BASE}/api/recuperar-contrasena`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ correo })
