@@ -11,7 +11,7 @@ let ADICIONALES = [];
 let S = {
   step:1, cat:null, sel:{}, adicionales:{},
   groomer:null, yr:2026, mo:3,
-  date:null, slot:null, mascota:null, done:false
+  date:null, slot:null, mascotas:{}, done:false
 };
 
 let MASCOTAS = [];
@@ -49,14 +49,6 @@ function togAdicional(id){
   }
 }
 
-/**
- * Horarios del paso 3. Laravel devuelve los horarios en los que el
- * estilista está libre durante TODA la duración del servicio y la cita
- * termina antes de las 5:00 PM (misma lógica que usa el reagendamiento).
- * Aquí se muestran todos los inicios posibles de 9:00 hasta (17:00 − duración),
- * marcando como ocupados los que no vinieron en esa lista y, si la fecha
- * es hoy, los que ya pasaron.
- */
 async function genSlots(){
   const dur = sumD() || 60;
   let disponibles = [];
@@ -69,7 +61,6 @@ async function genSlots(){
     } catch(e) {}
   }
 
-  // Si la fecha elegida es hoy, las horas que ya pasaron tampoco se pueden reservar
   const tn        = new Date();
   const esHoy     = S.date === `${tn.getDate()}/${tn.getMonth()+1}/${tn.getFullYear()}`;
   const minutosYa = tn.getHours()*60 + tn.getMinutes();
@@ -187,8 +178,7 @@ function renderStep1(){
 }
 
 function renderStep2(){
-  // Si no hay peluqueros disponibles, mostramos un aviso
-  const listHtml = GROOMERS.length === 0 
+  const listHtml = GROOMERS.length === 0
     ? `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--muted);">No hay peluqueros disponibles con los criterios actuales.</div>`
     : GROOMERS.map(g=>`
         <div class="grm-tile ${S.groomer===g.id?"picked":""}" data-gid="${g.id}">
@@ -297,8 +287,7 @@ async function renderStep4(){
   const g = GROOMERS.find(x=>x.id===S.groomer);
   const user = JSON.parse(localStorage.getItem('user'));
 
-  // ¿Para cuál mascota es la cita? Solo se puede saber si hay sesión de cliente.
-  let mascotaHtml = "";
+  // Cargar mascotas del cliente
   if (user && user.id_cliente) {
     try {
       const res  = await fetchAuth(`${API_BASE}/api/cliente/mascotas?id_cliente=${user.id_cliente}`);
@@ -307,24 +296,43 @@ async function renderStep4(){
     } catch(e) { MASCOTAS = []; }
 
     if (MASCOTAS.length > 0) {
-      // Mantener la selección previa si sigue siendo válida; si no, usar la primera
-      if (!MASCOTAS.some(m => m.id_mascota === S.mascota)) {
-        S.mascota = MASCOTAS[0].id_mascota;
+      // Si solo hay UNA mascota: asignarla automáticamente a todos los servicios
+      if (MASCOTAS.length === 1) {
+        items.forEach(s => { S.mascotas[s.id_raza] = MASCOTAS[0].id_mascota; });
+      } else {
+        // Si hay varias: asignar la primera a los que aún no tengan selección
+        items.forEach(s => {
+          if (!S.mascotas[s.id_raza]) S.mascotas[s.id_raza] = MASCOTAS[0].id_mascota;
+        });
       }
-      mascotaHtml = `
-        <div class="cc-row">
-          <span class="cc-lbl">Mascota</span>
-          <span class="cc-val">
-            <select id="mascotaSel">
-              ${MASCOTAS.map(m=>`<option value="${m.id_mascota}" ${m.id_mascota===S.mascota?"selected":""}>${m.nombre} (${m.especie})</option>`).join("")}
-            </select>
-          </span>
-        </div>`;
-    } else {
-      S.mascota = null;
-      mascotaHtml = `<div class="cc-row"><span class="cc-lbl">Mascota</span><span class="cc-val">No tienes mascotas registradas</span></div>`;
     }
   }
+
+  // HTML del selector de mascotas — solo aparece si hay 2 o más mascotas
+  const necesitaSelector = MASCOTAS.length >= 2;
+
+  const serviciosHtml = items.map(s => {
+    const selectorHtml = necesitaSelector ? `
+      <div class="cc-mascota-sel">
+        <span class="cc-mascota-lbl">¿Para cuál mascota?</span>
+        <select class="mascota-por-servicio" data-id-raza="${s.id_raza}">
+          ${MASCOTAS.map(m=>`<option value="${m.id_mascota}" ${m.id_mascota===S.mascotas[s.id_raza]?"selected":""}>${m.nombre} (${m.especie})</option>`).join("")}
+        </select>
+      </div>` : "";
+    return `
+      <div class="cc-row cc-row-servicio">
+        <span class="cc-lbl">${s.nombre_raza}</span>
+        <span class="cc-val">${fmt(s.precio)} · ${s.duracion}</span>
+      </div>
+      ${selectorHtml}`;
+  }).join("");
+
+  // Si solo tiene 1 mascota, mostramos su nombre fijo arriba
+  const mascotaFijaHtml = MASCOTAS.length === 1
+    ? `<div class="cc-row"><span class="cc-lbl">Mascota</span><span class="cc-val">${MASCOTAS[0].nombre} (${MASCOTAS[0].especie})</span></div>`
+    : MASCOTAS.length === 0
+      ? `<div class="cc-row"><span class="cc-lbl">Mascota</span><span class="cc-val" style="color:#e55;">No tienes mascotas registradas</span></div>`
+      : "";
 
   $("main").innerHTML = `
     <div>
@@ -335,12 +343,8 @@ async function renderStep4(){
     <div class="confirm-layout">
       <div class="confirm-card">
         <div class="cc-head">Resumen de la cita</div>
-        ${mascotaHtml}
-        ${items.map(s=>`
-          <div class="cc-row">
-            <span class="cc-lbl">${s.nombre_raza}</span>
-            <span class="cc-val">${fmt(s.precio)} · ${s.duracion}</span>
-          </div>`).join("")}
+        ${mascotaFijaHtml}
+        ${serviciosHtml}
         ${adItems.map(a=>`
           <div class="cc-row">
             <span class="cc-lbl">${a.nombre_adicional}</span>
@@ -358,33 +362,40 @@ async function renderStep4(){
       <button class="btn-primary" id="bgo">Confirmar cita</button>
     </div>`;
 
-  if ($("mascotaSel")) $("mascotaSel").onchange = e => { S.mascota = parseInt(e.target.value); };
+  // Escuchar cambios en los selectores por servicio
+  document.querySelectorAll(".mascota-por-servicio").forEach(sel => {
+    sel.onchange = e => {
+      S.mascotas[parseInt (sel.dataset.idRaza)] = parseInt(e.target.value);
+    };
+  });
 
   $("bbk").onclick=()=>{S.step=3;render()};
   $("bgo").onclick=()=>{
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || !user.id_cliente) {
-        alert('Debes iniciar sesión para confirmar la cita');
-        window.location.href = 'login.html';
-        return;
+      alert('Debes iniciar sesión para confirmar la cita');
+      window.location.href = 'login.html';
+      return;
     }
-    if (!S.mascota) {
-        alert('Selecciona para cuál mascota es esta cita (o regístrala primero en tu perfil).');
-        return;
+    if (MASCOTAS.length === 0) {
+      alert('No tienes mascotas registradas. Regístralas primero en tu perfil.');
+      return;
     }
-    const id_cliente = user.id_cliente;
+
+    // Construir la lista de servicios con su mascota asignada
+    const serviciosEnviar = items.map(s => ({
+      id_raza:    s.id_raza,
+      id_mascota: S.mascotas[s.id_raza] || MASCOTAS[0].id_mascota
+    }));
 
     fetchAuth(`${API_BASE}/api/citas/crear`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams({
-        accion:      'crear',
-        id_cliente:  id_cliente,
-        id_mascota:  S.mascota,
         id_estilista: S.groomer,
         fecha:        S.date,
         hora:         S.slot,
-        servicios:    JSON.stringify(Object.keys(S.sel)),
+        servicios:    JSON.stringify(serviciosEnviar),
         adicionales:  JSON.stringify(Object.keys(S.adicionales))
       })
     })
@@ -415,7 +426,7 @@ function renderDone(){
 }
 
 function resetApp(){
-  S={step:1,cat:null,sel:{},adicionales:{},groomer:null,yr:2026,mo:3,date:null,slot:null,mascota:null,done:false};
+  S={step:1,cat:null,sel:{},adicionales:{},groomer:null,yr:2026,mo:3,date:null,slot:null,mascotas:{},done:false};
   render();
 }
 
@@ -437,10 +448,8 @@ async function iniciar(){
 
     ADICIONALES = resAds.adicionales;
 
-    // --- ARREGLO PARA ESTILISTAS ---
     GROOMERS = [];
     if (resGrm.estilistas && resGrm.estilistas.length > 0) {
-      // Solo agregamos "Cualquier" si hay alguien activo
       GROOMERS.push({id:0, init:"?", name:"Cualquier peluquero", spec:"El sistema asigna según disponibilidad"});
       resGrm.estilistas.forEach(e => {
         GROOMERS.push({
@@ -451,7 +460,6 @@ async function iniciar(){
         });
       });
     }
-    // --------------------------------
 
     render();
   } catch(e) {

@@ -360,6 +360,21 @@ nav a.login:hover::before {
     background: var(--graphite);
 }
 
+/* Aro dorado decorativo en la esquina superior derecha */
+#carrusel-hero::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    right: clamp(28px, 6vw, 100px);
+    width: 92px;
+    height: 92px;
+    border: 1px solid rgba(242, 174, 0, 0.62);
+    border-radius: 50%;
+    box-shadow: 0 0 0 12px rgba(242, 174, 0, 0.08);
+    z-index: 4;
+    pointer-events: none;
+}
+
 /* Texto vertical decorativo en el borde derecho */
 #carrusel-hero::after {
     content: 'CANINO • FELINO';
@@ -402,6 +417,7 @@ nav a.login:hover::before {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: saturate(1.08) contrast(1.04);
     transform: scale(1);
     transition: transform 10s var(--ease);
 }
@@ -414,22 +430,25 @@ nav a.login:hover::before {
 .carrusel-item:nth-child(2) img { object-position: 50% 50%; }
 .carrusel-item:nth-child(3) img { object-position: 50% 35%; }
 
-/* Panel de vidrio flotante sobre la foto */
+/* Panel de vidrio flotante sobre la foto: translúcido para que se vea
+   la imagen, y con alto mínimo común para que no cambie de tamaño
+   entre diapositivas */
 .carrusel-caption {
     position: absolute;
     left: clamp(22px, 6vw, 92px);
     top: 50%;
     transform: translateY(-50%);
-    width: min(470px, calc(100% - 44px));
+    width: min(560px, calc(100% - 44px));
+    min-height: 430px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     text-align: left;
     padding: clamp(26px, 3vw, 40px);
-    background: rgba(248, 247, 248, 0.9);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(248, 247, 248, 0.62);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(242, 174, 0, 0.3);
     border-radius: 30px;
     box-shadow: var(--shadow);
@@ -452,7 +471,7 @@ nav a.login:hover::before {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: var(--gold-soft);
+    background: rgba(248, 247, 248, 0.85);
     border: 1px solid rgba(242, 174, 0, 0.4);
     color: var(--gold-dark);
     font-size: 11px;
@@ -482,6 +501,7 @@ nav a.login:hover::before {
     letter-spacing: -0.055em;
     color: var(--graphite);
     max-width: 100%;
+    text-wrap: balance;
     margin-bottom: 18px;
     clip-path: inset(0 100% 0 0);
     transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
@@ -509,7 +529,7 @@ nav a.login:hover::before {
     font-weight: 400;
     max-width: 390px;
     line-height: 1.65;
-    color: var(--muted);
+    color: var(--graphite);
     margin-bottom: 26px;
     opacity: 0;
     transform: translateY(20px);
@@ -540,11 +560,15 @@ nav a.login:hover::before {
     cursor: pointer;
     opacity: 0;
     transform: translateY(20px);
+    /* El retardo es solo para la entrada; el hover responde al instante.
+       La elevación del hover usa `translate` para no chocar con el
+       `transform` de la entrada */
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                translate 0.25s ease,
                 background 0.25s ease,
                 box-shadow 0.25s ease;
-    transition-delay: 0.65s;
+    transition-delay: 0.65s, 0.65s, 0s, 0s, 0s;
     box-shadow: var(--shadow-gold);
     letter-spacing: 0.2px;
 }
@@ -556,7 +580,7 @@ nav a.login:hover::before {
 
 .carrusel-cta:hover {
     background: var(--color-cta-dark);
-    transform: translateY(-2px) !important;
+    translate: 0 -2px;
     box-shadow: 0 12px 26px rgba(242, 174, 0, 0.3);
 }
 
@@ -738,8 +762,28 @@ nav a.login:hover::before {
    ¿POR QUÉ ELEGIRNOS?
 ================================*/
 .porque {
-    padding: var(--space-20) var(--space-16);
-    background: var(--color-bg);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(72px, 9vw, 120px) var(--space-16);
+    background:
+        radial-gradient(circle at 8% 18%, rgba(242, 174, 0, 0.1), transparent 22%),
+        var(--color-bg);
+}
+
+/* Aro dorado en la esquina inferior derecha */
+.porque::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    right: -110px;
+    bottom: -140px;
+    width: 310px;
+    height: 310px;
+    border: 1px solid rgba(242, 174, 0, 0.22);
+    border-radius: 50%;
+    box-shadow: 0 0 0 24px rgba(242, 174, 0, 0.035), 0 0 0 52px rgba(242, 174, 0, 0.025);
+    pointer-events: none;
 }
 
 .sec-eyebrow {
@@ -793,6 +837,7 @@ nav a.login:hover::before {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-6);
+    counter-reset: beneficio;
 }
 
 .porque-card {
@@ -800,10 +845,34 @@ nav a.login:hover::before {
     border-radius: var(--radius-lg);
     padding: var(--space-8);
     border: 1px solid rgba(120, 116, 108, 0.18);
-    transition: var(--transition-smooth);
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    min-height: 250px;
+    counter-increment: beneficio;
+}
+
+/* Las tarjetas también llevan .fade-up: se repite aquí su transición
+   de entrada y se suman las del hover. La elevación usa `translate`
+   porque `transform` lo controla .fade-up.visible */
+.porque-card.fade-up {
+    transition: opacity 0.7s var(--ease) var(--fade-delay, 0s),
+                transform 0.7s var(--ease) var(--fade-delay, 0s),
+                translate 0.35s var(--ease),
+                box-shadow 0.35s ease;
+}
+
+/* Marco interior dorado */
+.porque-card::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(242, 174, 0, 0.12);
+    border-radius: calc(var(--radius-lg) - 4px);
+    transition: border-color 0.35s ease;
+    pointer-events: none;
 }
 
 .porque-card::before {
@@ -820,7 +889,7 @@ nav a.login:hover::before {
 }
 
 .porque-card:hover {
-    transform: translateY(-6px);
+    translate: 0 -6px;
     box-shadow: var(--shadow-lg);
 }
 
@@ -828,10 +897,14 @@ nav a.login:hover::before {
     transform: scaleX(1);
 }
 
+.porque-card:hover::after {
+    border-color: rgba(242, 174, 0, 0.38);
+}
+
 .porque-icono {
-    width: 58px;
-    height: 58px;
-    border-radius: var(--radius-md);
+    width: 66px;
+    height: 66px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -848,13 +921,27 @@ nav a.login:hover::before {
     font-size: var(--text-lg);
     font-weight: 700;
     color: var(--color-heading);
+    margin-top: auto;
     margin-bottom: var(--space-3);
+}
+
+/* Rótulo numerado generado por CSS: «01 / EDEA PRO» */
+.porque-card h3::before {
+    content: counter(beneficio, decimal-leading-zero) ' / EDEA PRO';
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--gold-dark);
 }
 
 .porque-card p {
     font-size: var(--text-base);
     color: var(--color-text);
     line-height: 1.7;
+    max-width: 31ch;
 }
 
 /* ===============================
@@ -1187,8 +1274,8 @@ nav a.login:hover::before {
 .fade-up {
     opacity: 0;
     transform: translateY(28px);
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--fade-delay, 0s),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--fade-delay, 0s);
 }
 
 .fade-up.visible {
@@ -1196,9 +1283,11 @@ nav a.login:hover::before {
     transform: translateY(0);
 }
 
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
-.delay-3 { transition-delay: 0.3s; }
+/* El retardo va en una variable para que solo afecte a la entrada
+   y no a otras transiciones que el componente añada (hover) */
+.delay-1 { --fade-delay: 0.1s; }
+.delay-2 { --fade-delay: 0.2s; }
+.delay-3 { --fade-delay: 0.3s; }
 
 /* ===============================
    FOOTER
@@ -1473,7 +1562,11 @@ footer::before {
     }
 
     /* Carrusel: panel de vidrio abajo y centrado */
+    #carrusel-hero { height: 620px; }
+    #carrusel-hero::before,
     #carrusel-hero::after { display: none; }
+
+    .carrusel-caption h1 { font-size: clamp(2.05rem, 8.5vw, 3.25rem); line-height: 1; }
 
     .carrusel-caption {
         top: auto;
@@ -1481,6 +1574,7 @@ footer::before {
         left: 50%;
         transform: translateX(-50%);
         width: calc(100% - 40px);
+        min-height: 330px;
         align-items: center;
         text-align: center;
         padding: 26px 22px;
@@ -1500,6 +1594,8 @@ footer::before {
     /* Porque */
     .porque { padding: var(--space-12) 20px; }
     .porque-grid { grid-template-columns: 1fr; }
+    .porque-card { min-height: 0; }
+    .porque-card::after { inset: 6px; }
 
     /* Servicios */
     .services-section { padding: var(--space-12) 20px; }
