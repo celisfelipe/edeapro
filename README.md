@@ -1,59 +1,317 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EDEA.PRO
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de gestión y agendamiento para una peluquería canina y felina, desarrollado con Laravel y una interfaz web pública/administrativa estática bajo la carpeta `public/edeapro`.
 
-## About Laravel
+## Descripción general
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+EDEA.PRO es una plataforma que combina:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Frontend público con páginas de información, contacto, servicios, ubicación y equipo.
+- Agenda de citas para clientes, con servicios, razas, adicionales y horarios disponibles.
+- Panel de administración para gestionar clientes, empleados, servicios, pagos, estadísticas y agenda.
+- Panel de empleado para consultar citas y agenda.
+- Perfil de cliente con mascotas, historial, cancelación y reagendamiento.
+- Reportes en PDF y Excel para citas, pagos y clientes.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+El proyecto usa Laravel 12 como backend API y Vite para el frontend estático. La parte visual del sistema se encuentra en la carpeta `public/edeapro`, mientras que la lógica de negocio y seguridad vive en `app/`, `routes/` y `database/`.
 
-## Learning Laravel
+## Stack tecnológico
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2
+- Laravel 12
+- SQLite como base de datos por defecto en la configuración base
+- Composer
+- Node.js + Vite
+- Blade + archivos estáticos HTML/CSS/JS
+- Sanctum para tokens de autenticación
+- DOMPDF para reportes PDF
+- PHPExcel / Maatwebsite Excel para exportación Excel
+- PHPUnit para testing
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Funcionalidades principales
 
-## Laravel Sponsors
+### Público
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Página principal con presentación del negocio.
+- Sección de servicios por raza y tipo de tratamiento.
+- Equipo y estilistas.
+- Ubicación e información de contacto.
+- Opiniones y reseñas.
 
-### Premium Partners
+### Cliente
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Registro con email y contraseña validada.
+- Inicio de sesión autenticado por token.
+- Gestión de mascotas asociadas.
+- Agendamiento de citas con selección de servicio, raza, estilista, fecha y horario.
+- Consulta de citas pendientes, finalizadas y canceladas.
+- Cancelación con motivo y reagendamiento dentro de reglas de negocio.
+- Perfil con información personal y actualización de datos.
+- Consulta de pagos y facturación asociada a citas.
 
-## Contributing
+### Administración
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Gestión de clientes.
+- Gestión de empleados y roles (administrador / peluquero).
+- Administración de servicios y categorías.
+- Registro de pagos.
+- Visualización de estadísticas y reportes.
+- Administración de horarios y disponibilidad temporal.
+- Notificaciones y cancelaciones.
 
-## Code of Conduct
+### Empleado / peluquero
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Vista de citas asignadas.
+- Agenda del estilista.
+- Reportes propios en PDF y Excel.
 
-## Security Vulnerabilities
+## Arquitectura del proyecto
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+El sistema está dividido en dos capas principales:
 
-## License
+1. Frontend estático en `public/edeapro`
+   - HTML, CSS y JS para los paneles públicos y privados.
+   - Archivos de estilos y scripts específicos por área.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. Backend Laravel en la raíz del proyecto
+   - `routes/api.php`: define todas las rutas de negocio.
+   - `app/Http/Controllers`: lógicas de autenticación, clientes, citas, reportes y administración.
+   - `app/Services/Disponibilidad.php`: validación de horarios y disponibilidad de estilistas.
+   - `database/migrations`: estructura de tablas.
+   - `app/Models`: modelos principales.
+
+## Estructura del repositorio
+
+```text
+edeapro/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Middleware/
+│   ├── Models/
+│   ├── Providers/
+│   └── Services/
+├── bootstrap/
+├── config/
+├── database/
+│   ├── factories/
+│   ├── migrations/
+│   └── seeders/
+├── docs/
+│   └── MODERNIZACION-VISUAL.md
+├── public/
+│   ├── build/
+│   └── edeapro/
+├── resources/
+│   ├── css/
+│   ├── js/
+│   └── views/
+├── routes/
+│   ├── api.php
+│   ├── console.php
+│   └── web.php
+├── storage/
+├── tests/
+├── .env.example
+├── artisan
+├── composer.json
+├── package.json
+├── phpunit.xml
+├── vite.config.js
+└── README.md
+```
+
+## Requisitos previos
+
+- PHP >= 8.2
+- Composer
+- Node.js >= 18
+- NPM o PNPM
+- Base de datos compatible con Laravel (SQLite por defecto)
+
+## Instalación
+
+1. Clona el repositorio:
+
+```bash
+git clone <url-del-repositorio>
+cd edeapro
+```
+
+2. Instala dependencias PHP:
+
+```bash
+composer install
+```
+
+3. Configura el entorno:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Configura la base de datos en `.env`.
+
+Para SQLite, puedes dejar la configuración por defecto o crear un archivo local:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/ruta/absoluta/a/tu/proyecto/database/database.sqlite
+```
+
+5. Ejecuta migraciones:
+
+```bash
+php artisan migrate
+```
+
+6. Instala dependencias del frontend:
+
+```bash
+npm install
+```
+
+7. Compila assets:
+
+```bash
+npm run build
+```
+
+8. Inicia la aplicación:
+
+```bash
+php artisan serve
+```
+
+Y en otra terminal:
+
+```bash
+npm run dev
+```
+
+> El proyecto incluye también el script `composer run setup` para preparar entorno de desarrollo, instalar dependencias y compilar assets.
+
+## Variables de entorno
+
+El archivo `.env.example` ya trae una configuración base de Laravel. Las más relevantes para este proyecto son:
+
+```env
+APP_NAME=EDEA.PRO
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=sqlite
+DB_DATABASE=/ruta/a/database.sqlite
+
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+```
+
+## Rutas y módulos principales
+
+### Autenticación y acceso
+
+- `POST /api/login`
+- `POST /api/registro`
+- `POST /api/logout`
+- `POST /api/recuperar-contrasena`
+- `POST /api/restablecer-contrasena`
+
+### Agenda pública
+
+- `GET /api/citas/servicios`
+- `GET /api/citas/adicionales`
+- `GET /api/citas/estilistas`
+- `GET /api/citas/slots`
+- `POST /api/citas/crear`
+
+### Cliente
+
+- `GET /api/cliente/perfil`
+- `POST /api/cliente/actualizar`
+- `GET /api/cliente/mascotas`
+- `POST /api/cliente/mascotas/agregar`
+- `GET /api/cliente/mascotas/historial`
+- `GET /api/cliente/citas`
+- `POST /api/cliente/cancelar-cita`
+- `GET /api/cliente/reagendar-horarios`
+- `POST /api/cliente/reagendar-cita`
+- `GET /api/cliente/pagos`
+
+### Administración
+
+- `GET /api/admin/citas`
+- `POST /api/admin/citas/cancelar`
+- `GET /api/admin/clientes`
+- `POST /api/admin/clientes/editar`
+- `POST /api/admin/clientes/eliminar`
+- `GET /api/admin/empleados`
+- `POST /api/admin/empleados/agregar`
+- `POST /api/admin/empleados/editar`
+- `POST /api/admin/empleados/eliminar`
+- `GET /api/admin/servicios`
+- `POST /api/admin/servicios/agregar`
+- `POST /api/admin/servicios/editar`
+- `POST /api/admin/servicios/eliminar`
+- `GET /api/admin/estadisticas`
+- `GET /api/admin/horarios`
+- `POST /api/admin/horarios/disponibilidad`
+
+### Reportes
+
+- `GET /api/reportes/citas/pdf`
+- `GET /api/reportes/pagos/pdf`
+- `GET /api/reportes/clientes/pdf`
+- `GET /api/reportes/citas/excel`
+- `GET /api/reportes/pagos/excel`
+- `GET /api/reportes/clientes/excel`
+
+## Entidades principales de la base de datos
+
+El modelo de datos incluye elementos clave como:
+
+- `cliente`: clientes registrados.
+- `estilista`: empleados o peluqueros con roles y disponibilidad.
+- `mascota`: mascotas asociadas a cada cliente.
+- `raza`: razas disponibles para servicios.
+- `servicio`: servicios ofrecidos.
+- `adicional`: servicios extras o complementarios.
+- `cita`: citas agendadas con fecha, hora, estado y estilista.
+- `pago`: pagos relacionados a citas.
+- `notificacion`: mensajes de recordatorio o confirmación.
+- `disponibilidad_estilista`: bloqueos o indisponibilidades temporales.
+- `adicional_cita`: relación M:N entre citas y adicionales.
+
+## Documentación adicional
+
+- [docs/MODERNIZACION-VISUAL.md](docs/MODERNIZACION-VISUAL.md): documentación del rediseño visual del frontend y de los paneles.
+
+## Testing
+
+Para ejecutar la suite de pruebas:
+
+```bash
+php artisan test
+```
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT.
+
+## Notas del proyecto
+
+- La aplicación pública inicial redirige desde `/` hacia `/edeapro/index.html`.
+- El backend está construido para autenticación por token y control de acceso por roles (`cliente`, `peluquero`, `administrador`).
+- El proyecto conserva un enfoque híbrido: frontend estático para experiencia visual y Laravel como motor de negocio, API y seguridad.
+
+## Contribución
+
+Si deseas colaborar con el proyecto:
+
+1. Haz un fork del repositorio.
+2. Crea una rama de trabajo.
+3. Realiza tus cambios y prueba la funcionalidad.
+4. Abre un pull request con una descripción clara.
