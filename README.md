@@ -98,6 +98,7 @@ edeapro/
 │   ├── migrations/
 │   └── seeders/
 ├── docs/
+│   ├── MAPA-NAVEGACION-ROLES.md
 │   └── MODERNIZACION-VISUAL.md
 ├── public/
 │   ├── build/
@@ -287,6 +288,7 @@ El modelo de datos incluye elementos clave como:
 
 ## Documentación adicional
 
+- [docs/MAPA-NAVEGACION-ROLES.md](docs/MAPA-NAVEGACION-ROLES.md): mapas de navegación del sitio público y de los roles cliente, empleado y administrador.
 - [docs/MODERNIZACION-VISUAL.md](docs/MODERNIZACION-VISUAL.md): documentación del rediseño visual del frontend y de los paneles.
 
 ## Testing
