@@ -127,41 +127,50 @@ class CitaController extends Controller
      * esté libre en todo el rango de la cita y que termine antes del cierre.
      */
     public function crear(Request $request, Disponibilidad $disp)
-    {
-        $id_cliente   = intval($request->attributes->get('id_cliente'));
-        $id_mascota   = intval($request->input('id_mascota'));
-        $id_estilista = intval($request->input('id_estilista'));
-        $fecha        = $request->input('fecha');
-        $hora         = $request->input('hora');
-        $servicios    = json_decode($request->input('servicios'), true);
-        $adicionales  = json_decode($request->input('adicionales'), true);
+{
+    $id_cliente   = intval($request->attributes->get('id_cliente'));
+    $id_estilista = intval($request->input('id_estilista'));
+    $fecha        = $request->input('fecha');
+    $hora         = $request->input('hora');
+    $servicios    = json_decode($request->input('servicios'), true);
+    $adicionales  = json_decode($request->input('adicionales'), true);
 
-        $fecha_bd = $this->fechaABd($fecha);
+    $fecha_bd = $this->fechaABd($fecha);
 
-        // Verificar que la mascota exista y sea realmente del cliente que agenda
+    // Calcular la hora de inicio en minutos para ir sumando duraciones
+    $horaActualMin = Disponibilidad::aMinutos($hora);
+
+    $primera_cita_id = null;
+
+    foreach ($servicios as $item) {
+        $id_raza    = intval($item['id_raza']);
+        $id_mascota = intval($item['id_mascota']);
+
+        // Verificar que la mascota sea del cliente
         $mascotaValida = DB::select(
             "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ?",
             [$id_mascota, $id_cliente]
         );
         if (empty($mascotaValida)) {
-            return response()->json(['ok' => false, 'error' => 'Mascota no encontrada para este cliente']);
+            return response()->json(['ok' => false, 'error' => 'Mascota no válida para este cliente']);
         }
 
-        // Obtener el servicio y la duración real según la raza seleccionada
-        $id_raza = intval($servicios[0]);
-        $serv    = DB::select("SELECT id_servicio FROM raza_servicio WHERE id_raza = ? LIMIT 1", [$id_raza]);
+        // Obtener el servicio al que pertenece esta raza
+        $serv = DB::select("SELECT id_servicio FROM raza_servicio WHERE id_raza = ? LIMIT 1", [$id_raza]);
         if (empty($serv)) {
-            return response()->json(['ok' => false, 'error' => 'Servicio no encontrado']);
+            return response()->json(['ok' => false, 'error' => 'Servicio no encontrado para la raza seleccionada']);
         }
         $id_servicio = $serv[0]->id_servicio;
         $duracionMin = $disp->duracion($id_raza, $id_servicio);
 
-        if ($id_estilista === 0) {
-            // Sin preferencia: asignar el primer estilista elegible que esté
-            // libre en todo el rango de la cita
+        $horaStr = Disponibilidad::aHora($horaActualMin);
+
+        // Asignar estilista
+        $estilistaFinal = $id_estilista;
+        if ($estilistaFinal === 0) {
             $asignado = null;
             foreach ($this->estilistasElegibles($disp, $fecha_bd) as $id) {
-                if ($disp->validarHorario($id, $fecha_bd, $hora, $duracionMin) === null) {
+                if ($disp->validarHorario($id, $fecha_bd, $horaStr, $duracionMin) === null) {
                     $asignado = $id;
                     break;
                 }
@@ -169,9 +178,9 @@ class CitaController extends Controller
             if ($asignado === null) {
                 return response()->json(['ok' => false, 'error' => 'No hay estilistas disponibles en ese horario']);
             }
-            $id_estilista = $asignado;
+            $estilistaFinal = $asignado;
         } else {
-            $error = $disp->validarHorario($id_estilista, $fecha_bd, $hora, $duracionMin);
+            $error = $disp->validarHorario($estilistaFinal, $fecha_bd, $horaStr, $duracionMin);
             if ($error !== null) {
                 return response()->json(['ok' => false, 'error' => $error]);
             }
@@ -183,20 +192,26 @@ class CitaController extends Controller
             'id_mascota'   => $id_mascota,
             'id_servicio'  => $id_servicio,
             'id_raza'      => $id_raza,
-            'id_estilista' => $id_estilista,
+            'id_estilista' => $estilistaFinal,
             'fecha'        => $fecha_bd,
-            'hora'         => $hora,
+            'hora'         => $horaStr,
             'estado'       => 'Pendiente'
         ]);
 
-        // Insertar servicios adicionales
-        foreach ($adicionales as $id_ad) {
-            DB::table('adicional_cita')->insert([
-                'id_adicional' => intval($id_ad),
-                'id_cita'      => $id_cita
-            ]);
-        }
+        if ($primera_cita_id === null) $primera_cita_id = $id_cita;
 
-        return response()->json(['ok' => true]);
+        // Avanzar la hora para la siguiente cita
+        $horaActualMin += $duracionMin;
     }
+
+    // Los adicionales van en la primera cita
+    foreach ($adicionales as $id_ad) {
+        DB::table('adicional_cita')->insert([
+            'id_adicional' => intval($id_ad),
+            'id_cita'      => $primera_cita_id
+        ]);
+    }
+
+    return response()->json(['ok' => true]);
+}
 }

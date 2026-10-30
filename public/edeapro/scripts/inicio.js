@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.currentIndex = 0;
             this.autoPlayInterval = null;
             this.isTransitioning = false;
+            // Igual que la transición de opacity de .carrusel-item (principal.css):
+            // evita encadenar fundidos a medias con clics rápidos
+            this.fadeDuration = 1200;
 
             if (this.slides.length === 0) return;
 
@@ -104,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.isTransitioning = true;
             this.showSlide(this.currentIndex + 1);
             this.resetAutoPlay();
-            setTimeout(() => { this.isTransitioning = false; }, 300);
+            setTimeout(() => { this.isTransitioning = false; }, this.fadeDuration);
         }
 
         previousSlide() {
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.isTransitioning = true;
             this.showSlide(this.currentIndex - 1);
             this.resetAutoPlay();
-            setTimeout(() => { this.isTransitioning = false; }, 300);
+            setTimeout(() => { this.isTransitioning = false; }, this.fadeDuration);
         }
 
         goToSlide(index) {
@@ -120,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.isTransitioning = true;
             this.showSlide(index);
             this.resetAutoPlay();
-            setTimeout(() => { this.isTransitioning = false; }, 300);
+            setTimeout(() => { this.isTransitioning = false; }, this.fadeDuration);
         }
 
         startAutoPlay() {
@@ -176,14 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         tempImg.src = img.src;
     });
-
-    // ============================================
-    // PERFORMANCE: Reduce animaciones si el dispositivo es lento
-    // ============================================
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.style.setProperty('--transition-smooth', 'all 0.05s linear');
-        document.documentElement.style.setProperty('--transition-fast', 'all 0.03s linear');
-    }
 
     // ============================================
     // LOG INICIALIZACIÓN
