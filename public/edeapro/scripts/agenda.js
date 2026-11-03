@@ -298,11 +298,12 @@ async function renderStep4(){
     if (MASCOTAS.length > 0) {
       // Si solo hay UNA mascota: asignarla automáticamente a todos los servicios
       if (MASCOTAS.length === 1) {
-        items.forEach(s => { S.mascotas[s.id_raza] = MASCOTAS[0].id_mascota; });
-      } else {
+        items.forEach(s => { S.mascotas[parseInt(s.id_raza)] = MASCOTAS[0].id_mascota; });
+            } else {
         // Si hay varias: asignar la primera a los que aún no tengan selección
         items.forEach(s => {
-          if (!S.mascotas[s.id_raza]) S.mascotas[s.id_raza] = MASCOTAS[0].id_mascota;
+          const key = parseInt(s.id_raza);
+          if (!S.mascotas[key]) S.mascotas[key] = MASCOTAS[0].id_mascota;
         });
       }
     }
