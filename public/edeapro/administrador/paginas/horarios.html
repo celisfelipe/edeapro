@@ -163,11 +163,48 @@
     </div>
 
 
+    <!-- ===== MODALES DEL SISTEMA (requeridos por modal.js) ===== -->
+
+    <!-- Modal: Confirmación (para preguntar antes de eliminar o cancelar) -->
+    <div class="modal-overlay" id="modal-confirmar">
+        <div class="modal">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Confirmar acción</h3>
+            <p id="modal-confirmar-msg">¿Estás seguro?</p>
+            <div class="modal-footer">
+                <button class="btn btn-green" id="modal-confirmar-ok">Confirmar</button>
+                <button class="btn btn-gray" id="modal-confirmar-cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Éxito (para confirmar que una acción se completó bien) -->
+    <div class="modal-overlay" id="modal-exito">
+        <div class="modal">
+            <h3><i class="fa-solid fa-circle-check"></i> Listo</h3>
+            <p id="modal-exito-msg">Operación exitosa.</p>
+            <div class="modal-footer">
+                <button class="btn btn-green" id="modal-exito-ok">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Error (para mostrar mensajes de fallo) -->
+    <div class="modal-overlay" id="modal-error">
+        <div class="modal">
+            <h3><i class="fa-solid fa-circle-xmark"></i> Error</h3>
+            <p id="modal-error-msg">Ocurrió un error.</p>
+            <div class="modal-footer">
+                <button class="btn btn-gray" id="modal-error-ok">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../../scripts/config.js"></script>
     <script src="../../scripts/fetchToken.js"></script>
     <script src="../scripts/sesion.js"></script>
     <script src="../../scripts/formatoHora.js"></script>
     <script src="../../scripts/agendaGrilla.js"></script>
+    <script src="../scripts/modal.js"></script>
     <script src="../scripts/horarios.js"></script>
     <script src="../../scripts/sidebar-toggle.js"></script>
     <script src="../../scripts/utils.js"></script>
