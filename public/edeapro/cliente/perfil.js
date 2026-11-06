@@ -123,11 +123,23 @@ function cargarMascotas(id) {
                     grid.innerHTML += `
                     <div class="pet-card">
                         <div class="pet-avatar"><i class="fa-solid fa-paw"></i></div>
-                        <div class="pet-name">${escaparHTML(m.nombre)}</div>
-                        <div class="pet-breed">${escaparHTML(m.especie)} · ${m.edad} años · ${escaparHTML(m.genero)}</div>
-                        <button class="btn-blue btn-historial" onclick="verHistorialMascota(${m.id_mascota}, '${escaparHTML(m.nombre)}')">
-                            <i class="fa-solid fa-clock-rotate-left"></i> Ver historial
-                        </button>
+                        <div class="pet-info">
+                            <div class="pet-name">${escaparHTML(m.nombre)}</div>
+                            <div class="pet-breed">${escaparHTML(m.especie)} · ${m.edad} años · ${escaparHTML(m.genero)}</div>
+                        </div>
+                        <div class="pet-menu">
+                            <button class="pet-menu-btn" onclick="togglePetMenu(this)" aria-label="Opciones">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <div class="pet-menu-dropdown">
+                                <button onclick="verHistorialMascota(${m.id_mascota}, '${escaparHTML(m.nombre)}'); cerrarMenusMascota()">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> Ver historial
+                                </button>
+                                <button class="danger" onclick="eliminarMascota(${m.id_mascota}, '${escaparHTML(m.nombre)}'); cerrarMenusMascota()">
+                                    <i class="fa-solid fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
                     </div>`;
                 });
             }
@@ -551,6 +563,54 @@ function reagendarCita(id_cita) {
                 }
             });
     };
+}
+
+/** Abre/cierra el dropdown de opciones de una tarjeta de mascota */
+function togglePetMenu(btn) {
+    const dropdown = btn.nextElementSibling;
+    const abierto = dropdown.classList.contains('open');
+    cerrarMenusMascota(); // cerrar cualquier otro abierto
+    if (!abierto) dropdown.classList.add('open');
+}
+
+/** Cierra todos los dropdowns de mascotas abiertos */
+function cerrarMenusMascota() {
+    document.querySelectorAll('.pet-menu-dropdown.open')
+        .forEach(d => d.classList.remove('open'));
+}
+
+// Cerrar el menú al hacer clic fuera de cualquier tarjeta
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.pet-menu')) cerrarMenusMascota();
+});
+
+/**
+ * Pide confirmación y elimina una mascota del cliente.
+ * El servidor rechaza la eliminación si tiene citas pendientes.
+ * @param {number} id_mascota
+ * @param {string} nombreMascota
+ */
+function eliminarMascota(id_mascota, nombreMascota) {
+    modalConfirmar(
+        `¿Eliminar a ${nombreMascota}? Esta acción no se puede deshacer.`,
+        function () {
+            const user = JSON.parse(localStorage.getItem('user'));
+            fetchAuth(`${API_BASE}/api/cliente/mascotas/eliminar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ id_mascota })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.ok) {
+                        modalExito(`${nombreMascota} eliminada correctamente.`);
+                        cargarMascotas(user.id_cliente);
+                    } else {
+                        modalError(data.error || 'Error al eliminar la mascota.');
+                    }
+                });
+        }
+    );
 }
 
 /** Elimina la sesión del localStorage y redirige al login */
