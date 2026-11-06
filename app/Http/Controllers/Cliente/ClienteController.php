@@ -91,7 +91,7 @@ class ClienteController extends Controller
     {
         $id       = $this->idClienteAutenticado($request);
         $mascotas = DB::select(
-            "SELECT id_mascota, nombre, especie, edad, genero FROM mascota WHERE id_cliente = ?",
+            "SELECT id_mascota, nombre, especie, edad, genero FROM mascota WHERE id_cliente = ? AND activa = 1",
             [$id]
         );
 
@@ -309,6 +309,53 @@ class ClienteController extends Controller
             "UPDATE cita SET fecha = ?, hora = ?, estado = 'Reagendada' WHERE id_cita = ?",
             [$fecha, $hora, $id_cita]
         );
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Elimina una mascota del perfil del cliente autenticado.
+     * Verifica que la mascota pertenezca al cliente antes de tocarla.
+     *   1. Si tiene citas Pendientes/Reagendadas → no deja (debe cancelarlas primero).
+     *   2. Si tiene historial (completadas/canceladas) → la ARCHIVA (activa = 0):
+     *      el cliente deja de verla, pero el admin conserva sus citas y pagos.
+     *   3. Si nunca tuvo citas → se borra de verdad.
+     */
+    public function eliminarMascota(Request $request)
+    {
+        $id_cliente = $this->idClienteAutenticado($request);
+        $id_mascota = intval($request->input('id_mascota'));
+
+        // Verificar que la mascota existe, está activa y pertenece a este cliente
+        $mascota = DB::selectOne(
+            "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ? AND activa = 1",
+            [$id_mascota, $id_cliente]
+        );
+        if (!$mascota) {
+            return response()->json(['ok' => false, 'error' => 'Mascota no encontrada.'], 403);
+        }
+
+        // Caso 1: tiene citas agendadas → debe cancelarlas primero
+        $citasActivas = DB::selectOne(
+            "SELECT id_cita FROM cita WHERE id_mascota = ? AND estado IN ('Pendiente', 'Reagendada') LIMIT 1",
+            [$id_mascota]
+        );
+        if ($citasActivas) {
+            return response()->json(['ok' => false, 'error' => 'Esta mascota tiene citas agendadas. Cancélalas primero para poder eliminarla.']);
+        }
+
+        // Caso 2: tiene historial → archivar (no se pierden citas ni pagos)
+        $tieneHistorial = DB::selectOne(
+            "SELECT id_cita FROM cita WHERE id_mascota = ? LIMIT 1",
+            [$id_mascota]
+        );
+        if ($tieneHistorial) {
+            DB::update("UPDATE mascota SET activa = 0 WHERE id_mascota = ? AND id_cliente = ?", [$id_mascota, $id_cliente]);
+            return response()->json(['ok' => true]);
+        }
+
+        // Caso 3: nunca tuvo citas → borrar de verdad
+        DB::delete("DELETE FROM mascota WHERE id_mascota = ? AND id_cliente = ?", [$id_mascota, $id_cliente]);
 
         return response()->json(['ok' => true]);
     }

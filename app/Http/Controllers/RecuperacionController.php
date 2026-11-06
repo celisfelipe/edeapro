@@ -68,8 +68,9 @@ class RecuperacionController extends Controller
         $token      = trim($request->input('token'));
         $contrasena = $request->input('contrasena');
 
-        if (!$contrasena || strlen($contrasena) < 8) {
-            return response()->json(['ok' => false, 'error' => 'La contraseña debe tener al menos 8 caracteres.']);
+        // Mismas reglas que el registro: mínimo 8 caracteres, una mayúscula y un número
+        if (!$contrasena || !preg_match('/^(?=.*[A-Z])(?=.*\d).{8,}$/', $contrasena)) {
+            return response()->json(['ok' => false, 'error' => 'La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.']);
         }
 
         // Verificar que el token exista

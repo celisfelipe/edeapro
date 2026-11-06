@@ -146,9 +146,9 @@ class CitaController extends Controller
         $id_raza    = intval($item['id_raza']);
         $id_mascota = intval($item['id_mascota']);
 
-        // Verificar que la mascota sea del cliente
+        // Verificar que la mascota sea del cliente y no esté archivada
         $mascotaValida = DB::select(
-            "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ?",
+            "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ? AND activa = 1",
             [$id_mascota, $id_cliente]
         );
         if (empty($mascotaValida)) {
