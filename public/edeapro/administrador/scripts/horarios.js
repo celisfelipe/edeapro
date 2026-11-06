@@ -10,17 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     iniciarGrilla(fecha => `${API_BASE}/api/admin/horarios?fecha=${fecha}`);
 
-    // Ya no llamamos cargarDisponibilidad() — eso está en empleados.js
-    // Solo necesitamos llenar el select de estilistas para el formulario de bloqueos
     cargarEstilistasSelect();
     cargarBloqueos();
 });
 
-/**
- * Llena el <select id="bloqueo-estilista"> con los estilistas activos.
- * Usa el mismo endpoint de horarios pero solo toma la lista de estilistas.
- * Antes esto lo hacía cargarDisponibilidad(), que ya no existe en este archivo.
- */
 function cargarEstilistasSelect() {
     fetchAuth(`${API_BASE}/api/admin/horarios?fecha=` + new Date().toISOString().split('T')[0])
     .then(res => res.json())
@@ -32,10 +25,6 @@ function cargarEstilistasSelect() {
         ).join('');
     });
 }
-
-/* ══════════════════════════════════════════════════════════════════════════
-   BLOQUEOS TEMPORALES
-   ══════════════════════════════════════════════════════════════════════════ */
 
 function cargarBloqueos() {
     fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal`)
@@ -72,7 +61,7 @@ function agregarBloqueo() {
     const motivo       = document.getElementById('bloqueo-motivo').value.trim();
 
     if (!id_estilista || !fecha_inicio || !fecha_fin) {
-        alert('Completa estilista, fecha de inicio y fecha de fin.');
+        modalError('Completa estilista, fecha de inicio y fecha de fin.');
         return;
     }
 
@@ -88,23 +77,28 @@ function agregarBloqueo() {
             document.getElementById('bloqueo-fecha-fin').value    = '';
             document.getElementById('bloqueo-motivo').value       = '';
             cargarBloqueos();
+            modalExito('Bloqueo registrado correctamente.');
         } else {
-            alert('Error: ' + data.error);
+            modalError('Error: ' + data.error);
         }
     });
 }
 
 function eliminarBloqueo(id) {
-    if (!confirm('¿Eliminar este bloqueo de disponibilidad?')) return;
-
-    fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal/eliminar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ id_disponibilidad: id })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.ok) cargarBloqueos();
-        else alert('Error al eliminar el bloqueo.');
+    modalConfirmar('¿Eliminar este bloqueo de disponibilidad?', function () {
+        fetchAuth(`${API_BASE}/api/admin/disponibilidad-temporal/eliminar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id_disponibilidad: id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                cargarBloqueos();
+                modalExito('Bloqueo eliminado correctamente.');
+            } else {
+                modalError('Error al eliminar el bloqueo.');
+            }
+        });
     });
 }
