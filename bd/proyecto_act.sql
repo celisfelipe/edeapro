@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 29-10-2026 a las 16:38:37
+-- Servidor: 127.0.0.1:3306
+-- Tiempo de generación: 06-11-2026 a las 22:45:24
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -89,8 +89,8 @@ CREATE TABLE `cache` (
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
 ('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793163912),
 ('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793163912;', 1793163912),
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793026648),
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793026648;', 1793026648);
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793988856),
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793988856;', 1793988856);
 
 -- --------------------------------------------------------
 
@@ -141,9 +141,11 @@ INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_ra
 (9202, 3, 2, 1, 9, 2, '2026-07-10', '09:00:00', 'Cancelada', 'presento accidente'),
 (9203, 3, 2, 1, 9, 2, '2026-07-11', '09:00:00', 'Cancelada', 'me dio diarrea'),
 (9204, 3, 2, 1, 9, 2, '2026-07-20', '09:00:00', 'Cancelada', 'no puedo ir'),
-(9205, 3, 2, 1, 1, 2, '2026-10-01', '09:00:00', 'Pendiente', NULL),
-(9206, 3, 2, 1, 9, 2, '2026-10-01', '12:00:00', 'Pendiente', NULL),
-(9207, 3, 2, 1, 9, 3, '2026-10-01', '09:00:00', 'Pendiente', NULL);
+(9205, 3, 2, 1, 1, 2, '2026-10-01', '09:00:00', 'Cancelada', 'a'),
+(9206, 3, 2, 1, 9, 2, '2026-10-01', '12:00:00', 'Cancelada', 'a'),
+(9207, 3, 2, 1, 9, 3, '2026-10-01', '09:00:00', 'Cancelada', 'aaaaa'),
+(9208, 3, 2, 1, 8, 2, '2026-12-01', '09:00:00', 'Cancelada', 'A'),
+(9209, 3, 11, 1, 5, 2, '2026-11-10', '09:00:00', 'Pendiente', NULL);
 
 --
 -- Disparadores `cita`
@@ -390,17 +392,19 @@ CREATE TABLE `mascota` (
   `nombre` varchar(20) DEFAULT NULL,
   `especie` varchar(20) DEFAULT NULL,
   `edad` int(11) DEFAULT NULL,
-  `genero` char(10) DEFAULT NULL
+  `genero` char(10) DEFAULT NULL,
+  `activa` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `mascota`
 --
 
-INSERT INTO `mascota` (`id_mascota`, `id_cliente`, `id_raza`, `nombre`, `especie`, `edad`, `genero`) VALUES
-(1, 1, NULL, 'penelope', 'Canino', 3, 'Hembra'),
-(2, 3, NULL, 'max', 'perro', 10, 'macho'),
-(5, 5, NULL, 'loco', 'gato', 2, 'macho');
+INSERT INTO `mascota` (`id_mascota`, `id_cliente`, `id_raza`, `nombre`, `especie`, `edad`, `genero`, `activa`) VALUES
+(1, 1, NULL, 'penelope', 'Canino', 3, 'Hembra', 1),
+(2, 3, NULL, 'max', 'perro', 10, 'macho', 0),
+(5, 5, NULL, 'loco', 'gato', 2, 'macho', 1),
+(11, 3, NULL, 'penelopelopez', 'perro', 10, 'hembra', 1);
 
 -- --------------------------------------------------------
 
@@ -510,7 +514,13 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (16, 9204, 3, 'Cita del 2026-07-20 a las 09:00:00 fue cancelada. Motivo: no puedo ir', 'Cancelación', 'Cita cancelada', 'Leída'),
 (17, 9205, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (18, 9206, 3, 'Tu cita fue agendada para el 2026-10-01 a las 12:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
-(19, 9207, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
+(19, 9207, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(20, 9208, 3, 'Tu cita fue agendada para el 2026-12-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(21, 9208, 3, 'Cita del 2026-12-01 a las 09:00:00 fue cancelada. Motivo: A', 'Cancelación', 'Cita cancelada', 'No leída'),
+(22, 9206, 3, 'Cita del 2026-10-01 a las 12:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'No leída'),
+(23, 9205, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'No leída'),
+(24, 9207, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: aaaaa', 'Cancelación', 'Cita cancelada', 'No leída'),
+(25, 9209, 3, 'Tu cita fue agendada para el 2026-11-10 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
 
 -- --------------------------------------------------------
 
@@ -605,7 +615,8 @@ CREATE TABLE `personal_access_tokens` (
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
-(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48');
+(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48'),
+(147, 'cliente', 3, 'auth_token', 'cc83b95bc6989ea3b2408a3c3b9ba30525b466561f108243e6bf82a88ad06356', '[\"cliente\"]', NULL, '2026-11-07 18:13:17', '2026-11-06 18:13:17', '2026-11-06 18:13:17');
 
 -- --------------------------------------------------------
 
@@ -847,6 +858,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 ('cPCHLQxrOOK14jqeUMuiKEOMi2wGMa8jAY0pBM2b', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTXJCbkowSjJhZm1KbFhSMjhEVzZQalNhVkd2cUhQMWJuZ0FaVUZ6eSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777426615),
 ('D2QHcIqvrbcqBT1oLfOVcwq9twYhRNDRM7vmnFwd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieVp5Nk1UY0JPekNyak9kZm1YVENEbmlFdW04QkxMZG5pQXlIcFFJcyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1778043780),
 ('e445ZigTGjBAfee0FctK4qh4ShjmeDuvMTf3oNfC', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Avast/154.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSDFpNm1HS0h4TFVPazdYYTB6cW5CUlEyN1lZclcwaE5zWnRkTDdsUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793026437),
+('ybrrUtodh72CQGyqfhq4nYyA56zbsSCtrMZE9GZV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRWt5RzJrZkZ0NlNSbEs3N3BZZmNkdUN0dFExM3VTR2l2OTc0cDcyWiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793988302),
 ('Z8XaiQfO7iF7HaOIhGykW5pq3maPLJeZDK5UkqVP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZlVyeG5MeUR2cXBQaUc2NUk3RHBwNlhPVDBzRjRoa2pqSjAzNlREciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777963541);
 
 -- --------------------------------------------------------
@@ -1104,7 +1116,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9208;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9210;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -1140,7 +1152,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1158,7 +1170,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT de la tabla `raza`
