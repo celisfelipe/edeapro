@@ -302,18 +302,3 @@ php artisan test
 ## Licencia
 
 Este proyecto se distribuye bajo la licencia MIT.
-
-## Notas del proyecto
-
-- La aplicación pública inicial redirige desde `/` hacia `/edeapro/index.html`.
-- El backend está construido para autenticación por token y control de acceso por roles (`cliente`, `peluquero`, `administrador`).
-- El proyecto conserva un enfoque híbrido: frontend estático para experiencia visual y Laravel como motor de negocio, API y seguridad.
-
-## Contribución
-
-Si deseas colaborar con el proyecto:
-
-1. Haz un fork del repositorio.
-2. Crea una rama de trabajo.
-3. Realiza tus cambios y prueba la funcionalidad.
-4. Abre un pull request con una descripción clara.
