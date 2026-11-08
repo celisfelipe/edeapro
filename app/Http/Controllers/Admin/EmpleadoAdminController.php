@@ -132,22 +132,40 @@ class EmpleadoAdminController extends Controller
             );
         }
 
+        // Si quedó Inactivo, cerrarle la sesión de inmediato
+        if ($estado === 'Inactivo') {
+            $this->cerrarSesiones($id);
+        }
+
         return response()->json(['ok' => true]);
     }
 
+    /** Borra los tokens del estilista: si tenía la sesión abierta, queda cerrada */
+    private function cerrarSesiones(int $id)
+    {
+        DB::table('personal_access_tokens')
+            ->where('tokenable_type', 'estilista')
+            ->where('tokenable_id', $id)
+            ->delete();
+    }
+
     /**
-     * Elimina un estilista. Rechaza la operación si tiene citas activas
-     * (Pendiente o Reagendada) para evitar dejar datos huérfanos.
+     * Elimina un estilista.
+     *   1. Si tiene citas Pendientes/Reagendadas → no deja.
+     *   2. Si tiene historial (completadas/canceladas) → no deja: borrarlo
+     *      dañaría el historial y los pagos. Se le indica al admin que lo
+     *      cambie a Inactivo, que es la forma de "eliminarlo" sin perder datos.
+     *   3. Si nunca tuvo citas → se borra de verdad, junto con su foto.
      */
     public function eliminar(Request $request)
     {
         $id = intval($request->input('id_estilista'));
 
+        // Caso 1: citas agendadas
         $citasActivas = DB::selectOne(
             "SELECT COUNT(*) AS total FROM cita WHERE id_estilista = ? AND estado IN ('Pendiente', 'Reagendada')",
             [$id]
         );
-
         if ($citasActivas && $citasActivas->total > 0) {
             return response()->json([
                 'ok'    => false,
@@ -155,13 +173,26 @@ class EmpleadoAdminController extends Controller
             ], 422);
         }
 
-        // Borrar también su foto, para no dejar archivos huérfanos en uploads/
+        // Caso 2: tiene historial
+        $tieneHistorial = DB::selectOne("SELECT id_cita FROM cita WHERE id_estilista = ? LIMIT 1", [$id]);
+        if ($tieneHistorial) {
+            return response()->json([
+                'ok'    => false,
+                'error' => 'Este estilista tiene historial de citas y no se puede eliminar. Para que deje de recibir citas, edítalo y cámbialo a Inactivo.'
+            ], 422);
+        }
+
+        // Caso 3: nunca tuvo citas → borrar. La foto se borra DESPUÉS,
+        // para no perderla si el DELETE fallara.
         $foto = DB::table('estilista')->where('id_estilista', $id)->value('foto');
+
+        $this->cerrarSesiones($id);
+        DB::delete("DELETE FROM estilista WHERE id_estilista = ?", [$id]);
+
         if ($foto) {
             Storage::disk('uploads')->delete($foto);
         }
 
-        DB::delete("DELETE FROM estilista WHERE id_estilista = ?", [$id]);
         return response()->json(['ok' => true]);
     }
 }

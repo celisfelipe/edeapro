@@ -1,631 +1,859 @@
-/* ================================================
-   perfil.css — Panel Cliente / Mi Perfil
-   ================================================ */
+/* ==========================================================================
+   perfil.css — Perfil del Cliente (cliente/perfil.html) · EDEA PRO
+   --------------------------------------------------------------------------
+   Página donde el cliente ve y edita sus datos, sus mascotas, sus citas
+   y sus pagos. Usa el mismo lenguaje visual que los paneles del
+   administrador y del empleado (tarjetas blancas, dorado, grafito).
 
+   Orden en que el navegador carga los estilos de la página:
+     1. perfil.css               → ESTE archivo
+     2. ../estilos/principal.css → encabezado y footer del sitio público
+     3. identidad.css            → tokens de marca (colores, letras, radios)
+
+   Contenido:
+     1.  Paleta del perfil (variables)
+     2.  Base y estructura de la página (dos columnas)
+     3.  Tarjetas
+     4.  Tarjeta de perfil y formulario
+     5.  Botones
+     6.  Mascotas (tarjetas y menú de tres puntos)
+     7.  Pestañas Citas / Pagos y filtros
+     8.  Tablas de citas y pagos
+     9.  Estados de cita (etiquetas de color)
+     10. Modales
+     11. Responsive: tablet (≤ 900px) y celular (≤ 640px)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. PALETA DEL PERFIL
+   ========================================================================== */
+:root {
+    --perfil-gold:       #F2AE00;
+    --perfil-gold-dark:  #C98B00;
+    --perfil-gold-soft:  rgba(242, 174, 0, 0.14);
+    --perfil-graphite:   #33312F;
+    --perfil-ivory:      #F5F4EC;
+    --perfil-muted:      #706B63;
+    --perfil-border:     rgba(51, 49, 47, 0.12);
+    --perfil-border-2:   rgba(51, 49, 47, 0.07);   /* separadores de filas */
+    --perfil-tint:       #F1F0EA;                  /* cabecera de tablas */
+    --perfil-shadow:     0 5px 18px rgba(51, 49, 47, 0.07);
+
+    /* Estados: color del texto + fondo suave */
+    --perfil-ok:         #2F7A4E;
+    --perfil-ok-soft:    rgba(75, 174, 110, 0.14);
+    --perfil-warn:       #8A6100;
+    --perfil-warn-soft:  rgba(217, 119, 6, 0.14);
+    --perfil-bad:        #B42318;
+    --perfil-bad-soft:   rgba(220, 38, 38, 0.10);
+}
+
+
+/* ==========================================================================
+   2. BASE Y ESTRUCTURA DE LA PÁGINA
+   Escritorio: columna izquierda de 320px (perfil + mascotas) y columna
+   derecha con el resto del ancho (citas y pagos).
+   ========================================================================== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+    background-color: var(--color-bg);
+    font-family: var(--font-body);
+    color: var(--color-text);
 }
 
-/* PAGE */
 .page {
-  max-width: 1100px;
-  margin: 32px auto;
-  padding: 0 24px 48px;
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 24px 48px;
 }
 
-/* LAYOUT DOS COLUMNAS */
 .perfil-grid {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 20px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+    gap: 20px;
 }
 
+/* Columna izquierda: se queda fija al bajar (sticky) */
 .perfil-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: sticky;
-  top: 80px;
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .perfil-contenido {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;                   /* evita que una tabla ancha estire la columna */
 }
 
-/* CARD */
+
+/* ==========================================================================
+   3. TARJETAS
+   ========================================================================== */
 .card {
-  background: #F8F7F8;
-  border-radius: var(--radius-md);
-  border: 0.5px solid rgba(120, 116, 108, 0.25);
-  padding: 22px 24px;
-  box-shadow: var(--shadow-sm);
+    padding: 24px;
+    border: 1px solid var(--perfil-border);
+    border-radius: 18px;
+    background: #FFFFFF;
+    box-shadow: var(--perfil-shadow);
 }
 
 .card-title {
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-heading);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-heading);
 }
 
-.card-title i { color: var(--color-metal-text); font-size: 15px; }
+.card-title i { font-size: 15px; color: var(--perfil-gold-dark); }
 
+/* Título a la izquierda y filtros a la derecha */
 .card-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
 .card-header-row .card-title { margin-bottom: 0; }
 
-/* PERFIL CARD */
+
+/* ==========================================================================
+   4. TARJETA DE PERFIL Y FORMULARIO
+   ========================================================================== */
 .perfil-card { text-align: center; }
 
+/* Círculo con las iniciales del cliente */
 .perfil-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--color-dark-surface);
-  color: var(--gold);
-  font-family: var(--font-heading);
-  font-size: 24px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--perfil-gold);
+    border-radius: 50%;
+    background: var(--color-dark-surface);
+    box-shadow: 0 4px 16px rgba(51, 49, 47, 0.2);
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
 }
 
 .perfil-nombre {
-  font-family: var(--font-heading);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-heading);
-  margin-bottom: 4px;
+    margin-bottom: 4px;
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-heading);
 }
 
 .perfil-correo {
-  font-size: 13px;
-  color: var(--color-muted);
-  margin-bottom: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: var(--color-muted);
 }
 
 .perfil-divider {
-  height: 1px;
-  background: rgba(120, 116, 108, 0.2);
-  margin: 16px 0;
+    height: 1px;
+    margin: 16px 0;
+    background: rgba(120, 116, 108, 0.2);
+    opacity: 0.6;
 }
 
-/* FORMULARIO */
 .form-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
 }
 
 .field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .field-group label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
 }
 
 .field-group input,
 .field-group select {
-  width: 100%;
-  height: 50px;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  padding: 0 14px;
-  font-size: 14px;
-  color: var(--color-heading);
-  background: white;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: var(--font-body);
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    background: white;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-heading);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* Motivo de cancelación (modal de confirmar) */
+.field-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid rgba(120, 116, 108, 0.35);
+    border-radius: var(--radius-sm);
+    outline: none;
+    background: white;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-heading);
+    resize: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Al escribir: borde dorado con halo */
 .field-group input:focus,
-.field-group select:focus {
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
+.field-group select:focus,
+.field-group textarea:focus {
+    border-color: var(--gold-dark);
+    box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
 }
 
-.modal .field-group { margin-bottom: 12px; }
 
-/* BOTONES */
+/* ==========================================================================
+   5. BOTONES (forma de píldora)
+   Los nombres vienen del proyecto original; ojo con dos de ellos:
+     .btn-green   verde, "Guardar cambios" (ancho completo)
+     .btn-blue    grafito (no azul), "Reagendar"
+     .btn-orange  blanco con borde (no naranja), "Cancelar" en los modales
+     .btn-red     rojo, acciones destructivas
+   ========================================================================== */
 .btn-green {
-  background: #16A34A;
-  color: #FFFFFF;
-  border: none;
-  border-radius: var(--radius-full);
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  justify-content: center;
-  transition: all 0.2s;
-  margin-top: 4px;
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: #3F9D62;
+    box-shadow: 0 4px 14px rgba(75, 174, 110, 0.28);
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.btn-green:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.btn-green:hover { transform: translateY(-1px); background: var(--perfil-ok); }
 
 .btn-blue {
-  background: var(--color-heading);
-  color: var(--color-light);
-  border: none;
-  border-radius: var(--radius-full);
-  padding: 7px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: background 0.2s;
-  flex-shrink: 0; /* el botón nunca se encoge aunque el nombre sea largo */
+    flex-shrink: 0;                 /* no se encoge aunque el nombre sea largo */
+    padding: 7px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--color-heading);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-light);
+    cursor: pointer;
+    transition: background 0.2s;
 }
-.btn-blue:hover { opacity: 0.85; }
 
 .btn-orange {
-  background: #FFFFFF;
-  color: var(--color-heading);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  padding: 7px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.2s;
+    padding: 7px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-heading);
+    cursor: pointer;
+    transition: background 0.2s;
 }
-.btn-orange:hover { opacity: 0.85; }
 
 .btn-red {
-  background: var(--color-danger);
-  color: #FFFFFF;
-  border: none;
-  border-radius: var(--radius-full);
-  padding: 7px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.2s;
+    padding: 7px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--color-danger);
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 0.2s;
 }
+
+.btn-blue:hover,
+.btn-orange:hover,
 .btn-red:hover { opacity: 0.85; }
 
-.btn-green:active, .btn-blue:active, .btn-orange:active, .btn-red:active { transform: translateY(0); }
+.btn-green:active,
+.btn-blue:active,
+.btn-orange:active,
+.btn-red:active { transform: translateY(0); }
 
-.btn-green:focus-visible, .btn-blue:focus-visible,
-.btn-orange:focus-visible, .btn-red:focus-visible, .tab:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+/* Anillo dorado al navegar con el teclado (accesibilidad) */
+.btn-green:focus-visible,
+.btn-blue:focus-visible,
+.btn-orange:focus-visible,
+.btn-red:focus-visible,
+.tab:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
-.btn-green:disabled, .btn-blue:disabled,
-.btn-orange:disabled, .btn-red:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.btn-green:disabled,
+.btn-blue:disabled,
+.btn-orange:disabled,
+.btn-red:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-/* MASCOTAS */
+
+/* ==========================================================================
+   6. MASCOTAS
+   Cada mascota es una fila: [avatar] [nombre y datos] [⋮ menú]
+   ========================================================================== */
 .pets-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .pet-card {
-  border: 0.5px solid rgba(120, 116, 108, 0.25);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--color-bg);
-  transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--perfil-border);
+    border-radius: 14px;
+    background: #FFFFFF;
+    transition: all 0.25s ease;
 }
 
 .pet-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-  border-color: var(--color-metal);
+    transform: translateY(-2px);
+    border-color: var(--perfil-gold);
+    box-shadow: var(--perfil-shadow);
 }
 
 .pet-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--gold-soft);
-  color: var(--color-heading);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-  transition: transform 0.2s;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--perfil-gold-soft);
+    font-size: 18px;
+    color: var(--perfil-gold-dark);
+    transition: transform 0.2s;
 }
 
 .pet-card:hover .pet-avatar { transform: scale(1.08); }
 
-/* Bloque de texto: crece para ocupar el espacio libre */
+/* El texto crece para ocupar el espacio libre; min-width: 0 permite
+   que los nombres largos se corten con "…" en vez de empujar el menú */
 .pet-info {
-  flex: 1;
-  min-width: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.pet-name,
+.pet-breed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;        /* "Penélope de los Á…" */
 }
 
 .pet-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-heading);
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    margin-bottom: 2px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-heading);
 }
 
 .pet-breed {
-  font-size: 12px;
-  color: var(--color-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 12px;
+    color: var(--color-muted);
 }
 
-/* MENÚ DE TRES PUNTOS EN TARJETA DE MASCOTA */
+/* Menú de tres puntos (⋮): Ver historial / Eliminar.
+   perfil.js le agrega .open al menú para mostrarlo. */
 .pet-menu {
-  position: relative;
-  flex-shrink: 0;
+    position: relative;
+    flex-shrink: 0;
 }
 
 .pet-menu-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--color-muted);
-  font-size: 16px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  transition: background 0.15s, color 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 16px;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
 }
 
 .pet-menu-btn:hover {
-  background: rgba(120, 116, 108, 0.12);
-  color: var(--color-heading);
+    background: rgba(120, 116, 108, 0.12);
+    color: var(--color-heading);
 }
 
 .pet-menu-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: calc(100% + 4px);
-  background: var(--color-surface, #fff);
-  border: 1px solid rgba(120, 116, 108, 0.2);
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(51, 49, 47, 0.14);
-  min-width: 160px;
-  z-index: 100;
-  overflow: hidden;
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 100;
+    min-width: 160px;
+    border: 1px solid rgba(120, 116, 108, 0.2);
+    border-radius: 10px;
+    background: var(--color-surface, #fff);
+    box-shadow: 0 8px 24px rgba(51, 49, 47, 0.14);
+    overflow: hidden;
 }
 
-.pet-menu-dropdown.open {
-  display: block;
-}
+.pet-menu-dropdown.open { display: block; }
 
 .pet-menu-dropdown button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 14px;
-  background: transparent;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-heading);
-  cursor: pointer;
-  font-family: var(--font-body);
-  transition: background 0.15s;
+    width: 100%;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-heading);
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-.pet-menu-dropdown button:hover {
-  background: rgba(120, 116, 108, 0.08);
-}
+.pet-menu-dropdown button:hover { background: rgba(120, 116, 108, 0.08); }
 
-.pet-menu-dropdown button.danger {
-  color: var(--color-danger);
-}
+/* Opción "Eliminar" en rojo */
+.pet-menu-dropdown button.danger       { color: var(--color-danger); }
+.pet-menu-dropdown button.danger:hover { background: rgba(179, 65, 46, 0.08); }
 
-.pet-menu-dropdown button.danger:hover {
-  background: rgba(179, 65, 46, 0.08);
-}
-
+/* Tarjeta punteada "Añadir mascota" */
 .pet-card-add {
-  border: 2px dashed rgba(120, 116, 108, 0.4);
-  background: transparent;
-  cursor: pointer;
-  justify-content: center;
-  color: var(--color-metal-text);
-  font-size: 13px;
-  font-weight: 600;
-  gap: 8px;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed rgba(120, 116, 108, 0.4);
+    border-radius: 14px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-metal-text);
+    cursor: pointer;
 }
 
 .pet-card-add:hover {
-  border-color: var(--color-cta);
-  color: var(--color-heading);
-  background: var(--gold-08);
-  transform: none;
+    transform: none;
+    border-color: var(--perfil-gold);
+    background: #FFFFFF;
+    color: var(--color-heading);
 }
 
 .pet-avatar-add {
-  background: transparent;
-  border: 2px solid rgba(120, 116, 108, 0.4);
-  color: var(--color-metal-text);
+    border: 2px solid rgba(120, 116, 108, 0.4);
+    background: transparent;
+    color: var(--color-metal-text);
 }
 
-/* TABS CITAS / PAGOS */
+
+/* ==========================================================================
+   7. PESTAÑAS CITAS / PAGOS Y FILTROS (Todas / Día / Semana / Mes)
+   Las dos son "píldoras" dentro de un contenedor marfil.
+   perfil.js muestra el panel que tenga la clase .active.
+   ========================================================================== */
 .perfil-tabs {
-  display: flex;
-  gap: 4px;
-  background: #F8F7F8;
-  border-radius: var(--radius-sm);
-  padding: 4px;
-  border: 0.5px solid rgba(120, 116, 108, 0.25);
-  width: fit-content;
-  box-shadow: var(--shadow-sm);
+    width: fit-content;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    border: 1px solid var(--perfil-border);
+    border-radius: 999px;
+    background: var(--perfil-ivory);
+    box-shadow: var(--shadow-sm);
 }
 
 .perfil-tab {
-  border: none;
-  background: transparent;
-  border-radius: var(--radius-sm);
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--color-muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-  font-family: var(--font-body);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
+/* Pestaña activa: grafito con ícono dorado */
 .perfil-tab.active {
-  background: var(--color-dark-surface);
-  color: var(--color-light);
+    background: var(--perfil-graphite);
+    box-shadow: 0 2px 6px rgba(51, 49, 47, 0.12);
+    color: #FFFFFF;
 }
 
-.tab-panel { display: none; }
+.perfil-tab.active i { color: var(--perfil-gold); }
+
+.tab-panel        { display: none; }
 .tab-panel.active { display: block; }
 
-/* FILTROS */
 .filter-tabs {
-  display: flex;
-  gap: 4px;
-  background: var(--color-bg);
-  border-radius: var(--radius-sm);
-  padding: 3px;
-  width: fit-content;
+    width: fit-content;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    border: 1px solid var(--perfil-border);
+    border-radius: 999px;
+    background: var(--perfil-ivory);
 }
 
 .tab {
-  border: none;
-  background: transparent;
-  border-radius: 5px;
-  padding: 5px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--color-muted);
-  transition: all 0.2s;
-  font-family: var(--font-body);
+    padding: 5px 14px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
+/* Filtro activo: dorado */
 .tab.active {
-  background: var(--color-cta);
-  color: var(--color-on-cta);
+    background: var(--perfil-gold);
+    color: var(--perfil-graphite);
 }
 
-/* TABLAS */
-.appts-table, .payments-table {
-  width: 100%;
-  border-collapse: collapse;
+
+/* ==========================================================================
+   8. TABLAS DE CITAS Y PAGOS
+   Cada tabla está dentro de .table-scroll, que la desliza hacia los
+   lados si no cabe.
+   ========================================================================== */
+.table-scroll {
+    width: 100%;
+    margin-top: 6px;
+    border: 1px solid var(--perfil-border);
+    border-radius: 14px;
+    overflow-x: auto;
 }
 
-.appts-table th, .payments-table th {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-muted);
-  text-align: left;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(120, 116, 108, 0.25);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.appts-table td, .payments-table td {
-  font-size: 13px;
-  color: var(--color-heading);
-  padding: 12px 0;
-  border-bottom: 0.5px solid rgba(120, 116, 108, 0.12);
-}
-
-/* BADGES */
-.badge-confirm {
-  background: rgba(47, 122, 78, 0.12);
-  color: #2F7A4E;
-  border: 1px solid rgba(47, 122, 78, 0.3);
-  border-radius: 99px;
-  padding: 3px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.badge-pending {
-  background: rgba(199, 154, 43, 0.12);
-  color: #8A6100;
-  border: 1px solid rgba(199, 154, 43, 0.3);
-  border-radius: 99px;
-  padding: 3px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.badge-cancel {
-  background: rgba(179, 65, 46, 0.12);
-  color: #8E3324;
-  border: 1px solid rgba(179, 65, 46, 0.3);
-  border-radius: 99px;
-  padding: 3px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.empty-msg {
-  text-align: center;
-  padding: 24px 0 !important;
-  font-style: italic;
-  color: var(--color-muted);
-}
-
-.table-scroll { width: 100%; overflow-x: auto; }
 .table-scroll table { min-width: 420px; }
 
-/* MODALES */
-.modal-overlay {
-  display: flex;
-  position: fixed;
-  inset: 0;
-  background: rgba(51, 49, 47,0.45);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(3px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+.appts-table,
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.modal-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+.appts-table th,
+.payments-table th {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--perfil-border);
+    background: var(--perfil-tint);
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--perfil-muted);
+}
+
+.appts-table td,
+.payments-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--perfil-border-2);
+    vertical-align: middle;
+    font-size: 13.5px;
+    color: var(--color-heading);
+}
+
+.appts-table tr:last-child td,
+.payments-table tr:last-child td { border-bottom: none; }
+
+.appts-table tbody tr:hover td,
+.payments-table tbody tr:hover td { background: #FAF9F4; }
+
+/* Fecha (primera columna) y acciones (última) en una sola línea */
+.appts-table td:first-child,
+.payments-table td:first-child,
+.appts-table td:last-child { white-space: nowrap; }
+
+/* Botones Reagendar / Cancelar dentro de la tabla: más pequeños */
+.appts-table .btn-blue,
+.appts-table .btn-red {
+    padding: 6px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* "Cancelar" en versión suave (fondo rojo claro) */
+.appts-table .btn-red {
+    border: 1px solid rgba(220, 38, 38, 0.18);
+    background: var(--perfil-bad-soft);
+    color: var(--perfil-bad);
+}
+
+.appts-table .btn-red:hover {
+    background: #DC2626;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+/* Mensaje "No hay citas" / "Sin registros de pagos".
+   !important porque debe ganarle al padding de las celdas */
+.empty-msg {
+    padding: 24px 0 !important;
+    text-align: center;
+    font-style: italic;
+    color: var(--color-muted);
+}
+
+
+/* ==========================================================================
+   9. ESTADOS DE CITA (mismos colores que en los paneles)
+   ========================================================================== */
+.badge-confirm,
+.badge-pending,
+.badge-cancel {
+    padding: 3px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-confirm { border-color: rgba(47, 122, 78, 0.22); background: var(--perfil-ok-soft);   color: var(--perfil-ok); }
+.badge-pending { border-color: rgba(217, 119, 6, 0.25); background: var(--perfil-warn-soft); color: var(--perfil-warn); }
+.badge-cancel  { border-color: rgba(220, 38, 38, 0.2);  background: var(--perfil-bad-soft);  color: var(--perfil-bad); }
+
+
+/* ==========================================================================
+   10. MODALES
+   El fondo oscuro (.modal-overlay) siempre está en la página, invisible.
+   modal.js le agrega la clase .open para mostrarlo con una animación.
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;                       /* ocupa toda la pantalla */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(32, 30, 29, 0.55);
+    backdrop-filter: blur(5px);     /* desenfoca lo de atrás */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
 
 .modal {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 400px;
-  max-width: 95vw;
-  box-shadow: var(--shadow-xl);
-  transform: translateY(-10px) scale(0.98);
-  transition: transform 0.2s ease;
+    width: 400px;
+    max-width: 95vw;
+    padding: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: 22px;
+    background: var(--color-surface);
+    box-shadow: 0 24px 64px rgba(51, 49, 47, 0.25);
+    transform: translateY(-10px) scale(0.98);
+    transition: transform 0.2s ease;
 }
 
 .modal-overlay.open .modal { transform: translateY(0) scale(1); }
 
-.modal-wide { width: 560px; }
-.modal-wide h3 { margin-bottom: 16px; }
-.historial-scroll { max-height: 320px; overflow-y: auto; margin-bottom: 20px; }
-
 .modal h3 {
-  margin-bottom: 14px;
-  font-size: 16px;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  color: var(--color-heading);
+    margin-bottom: 14px;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-heading);
 }
 
 .modal p {
-  font-size: 14px;
-  color: var(--color-text);
-  margin-bottom: 20px;
-  line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text);
 }
+
+.modal .field-group { margin-bottom: 12px; }
 
 .modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-/* TEXTAREA MOTIVO CANCELACIÓN */
-.field-group textarea {
-  width: 100%;
-  border: 1.5px solid rgba(120, 116, 108, 0.35);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: 13px;
-  color: var(--color-heading);
-  background: white;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: var(--font-body);
-  resize: none;
-  line-height: 1.5;
+/* Modal ancho: historial de una mascota, con su tabla en scroll */
+.modal-wide       { width: 560px; }
+.historial-scroll { max-height: 320px; overflow-y: auto; margin-bottom: 20px; }
+
+/* Modales de confirmar, éxito y error: centrados y con un ícono grande
+   en un círculo encima del título (? dorado · ✓ verde · ! rojo) */
+#modal-confirmar .modal,
+#modal-exito .modal,
+#modal-error .modal { text-align: center; }
+
+#modal-confirmar .modal-footer,
+#modal-exito .modal-footer,
+#modal-error .modal-footer { justify-content: center; }
+
+#modal-confirmar .field-group { text-align: left; }
+
+#modal-confirmar h3::before,
+#modal-exito h3::before,
+#modal-error h3::before {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 26px;
 }
 
-.field-group textarea:focus {
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
-}
+#modal-confirmar h3::before { content: '\f059'; background: var(--perfil-gold-soft); color: var(--perfil-gold-dark); }
+#modal-exito h3::before     { content: '\f058'; background: var(--perfil-ok-soft);   color: var(--perfil-ok); }
+#modal-error h3::before     { content: '\f06a'; background: var(--perfil-bad-soft);  color: var(--perfil-bad); }
 
-/* RESPONSIVE */
+/* Si el título ya trae su propio ícono en el HTML, se oculta para no duplicarlo */
+#modal-confirmar h3 > i,
+#modal-exito h3 > i,
+#modal-error h3 > i { display: none; }
+
+
+/* ==========================================================================
+   11. RESPONSIVE
+   "@media (max-width: X)" = estas reglas solo se aplican si la pantalla
+   mide X píxeles o menos.
+   ========================================================================== */
+
+/* ── Tablet y celular (≤ 900px): una sola columna ── */
 @media (max-width: 900px) {
-  .perfil-grid { grid-template-columns: 1fr; }
-  .perfil-sidebar { position: static; }
+    .perfil-grid    { grid-template-columns: 1fr; }
+    .perfil-sidebar { position: static; }
+
+    /* Primero las citas (lo que el cliente más consulta), después el perfil */
+    .perfil-contenido { order: -1; }
 }
 
+/* ── Celular (≤ 640px) ── */
 @media (max-width: 640px) {
-  .page { padding: 0 16px 32px; margin-top: 20px; }
-  .card { padding: 18px 16px; }
-  .card-header-row { flex-direction: column; align-items: flex-start; }
-  .perfil-tabs { width: 100%; }
-  .perfil-tab { flex: 1; justify-content: center; }
+    .page { margin-top: 20px; padding: 0 16px 32px; }
+    .card { padding: 18px 16px; border-radius: 16px; }
+
+    /* Título arriba y filtros debajo, ocupando todo el ancho */
+    .card-header-row  { flex-direction: column; align-items: stretch; gap: 12px; }
+    .filter-tabs      { width: 100%; }
+    .filter-tabs .tab { flex: 1; }
+
+    .perfil-tabs { width: 100%; }
+    .perfil-tab  { flex: 1; justify-content: center; }
+
+    /* Pagos: cada dato en una línea; la tabla se desliza hacia los lados */
+    .appts-table th, .appts-table td,
+    .payments-table th, .payments-table td { padding: 10px 12px; white-space: nowrap; }
+
+    /* Modales: botones a todo el ancho */
+    .modal-footer        { flex-wrap: wrap; }
+    .modal-footer button { flex: 1; }
+
+    /* Citas: cada cita se ve como una tarjeta en vez de una fila de tabla
+         [fecha]                    [estado]
+         Mascota
+         Servicio
+         [Reagendar] [Cancelar]                                        */
+    #citas-table-wrap               { border: none; overflow: visible; }
+    #citas-table-wrap .appts-table  { display: block; min-width: 0; }
+    #citas-table-wrap .appts-table thead { display: none; }
+    #citas-table-wrap .appts-table tbody { display: flex; flex-direction: column; gap: 10px; }
+
+    #citas-table-wrap .appts-table tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 4px 10px;
+        padding: 14px;
+        border: 1px solid var(--perfil-border);
+        border-radius: 14px;
+        background: #FFFFFF;
+    }
+
+    #citas-table-wrap .appts-table td {
+        padding: 0;
+        border: none;
+        white-space: normal;
+        background: none !important;   /* sin el color de hover de las filas */
+    }
+
+    #citas-table-wrap .appts-table td:nth-child(1) { font-weight: 700; }                          /* fecha */
+    #citas-table-wrap .appts-table td:nth-child(2) { grid-column: 1 / -1; font-size: 12.5px; color: var(--perfil-muted); } /* mascota */
+    #citas-table-wrap .appts-table td:nth-child(3) { grid-column: 1 / -1; }                       /* servicio */
+    #citas-table-wrap .appts-table td:nth-child(4) { grid-column: 2; grid-row: 1; justify-self: end; } /* estado */
+    #citas-table-wrap .appts-table td:nth-child(5) { grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 8px; } /* botones */
+    #citas-table-wrap .appts-table td:nth-child(5):empty { display: none; }
+    #citas-table-wrap .appts-table td:nth-child(5) button { flex: 1; justify-content: center; padding: 9px 12px; }
+    #citas-table-wrap .appts-table td:only-child { grid-column: 1 / -1; }   /* mensaje "No hay citas" */
 }

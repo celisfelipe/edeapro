@@ -70,6 +70,14 @@ class AuthController extends Controller
 
         // Verificar contraseña con bcrypt
         if ($estilista && Hash::check($contrasena, $estilista->contrasena)) {
+            // Un estilista desactivado por el admin ya no puede entrar
+            if ($estilista->estado === 'Inactivo') {
+                return response()->json([
+                    'ok'    => false,
+                    'error' => 'Tu cuenta está inactiva. Comunícate con el administrador.'
+                ]);
+            }
+
             $rol   = strtolower($estilista->rol) === 'administrador' ? 'administrador' : 'peluquero';
             $token = $this->generarToken('estilista', $estilista->id_estilista, $rol);
             return response()->json([
