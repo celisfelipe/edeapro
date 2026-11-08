@@ -42,6 +42,10 @@ class ResenaController extends Controller
      * un rol específico), también se confirma que el token sea de un
      * cliente y no de un administrador/peluquero antes de usarlo como
      * id_cliente.
+     *
+     * SEGURIDAD: el comentario se limpia con strip_tags para que nadie
+     * pueda guardar código HTML/JavaScript (XSS) que luego se ejecute en
+     * la página pública.
      */
     public function crear(Request $request)
     {
@@ -51,15 +55,19 @@ class ResenaController extends Controller
 
         $id_cliente  = intval($request->attributes->get('auth_tokenable_id'));
         $puntuacion  = intval($request->input('puntuacion'));
-        $comentario  = $request->input('comentario');
+        $comentario  = strip_tags(trim((string) $request->input('comentario', '')));
 
         // Validar que la puntuación esté entre 1 y 5
         if ($puntuacion < 1 || $puntuacion > 5) {
             return response()->json(['ok' => false, 'error' => 'Puntuación inválida']);
         }
 
-        if (empty($comentario)) {
+        if ($comentario === '') {
             return response()->json(['ok' => false, 'error' => 'El comentario no puede estar vacío']);
+        }
+
+        if (mb_strlen($comentario) > 255) {
+            return response()->json(['ok' => false, 'error' => 'El comentario no puede tener más de 255 caracteres']);
         }
 
         DB::table('resena')->insert([

@@ -175,7 +175,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: var(--r);
   padding: 1rem 1.1rem;
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; /* círculo de selección a la derecha */
   cursor: pointer;
   transition: var(--transition);
   position: relative; overflow: hidden;
@@ -408,6 +408,10 @@ body {
 /* RESPONSIVE */
 @media (max-width: 640px) {
   .svc-layout, .cal-section, .confirm-layout { flex-direction: column; }
+  /* Paso 1: las tarjetas de razas ocupan todo el ancho (en columna,
+     align-items: flex-start las dejaba angostas a la izquierda) */
+  .svc-layout { align-items: stretch; }
+  .svc-layout > div { width: 100%; }
   .basket { width: 100%; position: static; }
   .svc-list { grid-template-columns: 1fr; }
   .topbar { padding: 1rem; }
@@ -415,3 +419,4 @@ body {
   .stepper { padding: 1rem; }
 
 }
+

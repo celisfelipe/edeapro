@@ -11,14 +11,37 @@
  */
 
 let resenas              = [];
-let indiceActual         = 0;
-const porPagina          = 3;
+let indiceActual         = 0;   // página del carrusel que se está viendo
+let porPagina            = 3;   // reseñas por página (cambia según el ancho)
 let puntuacionSeleccionada = 0;
+
+// ── Carrusel automático ──
+const SEGUNDOS_POR_PAGINA = 6;  // cada cuánto pasa solo a la siguiente página
+let temporizador          = null;
 
 // Al cargar la página
 document.addEventListener('DOMContentLoaded', function () {
+    porPagina = calcularPorPagina();
     cargarResenas();
     verificarSesion();
+
+    // El carrusel se pausa mientras el usuario tiene el mouse encima
+    // (para que alcance a leer) y sigue cuando lo quita.
+    const carrusel = document.querySelector('.resenas-carrusel');
+    carrusel.addEventListener('mouseenter', detenerAutoplay);
+    carrusel.addEventListener('mouseleave', iniciarAutoplay);
+
+    // Si cambia el ancho de la pantalla (girar el celular, achicar la
+    // ventana), se recalcula cuántas reseñas caben por página.
+    window.addEventListener('resize', function () {
+        const nuevo = calcularPorPagina();
+        if (nuevo !== porPagina) {
+            porPagina    = nuevo;
+            indiceActual = 0;
+            renderizarResenas();
+            renderizarDots();
+        }
+    });
 
     // Estrellas interactivas del formulario
     document.querySelectorAll('.estrella').forEach(estrella => {
@@ -69,6 +92,7 @@ function cargarResenas() {
         resenas = data.resenas;
         renderizarResenas();
         renderizarDots();
+        iniciarAutoplay();
     })
     .catch(() => {
         // Reseñas de ejemplo si no hay conexión con Laravel
@@ -79,39 +103,87 @@ function cargarResenas() {
         ];
         renderizarResenas();
         renderizarDots();
+        iniciarAutoplay();
     });
 }
 
 /**
- * Renderiza las reseñas visibles según la página actual del carrusel.
- * Muestra 3 reseñas por página.
+ * Cuántas reseñas caben por página según el ancho de la pantalla:
+ * 1 en celular, 2 en tablet y 3 en computador.
+ * (Debe coincidir con los anchos de .resena-card en ubicacion.css)
+ */
+function calcularPorPagina() {
+    if (window.innerWidth <= 768)  return 1;
+    if (window.innerWidth <= 1024) return 2;
+    return 3;
+}
+
+/**
+ * Dibuja las reseñas de la página actual del carrusel.
+ * Cada tarjeta tiene: comillas decorativas, estrellas, el comentario y,
+ * abajo, un círculo con las iniciales del cliente, su nombre y la fecha.
  */
 function renderizarResenas() {
     const track = document.getElementById('resenas-track');
     if (resenas.length === 0) {
-        track.innerHTML = '<p style="color:var(--color-muted); text-align:center; width:100%;">Sé el primero en dejar una reseña.</p>';
+        track.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña.</p>';
         return;
     }
 
-    // Calcular qué reseñas mostrar según la página actual
+    // Qué reseñas tocan en esta página
     const inicio   = indiceActual * porPagina;
     const visibles = resenas.slice(inicio, inicio + porPagina);
 
-    track.innerHTML = '';
-    visibles.forEach(r => {
-        // Generar estrellas llenas y vacías según la puntuación
-        const estrellas = '★'.repeat(r.puntuacion) + '☆'.repeat(5 - r.puntuacion);
+    track.innerHTML = visibles.map(r => {
+        // Estrellas: siempre entre 0 y 5 llenas, el resto vacías
+        const puntos    = Math.max(0, Math.min(5, parseInt(r.puntuacion) || 0));
+        const estrellas = '<i class="fa-solid fa-star"></i>'.repeat(puntos)
+                        + '<i class="fa-regular fa-star"></i>'.repeat(5 - puntos);
+
         const fecha = new Date(r.fecha).toLocaleDateString('es-CO', {
             year: 'numeric', month: 'long', day: 'numeric'
         });
-        track.innerHTML += `
-            <div class="resena-card">
-                <h4>${r.nombre_cliente} ${r.apellido_cliente || ''}</h4>
-                <div class="fecha">${fecha}</div>
-                <div class="rating">${estrellas}</div>
-                <p>"${r.comentario}"</p>
-            </div>`;
-    });
+
+        // Iniciales para el círculo: "Felipe Celis" → "FC"
+        const iniciales = ((r.nombre_cliente || '').charAt(0) + (r.apellido_cliente || '').charAt(0)).toUpperCase();
+
+        // SEGURIDAD: todo texto escrito por usuarios pasa por escaparTextoResena,
+        // para que se muestre como texto y nunca se ejecute como código (XSS)
+        return `
+            <article class="resena-card">
+                <i class="fa-solid fa-quote-right resena-comillas" aria-hidden="true"></i>
+                <div class="rating" aria-label="${puntos} de 5 estrellas">${estrellas}</div>
+                <p class="resena-texto">${escaparTextoResena(r.comentario)}</p>
+                <div class="resena-autor">
+                    <span class="resena-avatar">${escaparTextoResena(iniciales)}</span>
+                    <div>
+                        <h4>${escaparTextoResena(r.nombre_cliente)} ${escaparTextoResena(r.apellido_cliente)}</h4>
+                        <span class="fecha">${fecha}</span>
+                    </div>
+                </div>
+            </article>`;
+    }).join('');
+
+    // Reinicia la animación de entrada en cada cambio de página
+    track.classList.remove('resenas-entrando');
+    void track.offsetWidth;   // obliga al navegador a "olvidar" la animación anterior
+    track.classList.add('resenas-entrando');
+}
+
+/**
+ * Convierte los caracteres especiales de HTML (< > & " ') en texto inofensivo.
+ * Así, si alguien escribe <script> en una reseña, se ve literalmente
+ * "<script>" en pantalla en vez de ejecutarse.
+ * @param {string} texto
+ * @returns {string}
+ */
+function escaparTextoResena(texto) {
+    return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /**
@@ -128,21 +200,50 @@ function renderizarDots() {
 }
 
 /**
- * Navega entre páginas del carrusel.
+ * Flechas del carrusel (el HTML las llama con onclick="moverResena(-1)" o (1)).
+ * Además de mover, reinician el conteo del carrusel automático, para que
+ * no salte de página justo después de que el usuario tocó una flecha.
  * @param {number} direccion - 1 para siguiente, -1 para anterior
  */
 function moverResena(direccion) {
+    cambiarPagina(direccion);
+    iniciarAutoplay();
+}
+
+/**
+ * Pasa a la página anterior o siguiente. Al llegar al final vuelve a la
+ * primera (y al revés), por eso se usa el residuo (%).
+ */
+function cambiarPagina(direccion) {
     const totalPaginas = Math.ceil(resenas.length / porPagina);
+    if (totalPaginas === 0) return;
     indiceActual = (indiceActual + direccion + totalPaginas) % totalPaginas;
     renderizarResenas();
     actualizarDots();
 }
 
-/** Va directamente a una página específica del carrusel */
+/** Va directamente a una página específica del carrusel (al tocar un punto) */
 function irAPagina(indice) {
     indiceActual = indice;
     renderizarResenas();
     actualizarDots();
+    iniciarAutoplay();   // vuelve a contar desde cero
+}
+
+/**
+ * Carrusel automático: cada SEGUNDOS_POR_PAGINA pasa a la siguiente página.
+ * Si solo hay una página no hace nada (no hay a dónde pasar).
+ */
+function iniciarAutoplay() {
+    detenerAutoplay();   // evita tener dos temporizadores a la vez
+    if (Math.ceil(resenas.length / porPagina) <= 1) return;
+    temporizador = setInterval(() => cambiarPagina(1), SEGUNDOS_POR_PAGINA * 1000);
+}
+
+/** Detiene el carrusel automático (por ejemplo, con el mouse encima) */
+function detenerAutoplay() {
+    clearInterval(temporizador);
+    temporizador = null;
 }
 
 /** Actualiza el dot activo según la página actual */

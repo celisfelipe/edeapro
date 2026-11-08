@@ -1,135 +1,358 @@
-/* ================================================
-   principal.css — Panel Empleado
-   ================================================
-   Estilos compartidos del panel empleado.
-   Las variables de color vienen de base.css.
-================================================ */
+/* ==========================================================================
+   principal.css — Panel del Empleado (peluquero) · EDEA PRO
+   --------------------------------------------------------------------------
+   Estilos de todas las páginas de empleado/paginas/. Usa el mismo diseño
+   que el panel del administrador, pero solo con las partes que existen en
+   las páginas del empleado (no tiene modales, notificaciones ni pagos).
 
-/* SIDEBAR */
+   Orden en que el navegador carga los estilos de cada página:
+     1. base.css          → reset, sidebar colapsable y menú en celular
+     2. principal.css     → ESTE archivo: apariencia del panel
+     3. agenda-grilla.css → grilla de la agenda (solo disponibilidad.html)
+     4. identidad.css     → tokens de marca (colores, letras, radios)
+
+   Regla de oro del CSS ("cascada"): si dos reglas con la misma fuerza le
+   dan valores distintos al mismo elemento, gana la que aparece DESPUÉS.
+
+   Contenido:
+     1. PALETA DEL PANEL
+     2. FONDO GENERAL
+     3. SIDEBAR (menú lateral)
+     4. ÁREA PRINCIPAL Y ENCABEZADO
+     5. TARJETAS (.card)
+     6. BUSCADOR (lupa dentro del campo de texto)
+     7. TABLAS
+     8. ESTADOS DE CITA
+     9. BOTONES
+     10. FORMULARIOS
+     11. FONDO DEL PANEL DE DETALLE
+     12. CONTADOR (.badge)
+     13. REPORTES (reportes.html): tarjeta con botones PDF y Excel
+     14. AGENDA (disponibilidad.html)
+     15. RESPONSIVE
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. PALETA DEL PANEL
+   Colores y medidas que se repiten en todo el archivo. Si se quiere
+   cambiar un color del panel, se cambia aquí y se actualiza en todos lados.
+   ========================================================================== */
+:root {
+    /* Marca */
+    --panel-gold:        #F2AE00;              /* dorado principal */
+    --panel-gold-dark:   #C98B00;              /* dorado para íconos y hover */
+    --panel-gold-soft:   rgba(242, 174, 0, 0.14); /* fondo dorado suave */
+    --panel-graphite:    #33312F;              /* texto principal */
+    --panel-graphite-2:  #201E1D;              /* grafito más oscuro (hover) */
+    --panel-ivory:       #F5F4EC;              /* marfil */
+    --panel-muted:       #706B63;              /* texto secundario */
+
+    /* Bordes y fondos de tabla */
+    --panel-border:      rgba(51, 49, 47, 0.12);
+    --panel-border-2:    rgba(51, 49, 47, 0.07);  /* separadores de filas */
+    --panel-tint:        #F1F0EA;                 /* cabecera de tablas */
+
+    /* Estados: color del texto + fondo suave */
+    --panel-ok:          #2F7A4E;
+    --panel-ok-soft:     rgba(75, 174, 110, 0.14);
+    --panel-warn:        #8A6100;
+    --panel-warn-soft:   rgba(217, 119, 6, 0.14);
+    --panel-bad:         #B42318;
+    --panel-bad-soft:    rgba(220, 38, 38, 0.10);
+
+    /* Esquinas redondeadas */
+    --panel-r-sm:        10px;
+    --panel-r-md:        14px;
+    --panel-r-lg:        18px;
+
+    /* Sombras (tarjetas sobre el fondo oscuro) */
+    --panel-shadow:      0 10px 30px rgba(0, 0, 0, 0.25);
+    --panel-shadow-up:   0 14px 32px rgba(51, 49, 47, 0.11);
+}
+
+
+/* ==========================================================================
+   2. FONDO GENERAL
+   Mismo fondo que el footer de la página principal: grafito con un brillo
+   dorado en la esquina superior derecha. "fixed" hace que el fondo no se
+   mueva al bajar por la página.
+   ========================================================================== */
+body {
+    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background:
+        radial-gradient(circle at 100% 0, rgba(242, 174, 0, 0.18), transparent 34%),
+        linear-gradient(135deg, #33312F, #292826);
+    background-attachment: fixed;
+}
+
+
+/* ==========================================================================
+   3. SIDEBAR (menú lateral)
+   Claro, como el encabezado de navegación de la página principal.
+   El ancho, el colapso y el menú de celular se controlan en base.css.
+   ========================================================================== */
 .sidebar {
-    width: 230px;
-    background: var(--color-dark-surface);
-    color: var(--color-light);
-    height: 100vh;
-    padding: 20px;
     position: fixed;
-    border-right: 1px solid rgba(242, 174, 0, 0.2);
-    /* Columna flex: el <ul> crece y el pie (Cerrar sesión) queda abajo */
+    width: 240px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    background: #F8F7F8;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
     overflow-y: auto;
+    scrollbar-width: none;          /* oculta la barra de scroll (Firefox) */
 }
 
-.sidebar h2 {
-    margin-bottom: 20px;
-    font-weight: 800;
-    letter-spacing: 1px;
-}
+.sidebar::-webkit-scrollbar { display: none; }  /* oculta la barra (Chrome) */
 
-.sidebar ul {
-    list-style: none;
-    flex: 1;
-}
-
-.sidebar ul li {
-    margin-bottom: 5px;
-    border-radius: 10px;
-    transition: background 0.2s;
-}
-
-.sidebar ul li:hover {
-    background: rgba(245, 244, 236, 0.07);
-}
-
-.sidebar a {
-    /* flex (como en base.css y el admin): separa ícono/texto y permite
-       centrar el ícono cuando el sidebar está colapsado */
-    display: flex;
-    padding: 12px;
-    color: rgba(248, 247, 248, 0.82);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 10px;
-    position: relative;
-    transition: color 0.2s;
-}
-
-.sidebar a:hover { color: var(--color-light); }
-
-/* Enlace activo: dorado + borde izquierdo dorado */
-.sidebar a.active {
-    background: rgba(242, 174, 0, 0.1);
-    color: var(--color-cta);
-}
-
-.sidebar a.active::before {
+/* Línea dorada en el borde derecho, igual a la del encabezado del inicio */
+.sidebar::after {
     content: '';
     position: absolute;
-    left: 0; top: 6px; bottom: 6px;
+    top: 0;
+    right: 0;
+    bottom: 0;
     width: 3px;
-    border-radius: 0 3px 3px 0;
-    background: var(--color-cta);
+    background: linear-gradient(180deg, var(--panel-gold), rgba(242, 174, 0, 0.35) 45%, transparent);
+    pointer-events: none;
 }
 
-/* CONTENIDO */
-.main {
-    margin-left: 250px;
-    padding: 30px;
+/* Marca: el <h2> del HTML trae el rol ("Empleado").
+   Con ::after se escribe "EDEA PRO" encima y con ::before se dibuja el
+   cuadro dorado con la huella. Así no hubo que cambiar el HTML. */
+.sidebar h2 {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 22px 18px 18px 68px;   /* 68px a la izquierda: espacio del logo */
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--panel-border);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--panel-gold-dark);
+}
+
+.sidebar h2::after {
+    content: 'EDEA PRO';
+    order: -1;                      /* aparece antes (encima) del rol */
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    color: var(--panel-graphite);
+}
+
+.sidebar h2::before {
+    content: '\f1b0';               /* ícono "paw" (huella) de Font Awesome */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: var(--panel-gold);
+    color: var(--panel-graphite);
+    font-size: 17px;
+    box-shadow: 0 4px 12px rgba(242, 174, 0, 0.3);
+}
+
+/* Lista de opciones */
+.sidebar ul {
+    flex: 1;                        /* empuja el pie (Cerrar sesión) abajo */
+    list-style: none;
+    padding: 10px 12px;
+}
+
+.sidebar ul li { margin-bottom: 3px; }
+
+.sidebar a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--panel-r-sm);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--panel-graphite);
+    transition: background 0.15s, color 0.15s;
+}
+
+.sidebar a i {
+    color: var(--panel-muted);
+    transition: color 0.15s;
+}
+
+.sidebar a:hover        { background: var(--panel-gold-soft); }
+.sidebar a:hover i      { color: var(--panel-gold-dark); }
+
+/* Opción de la página actual (el HTML le pone class="active") */
+.sidebar a.active       { background: var(--panel-gold); font-weight: 600; }
+.sidebar a.active i     { color: var(--panel-graphite); }
+
+/* Pie del sidebar: botón Cerrar sesión */
+.sidebar-footer {
+    padding: 14px 12px;
+    border-top: 1px solid var(--panel-border);
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
-    background: var(--color-bg);
-    min-height: 100vh;
+    padding: 9px 10px;
+    border: none;
+    border-radius: var(--panel-r-sm);
+    background: transparent;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    text-align: left;
+    color: var(--panel-graphite);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
 }
 
-/* HEADER */
+.sidebar-logout:hover {
+    background: var(--panel-bad-soft);
+    color: var(--panel-bad);
+}
+
+
+/* ==========================================================================
+   4. ÁREA PRINCIPAL Y ENCABEZADO
+   ========================================================================== */
+
+/* min-width: 0 evita que una tabla ancha empuje la página hacia la
+   derecha en portátiles; la tabla se desliza dentro de su tarjeta. */
+.main {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    margin-left: 240px;             /* deja libre el espacio del sidebar */
+    padding: 24px 30px 48px;
+}
+
+/* Barra superior: se queda pegada arriba al bajar (sticky) */
 .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    background: var(--color-surface);
-    padding: 15px 20px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
+    height: 60px;
+    padding: 0 18px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--panel-r-md);
+    background: #FFFFFF;
+    box-shadow: var(--panel-shadow);
 }
 
 .header h1 {
-    font-size: 22px;
-    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--color-heading);
 }
 
-.header p {
-    font-size: 14px;
-    color: var(--color-metal-text);
+/* Botón ☰ para abrir/cerrar el sidebar */
+.hamburger-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--panel-border);
+    border-radius: var(--panel-r-sm);
+    background: var(--panel-ivory);
+}
+
+.hamburger-btn:hover {
+    background: var(--panel-gold-soft);
+    border-color: var(--panel-gold);
+}
+
+/* Nombre del usuario como "chip" con ícono de persona */
+.header > p {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 6px;
+    border: 1px solid var(--panel-border-2);
+    border-radius: 999px;
+    background: var(--panel-ivory);
+    font-size: 12.5px;
     font-weight: 600;
+    color: var(--panel-graphite);
 }
 
-/* TARJETAS */
+.header > p::before {
+    content: '\f007';               /* ícono "user" de Font Awesome */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--panel-graphite);
+    color: var(--panel-gold);
+    font-size: 11px;
+}
+
+
+/* ==========================================================================
+   5. TARJETAS (.card)
+   Contenedor blanco de cada sección de la página.
+   ========================================================================== */
 .card {
-    background: var(--color-surface);
-    padding: 20px;
-    border-radius: var(--radius);
-    margin-bottom: 20px;
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    margin-bottom: 24px;
+    padding: 22px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--panel-r-lg);
+    background: #FFFFFF;
+    box-shadow: var(--panel-shadow);
+    transition: box-shadow 0.2s;
 }
 
-.card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* Una tarjeta con tabla se desliza hacia los lados si la tabla no cabe */
+.card:has(table) { overflow-x: auto; }
 
 .card h2 {
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
     font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--color-heading);
-    margin-bottom: 15px;
 }
 
-/* BUSCADOR */
+.card h2 > i { color: var(--panel-gold-dark); }
+
+
+/* ==========================================================================
+   6. BUSCADOR (lupa dentro del campo de texto)
+   ========================================================================== */
 .search-wrap {
     position: relative;
     margin-bottom: 14px;
@@ -140,91 +363,201 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-metal-text);
     font-size: 13px;
+    color: var(--color-metal-text);
 }
 
 .search-wrap input {
     width: 100%;
-    padding-left: 34px;
+    padding-left: 34px;             /* deja espacio para la lupa */
 }
 
-/* TABLAS */
+
+/* ==========================================================================
+   7. TABLAS
+   "border-collapse: separate" permite redondear las esquinas de la tabla.
+   ========================================================================== */
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 4px;
+    border: 1px solid var(--panel-border);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--panel-r-md);
+    overflow: hidden;
 }
 
 table th {
-    background: var(--table-tint);
-    color: var(--color-metal-text);
-    padding: 12px 10px;
+    padding: 12px;
+    border-bottom: 1px solid var(--panel-border);
+    background: var(--panel-tint);
     text-align: left;
-    font-size: 11px;
+    font-size: 0.68rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+    color: var(--panel-muted);
 }
 
 table td {
-    padding: 10px;
-    border-bottom: 1px solid var(--color-border);
-    font-size: 13px;
+    padding: 12px;
+    border-bottom: 1px solid var(--panel-border-2);
+    vertical-align: middle;
+    font-size: 13.5px;
     color: var(--color-text);
 }
 
-table tr:hover {
-    background: var(--table-tint);
+table tr:last-child td { border-bottom: none; }
+table tr:hover td      { background: #FAF9F4; }
+
+/* Botones dentro de cualquier tabla: más pequeños y suaves */
+table .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    box-shadow: none;
 }
 
-/* BOTONES — mismas variantes y aspecto que el panel administrador */
+table .btn + .btn { margin-left: 6px; }   /* espacio entre dos botones */
+
+table .btn-red {
+    border-color: rgba(220, 38, 38, 0.18);
+    background: var(--panel-bad-soft);
+    color: var(--panel-bad);
+}
+
+table .btn-red:hover { background: #DC2626; color: #FFFFFF; }
+
+
+/* ==========================================================================
+   8. ESTADOS DE CITA
+   inicio.js pone la clase en la celda: status-yellow (Pendiente),
+   status-green (Completada) o status-red (Cancelada). El ícono queda
+   dentro de un circulito de color.
+   ========================================================================== */
+.status-green,
+.status-yellow,
+.status-red {
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-green  { color: var(--panel-ok); }
+.status-yellow { color: var(--panel-warn); }
+.status-red    { color: var(--panel-bad); }
+
+.status-green i,
+.status-yellow i,
+.status-red i {
+    width: 22px;
+    height: 22px;
+    margin-right: 4px;
+    display: inline-grid;
+    place-items: center;
+    vertical-align: middle;
+    border-radius: 50%;
+    font-size: 10px;
+}
+
+.status-green i  { background: var(--panel-ok-soft); }
+.status-yellow i { background: var(--panel-warn-soft); }
+.status-red i    { background: var(--panel-bad-soft); }
+
+/* Si el estado viene en un <span> (panel de detalle), se ve como etiqueta */
+span.status-green,
+span.status-yellow,
+span.status-red {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px 4px 4px;
+    border-radius: 999px;
+}
+
+span.status-green  { background: var(--panel-ok-soft); }
+span.status-yellow { background: var(--panel-warn-soft); }
+span.status-red    { background: var(--panel-bad-soft); }
+
+
+/* ==========================================================================
+   9. BOTONES
+   Todos tienen forma de píldora. Variantes (los nombres vienen del
+   proyecto original; ojo: btn-blue es grafito, no azul):
+     .btn-primary  dorado, acción principal
+     .btn-green    verde, confirmar / crear
+     .btn-red      rojo, eliminar / cancelar
+     .btn-blue     grafito, acción secundaria
+     .btn-gray     blanco con borde, acción neutra
+   ========================================================================== */
 .btn {
-    padding: 6px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
     font-family: inherit;
-    transition: background 0.2s, opacity 0.2s, box-shadow 0.2s, transform 0.1s;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 
-.btn:hover { opacity: 0.85; transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
+.btn:hover    { transform: translateY(-1px); }   /* sube 1px al pasar el mouse */
+.btn:active   { transform: translateY(0); }
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; box-shadow: none; }
 
-.btn-green { background: #16A34A; color: #FFFFFF; }
-.btn-red   { background: var(--color-danger); color: #FFFFFF; }
-.btn-blue  { background: var(--color-heading); color: var(--white); }
-.btn-blue:hover { background: var(--gold); color: var(--graphite); opacity: 1; }
-.btn-gray  { background: #FFFFFF; color: var(--color-heading); border-color: var(--color-border); }
+.btn-primary {
+    background: var(--color-cta);
+    color: var(--color-on-cta);
+    font-weight: 700;
+    box-shadow: var(--shadow-gold);
+}
 
-/* ESTADOS */
-.status-green  { color: var(--color-success); font-weight: 700; }
-.status-yellow { color: var(--color-warning); font-weight: 700; }
-.status-red    { color: var(--color-danger); font-weight: 700; }
+.btn-primary:hover { background: var(--color-cta-dark); }
 
-/* INPUT / SELECT */
-/* Inputs: blancos, 50px de alto, radio 12px */
+.btn-green {
+    background: #3F9D62;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(75, 174, 110, 0.28);
+}
+
+.btn-green:hover { background: var(--panel-ok); }
+
+.btn-red {
+    background: #DC2626;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.22);
+}
+
+.btn-red:hover { background: #B91C1C; }
+
+
+/* ==========================================================================
+   10. FORMULARIOS
+   :where() tiene "fuerza" cero, así cualquier otra regla puede cambiar
+   estos valores sin pelear con ellos.
+   ========================================================================== */
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]), select) {
     min-height: 50px;
     padding: 0 14px;
     border: 1px solid var(--input-border);
     border-radius: var(--radius-sm);
+    background: #FFFFFF;
     font-size: 14px;
     color: var(--color-text);
-    background: #FFFFFF;
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: var(--gold-dark);
-    box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);
+    box-shadow: 0 0 0 3px rgba(242, 174, 0, 0.2);   /* halo dorado */
 }
 
-input:disabled, select:disabled {
+input:disabled,
+select:disabled {
     background: var(--color-surface2);
     color: var(--color-metal-text);
     cursor: not-allowed;
@@ -232,43 +565,55 @@ input:disabled, select:disabled {
 
 input::placeholder {
     color: var(--color-metal-text);
+    opacity: 0.7;
 }
 
-/* Agenda (disponibilidad.html): fecha fija entre Anterior/Siguiente y grilla con alto acotado */
-.grilla-nav { align-items: center; }
-.grilla-nav .grilla-fecha-btn { min-width: 220px; justify-content: center; text-align: center; }
-.grilla-card .grilla-scroll { max-height: 460px; overflow-y: auto; }
 
-/* PIE DEL SIDEBAR: Cerrar sesión (mismo estilo que los links del menú) */
-.sidebar-footer {
-    padding-top: 12px;
-    border-top: 1px solid rgba(245, 244, 236, 0.10);
-}
-
-.sidebar-logout {
+/* ==========================================================================
+   11. FONDO DEL PANEL DE DETALLE
+   Al hacer clic en una cita de la agenda se abre un panel lateral con su
+   detalle. Su fondo oscuro (.modal-overlay) siempre está en la página,
+   invisible; el JavaScript le agrega la clase .open para mostrarlo.
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;                       /* ocupa toda la pantalla */
+    z-index: 1000;
     display: flex;
     align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: transparent;
-    color: rgba(248, 247, 248, 0.82);
-    font: inherit;
-    font-size: 14px;
+    justify-content: center;
+    background: rgba(32, 30, 29, 0.55);
+    backdrop-filter: blur(5px);     /* desenfoca lo de atrás */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
+/* ==========================================================================
+   12. CONTADOR (.badge)
+   ========================================================================== */
+
+.badge {
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--color-light);
+    color: var(--color-heading);
+    font-size: 12px;
     font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
 }
 
-.sidebar-logout:hover {
-    background: rgba(239, 68, 68, 0.14);
-    color: #F4A99C;
-}
 
-/* REPORTES */
+/* ==========================================================================
+   13. REPORTES (reportes.html): tarjeta con botones PDF y Excel
+   ========================================================================== */
 .reportes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -282,13 +627,20 @@ input::placeholder {
 }
 
 .reporte-card p {
-    font-size: 14px;
-    color: var(--color-metal-text);
+    flex: 1;                        /* empuja los botones al fondo de la tarjeta */
     margin-bottom: 16px;
+    font-size: 13.5px;
+    color: var(--color-metal-text);
 }
 
-.reporte-acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+.reporte-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
+/* Mensaje de error debajo de los botones si falla la descarga.
+   Si está vacío no ocupa espacio. */
 .reporte-card .reporte-estado {
     margin: 12px 0 0;
     font-size: 13px;
@@ -297,12 +649,72 @@ input::placeholder {
 
 .reporte-estado:empty { display: none; }
 
-.btn:disabled { opacity: 0.6; cursor: progress; transform: none; box-shadow: none; }
 
-/* ── RESPONSIVE DEL PANEL ──
-   Las tablas se desplazan dentro de su tarjeta (no la página completa). */
-.card:has(table) { overflow-x: auto; }
+/* ==========================================================================
+   14. AGENDA (disponibilidad.html)
+   La grilla en sí está en estilos/agenda-grilla.css; aquí solo se ajusta
+   la barra de navegación y el alto máximo con scroll.
+   ========================================================================== */
+.grilla-nav { align-items: center; }
 
+.grilla-nav .grilla-fecha-btn {
+    min-width: 220px;               /* el botón no cambia de ancho con cada fecha */
+    justify-content: center;
+    text-align: center;
+}
+
+.grilla-card .grilla-scroll {
+    max-height: 460px;
+    overflow-y: auto;
+}
+
+
+/* ==========================================================================
+   15. RESPONSIVE
+   "@media (max-width: X)" = estas reglas solo se aplican si la pantalla
+   mide X píxeles o menos. Se escriben al final para que ganen.
+   ========================================================================== */
+
+/* ── Tablet y celular (≤ 900px): el sidebar se oculta y se abre con ☰ ── */
 @media (max-width: 900px) {
-    .main { padding: 20px 20px 32px; }
+    body .sidebar { width: 260px; padding: 0; }
+
+    /* base.css pone el título en "block" en móvil; aquí se mantiene la marca */
+    body .sidebar h2 { display: flex; }
+
+    .main,
+    body.sidebar-collapsed .main {
+        margin-left: 0;
+        padding: 14px 14px 32px;
+    }
+
+    .header {
+        position: sticky;
+        top: 8px;
+        height: 56px;
+        padding: 0 12px;
+    }
+}
+
+/* ── Celular (≤ 640px) ── */
+@media (max-width: 640px) {
+    /* Encabezado: solo queda el ícono del usuario, sin el nombre */
+    .header h1  { font-size: 1.02rem; }
+    .header > p { gap: 0; padding: 4px; font-size: 0; }
+
+    .card { padding: 16px 14px; border-radius: var(--panel-r-md); }
+
+    /* Tablas: cada dato en una línea; la tabla se desliza hacia los lados
+       dentro de su tarjeta en vez de apretar las columnas */
+    table th,
+    table td { padding: 10px 12px; white-space: nowrap; }
+
+    /* Agenda: la fecha arriba ocupando todo el ancho, Anterior y Siguiente debajo */
+    .grilla-topbar { padding: 14px; }
+    .grilla-topbar-left,
+    .grilla-nav { width: 100%; }
+    .grilla-nav { flex-wrap: wrap; gap: 6px; }
+    .grilla-nav .btn { flex: 1; justify-content: center; white-space: nowrap; }
+    .grilla-nav .btn.grilla-fecha-btn { order: -1; flex: 1 1 100%; min-width: 0; }
+
 }

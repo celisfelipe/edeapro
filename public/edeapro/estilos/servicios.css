@@ -386,5 +386,19 @@ body {
 
 @media (max-width: 640px) {
     .service-container { grid-template-columns: 1fr; }
-    .filtros-servicios { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: var(--space-4); }
+
+    /* Filtros (Perro pelo corto / largo / Gato / Corte especializado):
+       quedan en una sola fila que se desliza hacia los lados. Cada botón
+       mantiene su texto en una línea (nowrap) y no se encoge (flex-shrink: 0);
+       la barra de scroll se oculta para que se vea limpio. */
+    .filtros-servicios {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: var(--space-4);
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .filtros-servicios::-webkit-scrollbar { display: none; }
+    .btn-filtro { flex-shrink: 0; white-space: nowrap; }
 }
