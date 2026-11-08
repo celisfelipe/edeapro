@@ -67,7 +67,7 @@ function cargarPagos() {
                     <td>${escaparHTML(p.nombre_servicio)}</td>
                     <td>${montoTexto}</td>
                     <td><span class="badge-metodo-pago"><i class="fa-solid ${iconoMetodoPago(p.metodo_pago)}"></i> ${escaparHTML(p.metodo_pago)}</span></td>
-                    <td class="status-green"><i class="fa-solid fa-check"></i> ${escaparHTML(p.estado_pago)}</td>
+                    <td><span class="status-green"><i class="fa-solid fa-check"></i> ${escaparHTML(p.estado_pago)}</span></td>
                 </tr>`;
         });
     });

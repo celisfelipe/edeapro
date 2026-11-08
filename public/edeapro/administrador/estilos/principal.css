@@ -1070,6 +1070,14 @@ input::placeholder {
    La grilla en sí está en estilos/agenda-grilla.css; aquí solo se ajusta
    la barra de navegación y el alto máximo con scroll.
    ========================================================================== */
+
+/* Gráficos de estadisticas.html: el alto fijo lo pone esta caja y
+   Chart.js ocupa todo su espacio (maintainAspectRatio: false en el JS) */
+.grafico-caja {
+    position: relative;
+    height: 300px;
+}
+
 .grilla-nav { align-items: center; }
 
 .grilla-nav .grilla-fecha-btn {

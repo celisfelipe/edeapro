@@ -36,16 +36,18 @@ function cargarServicios() {
         data.citas.forEach(c => {
             // Clase de color e ícono según el estado de la cita
             const estado = c.estado === 'Completada' ? 'status-green' :
-                           c.estado === 'Pendiente'  ? 'status-yellow' : 'status-red';
+                           c.estado === 'Pendiente'  ? 'status-yellow' :
+                           c.estado === 'Reagendada' ? 'status-yellow' : 'status-red';
             const iconoEstado = c.estado === 'Completada' ? 'fa-check' :
-                           c.estado === 'Pendiente'  ? 'fa-clock' : 'fa-xmark';
+                           c.estado === 'Pendiente'  ? 'fa-clock' :
+                           c.estado === 'Reagendada' ? 'fa-calendar-check' : 'fa-xmark';
             tbody.innerHTML += `
                 <tr>
                     <td>${escaparHTML(c.nombre_cliente)} ${escaparHTML(c.apellido_cliente)}</td>
                     <td>${escaparHTML(c.nombre_servicio)}</td>
                     <td>${escaparHTML(c.fecha)}</td>
                     <td>${escaparHTML(formatoHora12(c.hora))}</td>
-                    <td class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${escaparHTML(c.estado)}</td>
+                    <td><span class="${estado}"><i class="fa-solid ${iconoEstado}"></i> ${escaparHTML(c.estado)}</span></td>
                 </tr>`;
         });
     });
