@@ -32,20 +32,38 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('total-citas').textContent    = data.total_citas;
         document.getElementById('total-ingresos').textContent = '$' + Number(data.total_ingresos).toLocaleString('es-CO');
 
-        // Gráfico de torta: citas por estado (Pendiente / Completada / Cancelada)
+                // Letra de la marca en todos los gráficos
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#706B63';
+
+        // Color de cada estado según su NOMBRE (no según el orden en que
+        // lleguen de la base de datos), con los mismos colores del panel
+        const COLOR_ESTADO = {
+            'Pendiente':  '#F2AE00',   // dorado
+            'Reagendada': '#C98B00',   // dorado oscuro
+            'Completada': '#4BAE6E',   // verde
+            'Cancelada':  '#DC2626'    // rojo
+        };
+
+        // Gráfico de dona: citas por estado
         new Chart(document.getElementById('graficoCitas'), {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: data.citas_estado.map(c => c.estado),
                 datasets: [{
                     data: data.citas_estado.map(c => c.total),
-                    backgroundColor: ['#ffc107', '#28a745', '#dc3545']
+                    backgroundColor: data.citas_estado.map(c => COLOR_ESTADO[c.estado] || '#A8A49C'),
+                    borderColor: '#FFFFFF',
+                    borderWidth: 3
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { position: 'right' } }
+                maintainAspectRatio: false,   // el alto lo pone .grafico-caja en el CSS
+                cutout: '62%',                // tamaño del hueco del centro
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18 } }
+                }
             }
         });
 
@@ -57,8 +75,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Citas',
                     data: data.servicios.map(s => s.total),
-                    backgroundColor: '#ae9d81'
+                    backgroundColor: '#F2AE00',
+                    hoverBackgroundColor: '#C98B00',
+                    borderRadius: 8,          // esquinas redondeadas
+                    maxBarThickness: 56       // que las barras no queden gigantes
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },   // una sola serie: no hace falta leyenda
+                scales: {
+                    x: { grid: { display: false } },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 },            // solo números enteros (no hay media cita)
+                        grid: { color: 'rgba(51, 49, 47, 0.08)' }
+                    }
+                }
             }
         });
     });

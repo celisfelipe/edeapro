@@ -87,6 +87,7 @@ function inicialesCliente(nombre, apellido) {
 function estiloEstado(estado) {
     if (estado === 'Completada') return { clase: 'status-green',  icono: 'fa-check' };
     if (estado === 'Pendiente')  return { clase: 'status-yellow', icono: 'fa-clock' };
+    if (estado === 'Reagendada') return { clase: 'status-yellow', icono: 'fa-calendar-check' };
     return { clase: 'status-red', icono: 'fa-xmark' };
 }
 
@@ -104,6 +105,8 @@ function renderTablaCitas() {
     tbody.innerHTML = '';
     pagina.forEach(cita => {
         const estilo = estiloEstado(cita.estado);
+        // Solo las citas que aún no han pasado se pueden cancelar
+        const puedeCancelar = cita.estado === 'Pendiente' || cita.estado === 'Reagendada';
 
         // El objeto cita completo se serializa en JSON para pasarlo al modal de detalles.
         // encodeURIComponent evita que las comillas y caracteres especiales rompan el HTML.
@@ -122,11 +125,12 @@ function renderTablaCitas() {
                 <td>${escaparHTML(cita.mascota)}</td>
                 <td>${escaparHTML(cita.nombre_servicio)}</td>
                 <td>${escaparHTML(cita.nombre_estilista)}</td>
-                <td class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${escaparHTML(cita.estado)}</td>
+                <td><span class="${estilo.clase}"><i class="fa-solid ${estilo.icono}"></i> ${escaparHTML(cita.estado)}</span></td>
                 <td class="acciones-cell">
+                    ${puedeCancelar ? `
                     <button class="btn btn-red" onclick="cancelarCita(${cita.id_cita})">
                         <i class="fa-solid fa-xmark"></i> Cancelar
-                    </button>
+                    </button>` : ''}
                     <button class="btn btn-blue btn-detalle" data-cita="${citaJson}">
                         <i class="fa-solid fa-eye"></i> Detalles
                     </button>
