@@ -392,7 +392,7 @@ body {
 
 /* EXITO */
 .success-wrap { max-width: 480px; margin: 3rem auto; text-align: center; background: #F8F7F8; border: 1.5px solid var(--border); border-radius: 22px; padding: 3rem 2rem; box-shadow: var(--shadow-lg); }
-.success-paw { font-size: 52px; margin-bottom: 1rem; display: block; }
+.success-logo { width: 140px; max-width: 100%; height: auto; margin: 0 auto 1rem; display: block; filter: brightness(0); }
 .success-title { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 700; color: var(--ink); margin-bottom: .75rem; }
 .success-sub { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
 .success-detail { background: var(--parchment); border: 1.5px solid var(--border); border-radius: var(--rs); padding: .9rem 1.25rem; font-size: 13px; color: var(--ink); margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 6px; text-align: left; }

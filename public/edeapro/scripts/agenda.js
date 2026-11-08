@@ -414,7 +414,7 @@ function renderDone(){
   $("stepper").innerHTML="";
   $("main").innerHTML=`
     <div class="success-wrap">
-      <span class="success-paw">🐾</span>
+      <img class="success-logo" src="../imagenes/logo/logo.png" alt="EDEA">
       <div class="success-title">¡Cita confirmada!</div>
       <div class="success-sub">Tu cita en <strong>Edea Grooming</strong> quedó agendada.</div>
       <div class="success-detail">
