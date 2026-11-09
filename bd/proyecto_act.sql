@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 06-11-2026 a las 22:45:24
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 09-11-2026 a las 15:36:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -89,8 +89,8 @@ CREATE TABLE `cache` (
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
 ('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793163912),
 ('edeapro-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793163912;', 1793163912),
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1793988856),
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1793988856;', 1793988856);
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1794193764),
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1794193764;', 1794193764);
 
 -- --------------------------------------------------------
 
@@ -145,7 +145,9 @@ INSERT INTO `cita` (`id_cita`, `id_cliente`, `id_mascota`, `id_servicio`, `id_ra
 (9206, 3, 2, 1, 9, 2, '2026-10-01', '12:00:00', 'Cancelada', 'a'),
 (9207, 3, 2, 1, 9, 3, '2026-10-01', '09:00:00', 'Cancelada', 'aaaaa'),
 (9208, 3, 2, 1, 8, 2, '2026-12-01', '09:00:00', 'Cancelada', 'A'),
-(9209, 3, 11, 1, 5, 2, '2026-11-10', '09:00:00', 'Pendiente', NULL);
+(9209, 3, 11, 1, 5, 2, '2026-11-10', '09:00:00', 'Pendiente', NULL),
+(9210, 3, 11, 1, 8, 1, '2026-11-09', '09:00:00', 'Cancelada', NULL),
+(9211, 7, 13, 1, 8, 2, '2026-11-18', '09:30:00', 'Completada', NULL);
 
 --
 -- Disparadores `cita`
@@ -222,11 +224,11 @@ DELIMITER ;
 --
 CREATE TABLE `citas_completas` (
 `id_cita` int(11)
-,`nombre_cliente` varchar(30)
-,`apellido_cliente` varchar(30)
+,`nombre_cliente` varchar(100)
+,`apellido_cliente` varchar(100)
 ,`mascota` varchar(20)
 ,`nombre_servicio` varchar(30)
-,`nombre_estilista` varchar(30)
+,`nombre_estilista` varchar(100)
 ,`fecha` date
 ,`hora` time
 ,`estado` varchar(20)
@@ -240,12 +242,12 @@ CREATE TABLE `citas_completas` (
 
 CREATE TABLE `cliente` (
   `id_cliente` int(11) NOT NULL,
-  `nombre` varchar(30) DEFAULT NULL,
-  `apellido` varchar(30) DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `apellido` varchar(100) DEFAULT NULL,
   `contrasena` varchar(255) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `correo` varchar(30) DEFAULT NULL,
-  `direccion` varchar(50) DEFAULT NULL
+  `correo` varchar(150) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -255,7 +257,8 @@ CREATE TABLE `cliente` (
 INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `contrasena`, `telefono`, `correo`, `direccion`) VALUES
 (1, 'jose', 'lopez', '$2y$12$ueMwAeEv98tT2zlK2Rww0ukGvkCtOy/h0DZAG3cYRMYe7jwpMaZKy', '3218403116', 'pruebaedea15@gmail.com', ''),
 (3, 'felipe', 'celis', '$2y$12$Bkxl.4.8WAjLSvRcFEuCceeuGUfq4UkNVmRQQTyYFL8Uiv4gSsxPy', '3156412211', 'theblasflo14@gmail.com', NULL),
-(5, 'blessd', 'el bendito', '$2y$12$ULngQhzgrspQkl4oFoq.cOwpjplD9ttK3OQ4etEM3Ru4Bwb/OMH6u', '3156459812', 'blessd@gmail.com', '');
+(5, 'blessd', 'el bendito', '$2y$12$ULngQhzgrspQkl4oFoq.cOwpjplD9ttK3OQ4etEM3Ru4Bwb/OMH6u', '3156459812', 'blessd@gmail.com', ''),
+(7, 'TheBlasflo', 'celis', '$2y$12$C/5tdt7b982OA1sbKe8Wbu68YCZSDQKro/U1k9psKQwEHELVh.LSy', '3218403116', 'theblasflo15@gmail.com', '');
 
 -- --------------------------------------------------------
 
@@ -298,14 +301,14 @@ INSERT INTO `disponibilidad_estilista` (`id_disponibilidad`, `id_estilista`, `fe
 
 CREATE TABLE `estilista` (
   `id_estilista` int(11) NOT NULL,
-  `nombre_estilista` varchar(30) DEFAULT NULL,
-  `apellido_estilista` varchar(30) DEFAULT NULL,
+  `nombre_estilista` varchar(100) DEFAULT NULL,
+  `apellido_estilista` varchar(100) DEFAULT NULL,
   `foto` varchar(255) DEFAULT NULL,
   `telefono_estilista` varchar(30) DEFAULT NULL,
   `rol` varchar(20) DEFAULT NULL,
   `estado` varchar(20) DEFAULT NULL,
   `disponibilidad` varchar(20) DEFAULT NULL,
-  `correo` varchar(50) DEFAULT NULL,
+  `correo` varchar(150) DEFAULT NULL,
   `contrasena` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -404,7 +407,8 @@ INSERT INTO `mascota` (`id_mascota`, `id_cliente`, `id_raza`, `nombre`, `especie
 (1, 1, NULL, 'penelope', 'Canino', 3, 'Hembra', 1),
 (2, 3, NULL, 'max', 'perro', 10, 'macho', 0),
 (5, 5, NULL, 'loco', 'gato', 2, 'macho', 1),
-(11, 3, NULL, 'penelopelopez', 'perro', 10, 'hembra', 1);
+(11, 3, NULL, 'penelopelopez', 'perro', 10, 'hembra', 1),
+(13, 7, NULL, 'thalia', 'perro', 10, 'hembra', 1);
 
 -- --------------------------------------------------------
 
@@ -417,8 +421,8 @@ CREATE TABLE `mascotas_clientes` (
 ,`nombre_mascotas` varchar(20)
 ,`especie` varchar(20)
 ,`edad` int(11)
-,`nombre_cliente` varchar(30)
-,`apellido_cliente` varchar(30)
+,`nombre_cliente` varchar(100)
+,`apellido_cliente` varchar(100)
 ,`nombre_raza` varchar(30)
 );
 
@@ -430,7 +434,7 @@ CREATE TABLE `mascotas_clientes` (
 --
 CREATE TABLE `mascotas_servicios` (
 `id_cliente` int(11)
-,`nombre_cliente` varchar(30)
+,`nombre_cliente` varchar(100)
 ,`nombre_mascotas` varchar(20)
 ,`raza` varchar(30)
 ,`nombre_servicio` varchar(30)
@@ -514,13 +518,17 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 (16, 9204, 3, 'Cita del 2026-07-20 a las 09:00:00 fue cancelada. Motivo: no puedo ir', 'Cancelación', 'Cita cancelada', 'Leída'),
 (17, 9205, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
 (18, 9206, 3, 'Tu cita fue agendada para el 2026-10-01 a las 12:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
-(19, 9207, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(20, 9208, 3, 'Tu cita fue agendada para el 2026-12-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
-(21, 9208, 3, 'Cita del 2026-12-01 a las 09:00:00 fue cancelada. Motivo: A', 'Cancelación', 'Cita cancelada', 'No leída'),
-(22, 9206, 3, 'Cita del 2026-10-01 a las 12:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'No leída'),
-(23, 9205, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'No leída'),
-(24, 9207, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: aaaaa', 'Cancelación', 'Cita cancelada', 'No leída'),
-(25, 9209, 3, 'Tu cita fue agendada para el 2026-11-10 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída');
+(19, 9207, 3, 'Tu cita fue agendada para el 2026-10-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(20, 9208, 3, 'Tu cita fue agendada para el 2026-12-01 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(21, 9208, 3, 'Cita del 2026-12-01 a las 09:00:00 fue cancelada. Motivo: A', 'Cancelación', 'Cita cancelada', 'Leída'),
+(22, 9206, 3, 'Cita del 2026-10-01 a las 12:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'Leída'),
+(23, 9205, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: a', 'Cancelación', 'Cita cancelada', 'Leída'),
+(24, 9207, 3, 'Cita del 2026-10-01 a las 09:00:00 fue cancelada. Motivo: aaaaa', 'Cancelación', 'Cita cancelada', 'Leída'),
+(25, 9209, 3, 'Tu cita fue agendada para el 2026-11-10 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'Leída'),
+(26, 9210, 3, 'Tu cita fue agendada para el 2026-11-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(27, 9210, 3, 'Cita del 2026-11-09 a las 09:00:00 fue cancelada. Motivo: No especificado', 'Cancelación', 'Cita cancelada', 'No leída'),
+(28, 9211, 7, 'Tu cita fue agendada para el 2026-11-09 a las 09:00:00', 'Recordatorio', 'Cita registrada', 'No leída'),
+(29, 9211, 7, 'Cita reagendada para el 2026-11-18 a las 09:30:00', 'Reagendamiento', 'Cita reagendada', 'No leída');
 
 -- --------------------------------------------------------
 
@@ -530,8 +538,8 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_cita`, `id_cliente`, `mensaje
 --
 CREATE TABLE `notificaciones_clientes` (
 `id_notificacion` int(11)
-,`nombre` varchar(30)
-,`apellido` varchar(30)
+,`nombre` varchar(100)
+,`apellido` varchar(100)
 ,`titulo` varchar(30)
 ,`mensaje` varchar(200)
 ,`tipo` varchar(30)
@@ -559,7 +567,8 @@ CREATE TABLE `pago` (
 
 INSERT INTO `pago` (`id_pago`, `id_cita`, `monto`, `fecha_pago`, `metodo_pago`, `estado_pago`) VALUES
 (1, 7, NULL, '2026-05-09', 'Efectivo', 'Completado'),
-(2, 10, NULL, '2026-05-09', 'Tarjeta de crédito', 'Completado');
+(2, 10, NULL, '2026-05-09', 'Tarjeta de crédito', 'Completado'),
+(4, 9211, 55000.00, '2026-11-08', 'Tarjeta de crédito', 'Completado');
 
 -- --------------------------------------------------------
 
@@ -615,8 +624,7 @@ CREATE TABLE `personal_access_tokens` (
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
 (12, 'cliente', 4, 'auth_token', '2b28c25c4eb5cd1fce8c0e22d9e983e16c34b980f7d00b1d54c40b5634125ef6', '[\"cliente\"]', NULL, '2026-06-15 07:16:12', '2026-06-14 07:16:12', '2026-06-14 07:16:12'),
 (13, 'cliente', 5, 'auth_token', '6c1a966d95f9b2b1d2093bc6e409eebfe6a2e6ea686dfff4b2ae222b34d18545', '[\"cliente\"]', NULL, '2026-06-15 07:18:48', '2026-06-14 07:18:48', '2026-06-14 07:18:48'),
-(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48'),
-(147, 'cliente', 3, 'auth_token', 'cc83b95bc6989ea3b2408a3c3b9ba30525b466561f108243e6bf82a88ad06356', '[\"cliente\"]', NULL, '2026-11-07 18:13:17', '2026-11-06 18:13:17', '2026-11-06 18:13:17');
+(88, 'estilista', 5, 'auth_token', '40b536f113d070034edcceb18e77e5bcb6d8e77a7ec4221c4ce1b82eae03e9bd', '[\"peluquero\"]', NULL, '2026-07-01 23:49:48', '2026-06-30 23:49:48', '2026-06-30 23:49:48');
 
 -- --------------------------------------------------------
 
@@ -790,6 +798,13 @@ CREATE TABLE `recuperacion_contrasena` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `recuperacion_contrasena`
+--
+
+INSERT INTO `recuperacion_contrasena` (`id`, `correo`, `token`, `created_at`) VALUES
+(5, 'theblasflo14@gmail.com', 'J2eO7OJtOJloU69vg5djRwTTwNAIK44YYLmIdxTx4XxmK372H3eMCB7uy9AZJTFA', '2026-11-09 03:57:12');
+
 -- --------------------------------------------------------
 
 --
@@ -858,6 +873,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 ('cPCHLQxrOOK14jqeUMuiKEOMi2wGMa8jAY0pBM2b', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTXJCbkowSjJhZm1KbFhSMjhEVzZQalNhVkd2cUhQMWJuZ0FaVUZ6eSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777426615),
 ('D2QHcIqvrbcqBT1oLfOVcwq9twYhRNDRM7vmnFwd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieVp5Nk1UY0JPekNyak9kZm1YVENEbmlFdW04QkxMZG5pQXlIcFFJcyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1778043780),
 ('e445ZigTGjBAfee0FctK4qh4ShjmeDuvMTf3oNfC', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Avast/154.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSDFpNm1HS0h4TFVPazdYYTB6cW5CUlEyN1lZclcwaE5zWnRkTDdsUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793026437),
+('sAVD1UpvoN6SUcT6yLVhqoGeQsDJUt4iiyK4iLAR', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUWpjaDU2ZkU3Y2Q0aW03b1F4QmxIMHFtSXVJT25ZTU9Ec2pOcWFOMyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1794186626),
 ('ybrrUtodh72CQGyqfhq4nYyA56zbsSCtrMZE9GZV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRWt5RzJrZkZ0NlNSbEs3N3BZZmNkdUN0dFExM3VTR2l2OTc0cDcyWiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1793988302),
 ('Z8XaiQfO7iF7HaOIhGykW5pq3maPLJeZDK5UkqVP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZlVyeG5MeUR2cXBQaUc2NUk3RHBwNlhPVDBzRjRoa2pqSjAzNlREciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1777963541);
 
@@ -1116,13 +1132,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9210;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9212;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `disponibilidad_estilista`
@@ -1152,7 +1168,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1164,13 +1180,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 
 --
 -- AUTO_INCREMENT de la tabla `raza`
@@ -1182,7 +1198,7 @@ ALTER TABLE `raza`
 -- AUTO_INCREMENT de la tabla `recuperacion_contrasena`
 --
 ALTER TABLE `recuperacion_contrasena`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
