@@ -19,13 +19,17 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql gd zip
 
 # 4. Apache: la página pública de Laravel está en /public, y se permite
-#    que el .htaccess de Laravel maneje las rutas (/api/...)
+#    que el .htaccess de Laravel maneje las rutas (/api/...).
+#    Apache solo puede tener un MPM ("forma de atender visitas") activo;
+#    PHP necesita "prefork", así que se quitan los otros dos.
 RUN sed -i 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!' \
         /etc/apache2/sites-available/000-default.conf \
     && printf '<Directory /var/www/html/public>\n    AllowOverride All\n</Directory>\n' \
         > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel \
-    && a2enmod rewrite
+    && a2enmod rewrite \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* \
+    && a2enmod mpm_prefork
 
 # 5. Composer (el instalador de librerías de PHP), copiado de su imagen oficial
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
