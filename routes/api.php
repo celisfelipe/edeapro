@@ -16,6 +16,7 @@ use App\Models\Estilista;
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/login',    [App\Http\Controllers\AuthController::class, 'login']);
     Route::post('/registro', [App\Http\Controllers\AuthController::class, 'registro']);
+    Route::post('/login/google', [App\Http\Controllers\AuthController::class, 'loginGoogle']);
 });
 
 // ── Recuperación de contraseña ────────────────────────────────

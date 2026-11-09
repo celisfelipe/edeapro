@@ -8,6 +8,7 @@
  * Conecta con la API de Laravel:
  *   POST ${API_BASE}/api/login    → iniciarSesion()
  *   POST ${API_BASE}/api/registro → registrarse()
+ *   POST ${API_BASE}/api/login/google → iniciarSesionGoogle()
  *
  * Al iniciar sesión guarda en localStorage:
  *   'user' → objeto con los datos del usuario
@@ -83,19 +84,7 @@ function iniciarSesion() {
     .then(data => {
         if (!data) return;
         if (data.ok) {
-            // Guardar sesión en localStorage
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('rol', data.rol);
-            localStorage.setItem('token', data.token);
-
-            // Redirigir al panel correspondiente según el rol
-            if (data.rol === 'cliente') {
-                window.location.href = '../cliente/perfil.html';
-            } else if (data.rol === 'administrador') {
-                window.location.href = '../administrador/paginas/inicio.html';
-            } else if (data.rol === 'peluquero') {
-                window.location.href = '../empleado/paginas/inicio.html';
-            }
+            abrirSesion(data);
         } else {
             mostrarMsg(msg, data.error, 'error');
         }
@@ -105,6 +94,84 @@ function iniciarSesion() {
         // Restaurar el botón siempre, haya éxito o error
         if (btn) { btn.disabled = false; btn.textContent = 'Iniciar sesión'; }
     });
+}
+
+/**
+ * Guarda la sesión en localStorage y lleva al panel según el rol.
+ * La usan el login normal y el de Google.
+ * @param {object} data - Respuesta de Laravel: user, rol y token
+ */
+function abrirSesion(data) {
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('rol', data.rol);
+    localStorage.setItem('token', data.token);
+
+    if (data.rol === 'cliente') {
+        window.location.href = '../cliente/perfil.html';
+    } else if (data.rol === 'administrador') {
+        window.location.href = '../administrador/paginas/inicio.html';
+    } else if (data.rol === 'peluquero') {
+        window.location.href = '../empleado/paginas/inicio.html';
+    }
+}
+
+// ── LOGIN CON GOOGLE (solo clientes) ──────────────────────────
+
+/**
+ * Dibuja el botón "Continuar con Google" dentro de #google-btn.
+ * Espera a que la página cargue por completo, porque el script de
+ * Google llega con "async" y puede tardar un poco.
+ */
+window.addEventListener('load', function () {
+    // Sin internet o con el script bloqueado: queda solo el login normal
+    if (!window.google) return;
+
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback:  iniciarSesionGoogle
+    });
+
+    google.accounts.id.renderButton(document.getElementById('google-btn'), {
+        theme: 'outline',
+        size:  'large',
+        shape: 'pill',
+        text:  'continue_with',
+        locale: 'es',
+        width: 300
+    });
+});
+
+/**
+ * Google llama esta función cuando el cliente escoge su cuenta.
+ * respuesta.credential es el "carné" firmado por Google; Laravel
+ * lo verifica con Google antes de abrir la sesión.
+ * @param {object} respuesta - Objeto que entrega Google
+ */
+function iniciarSesionGoogle(respuesta) {
+    const msg = document.getElementById('login-msg');
+    mostrarMsg(msg, 'Verificando con Google...', '');
+
+    fetch(`${API_BASE}/api/login/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ credential: respuesta.credential })
+    })
+    .then(res => {
+        if (res.status === 429) {
+            mostrarMsg(msg, 'Demasiados intentos. Espera un minuto e intenta de nuevo.', 'error');
+            return null;
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        if (data.ok) {
+            abrirSesion(data);
+        } else {
+            mostrarMsg(msg, data.error || 'No se pudo iniciar sesión con Google.', 'error');
+        }
+    })
+    .catch(() => mostrarMsg(msg, 'Error conectando con el servidor', 'error'));
 }
 
 /**
