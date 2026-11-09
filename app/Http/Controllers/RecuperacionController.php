@@ -46,7 +46,7 @@ class RecuperacionController extends Controller
     ]);
 
     // Enlace de recuperación
-    $enlace = env('FRONTEND_URL') . "/edeapro/paginas/nueva-contrasena.html?token={$token}&correo=" . urlencode($correo);
+    $enlace = config('app.frontend_url') . "/edeapro/paginas/nueva-contrasena.html?token={$token}&correo=" . urlencode($correo);
 
     // Enviar email
     Mail::raw(

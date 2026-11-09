@@ -1,0 +1,21 @@
+# ============================================================
+# .dockerignore — lo que NO entra en la caja de Docker
+# Funciona igual que el .gitignore, pero para el Dockerfile.
+# ============================================================
+
+# Secretos: en Railway las variables se escriben en su panel
+.env
+
+# Librerías: se descargan dentro de la caja con composer install
+vendor
+node_modules
+
+# Historial de git: no hace falta para que la página funcione
+.git
+
+# Archivos que se generan solos en tu PC
+storage/logs/*.log
+bootstrap/cache/*.php
+
+# Pruebas automáticas: no se usan en el servidor
+tests
