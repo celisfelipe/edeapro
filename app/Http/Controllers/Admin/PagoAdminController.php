@@ -58,9 +58,26 @@ class PagoAdminController extends Controller
         $id_cita = intval($request->input('id_cita'));
         $metodo  = $request->input('metodo');
 
-        $cita = DB::select("SELECT id_raza, id_servicio FROM cita WHERE id_cita = ?", [$id_cita]);
+        // Solo se aceptan los métodos que ofrece el formulario
+        if (!in_array($metodo, ['Efectivo', 'Tarjeta de crédito', 'Transferencia'], true)) {
+            return response()->json(['ok' => false, 'error' => 'Método de pago no válido']);
+        }
+
+        $cita = DB::select("SELECT id_raza, id_servicio, estado, fecha FROM cita WHERE id_cita = ?", [$id_cita]);
         if (empty($cita)) {
             return response()->json(['ok' => false, 'error' => 'Cita no encontrada']);
+        }
+
+        // Solo se cobra una cita que sigue por atender. Al pagarla pasa a
+        // 'Completada', así que esto también impide cobrarla dos veces.
+        if (!in_array($cita[0]->estado, ['Pendiente', 'Reagendada'], true)) {
+            return response()->json(['ok' => false, 'error' => 'Esta cita ya fue pagada o está cancelada.']);
+        }
+
+        // Solo se cobra cuando ya llegó el día de la cita: pagar significa
+        // que el servicio se prestó, y la cita pasa a 'Completada'
+        if ($cita[0]->fecha > date('Y-m-d')) {
+            return response()->json(['ok' => false, 'error' => 'Solo se puede registrar el pago el día de la cita o después.']);
         }
 
         $precio = DB::select(

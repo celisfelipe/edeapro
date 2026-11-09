@@ -74,9 +74,10 @@ function cargarPagos() {
 }
 
 /**
- * Llena la tabla #tabla-sin-pago con las citas en estado 'Pendiente'
- * (las que aún no tienen pago). Cada fila trae un <select> con el método
- * de pago y el botón "Registrar pago". La hora se muestra en 12h.
+ * Llena la tabla #tabla-sin-pago con las citas 'Pendiente' o 'Reagendada'
+ * cuya fecha ya llegó (las que se atendieron y aún no tienen pago). Cada
+ * fila trae un <select> con el método de pago y el botón "Registrar pago".
+ * La hora se muestra en 12h.
  *
  * @returns {void}
  */
@@ -87,8 +88,12 @@ function cargarCitasSinPago() {
         const tbody = document.getElementById('tabla-sin-pago');
         if (!data.ok) return;
 
-        // Filtrar solo citas pendientes (sin pago aún)
-        const sinPago = data.citas.filter(c => c.estado === 'Pendiente');
+        // Citas por atender (sin pago aún): Pendientes y Reagendadas cuya
+        // fecha ya llegó. Las futuras aparecen aquí el día de la cita.
+        const hoy = new Date().toLocaleDateString('en-CA');   // "AAAA-MM-DD" en hora local
+        const sinPago = data.citas.filter(c =>
+            (c.estado === 'Pendiente' || c.estado === 'Reagendada') && c.fecha <= hoy
+        );
         if (sinPago.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5">No hay citas pendientes de pago</td></tr>';
             return;
