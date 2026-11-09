@@ -388,17 +388,13 @@ body {
     .service-container { grid-template-columns: 1fr; }
 
     /* Filtros (Perro pelo corto / largo / Gato / Corte especializado):
-       quedan en una sola fila que se desliza hacia los lados. Cada botón
-       mantiene su texto en una línea (nowrap) y no se encoge (flex-shrink: 0);
-       la barra de scroll se oculta para que se vea limpio. */
+       en celular bajan a una cuadrícula de 2 columnas para que se vean
+       los 4 sin deslizar. Dejan de quedarse pegados arriba (static)
+       para no tapar media pantalla al bajar. */
     .filtros-servicios {
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: var(--space-4);
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        position: static;
     }
-    .filtros-servicios::-webkit-scrollbar { display: none; }
-    .btn-filtro { flex-shrink: 0; white-space: nowrap; }
+    .btn-filtro { justify-content: center; text-align: center; }
 }
