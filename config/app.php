@@ -55,6 +55,13 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     /*
+    | Dirección donde se abren las páginas de EDEA PRO. Se usa para armar
+    | el enlace del correo de recuperación y para el CORS.
+    | Local: http://localhost:8000 · Railway: la dirección que dé Railway.
+    */
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:8000'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
