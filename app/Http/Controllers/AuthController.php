@@ -7,7 +7,7 @@
  *
  * Ruta login:    POST /api/login
  * Ruta registro: POST /api/registro
- *
+ * Ruta Google:   POST /api/login/google
  * SEGURIDAD IMPLEMENTADA:
  * - Validación de datos de entrada
  * - Sanitización de datos
@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -48,19 +49,7 @@ class AuthController extends Controller
 
         // Verificar contraseña con bcrypt
         if ($cliente && Hash::check($contrasena, $cliente->contrasena)) {
-            $token = $this->generarToken('cliente', $cliente->id_cliente, 'cliente');
-            return response()->json([
-                'ok'    => true,
-                'rol'   => 'cliente',
-                'user'  => [
-                    'id_cliente' => $cliente->id_cliente,
-                    'nombre'   => $cliente->nombre,
-                    'apellido' => $cliente->apellido,
-                    'correo'   => $cliente->correo,
-                    'rol'      => 'cliente'
-                ],
-                'token' => $token
-            ]);
+            return $this->respuestaCliente($cliente);
         }
 
         // Buscar estilista por correo
@@ -114,6 +103,88 @@ class AuthController extends Controller
             ->delete();
 
         return response()->json(['ok' => true]);
+    }
+
+        /**
+     * Login con Google — solo para clientes.
+     * Ruta: POST /api/login/google
+     *
+     * El navegador manda la "credencial" que entregó el botón de Google.
+     * Antes de confiar en ella, Laravel le pregunta a Google si es auténtica,
+     * para que nadie pueda inventarse un correo ajeno.
+     * Si el correo todavía no es cliente, se crea la cuenta.
+     */
+    public function loginGoogle(Request $request)
+    {
+        $request->validate(['credential' => 'required|string']);
+
+        // 1. Google revisa que la credencial sea suya y que no esté vencida
+        $respuesta = Http::get('https://oauth2.googleapis.com/tokeninfo', [
+            'id_token' => $request->input('credential')
+        ]);
+
+        $google = $respuesta->json();
+
+        // 2. Debe ser para NUESTRA app (aud = nuestro ID) y con correo verificado
+        if ($respuesta->failed()
+            || ($google['aud'] ?? '') !== config('services.google.client_id')
+            || ($google['email_verified'] ?? '') !== 'true') {
+            return response()->json([
+                'ok'    => false,
+                'error' => 'No se pudo verificar tu cuenta de Google.'
+            ]);
+        }
+
+        $correo  = $google['email'];
+        $cliente = DB::table('cliente')->where('correo', $correo)->first();
+
+        if (!$cliente) {
+            // 3. Los empleados entran con correo y contraseña, no con Google
+            if (DB::table('estilista')->where('correo', $correo)->exists()) {
+                return response()->json([
+                    'ok'    => false,
+                    'error' => 'Esta cuenta es de un empleado. Inicia sesión con tu correo y contraseña.'
+                ]);
+            }
+
+            // 4. Primera vez: se crea el cliente con los datos de Google.
+            //    La tabla exige contraseña, así que se guarda una al azar que
+            //    nadie conoce. Si luego quiere una, usa "Recuperar contraseña".
+            $id_cliente = DB::table('cliente')->insertGetId([
+                'nombre'     => mb_substr(strip_tags($google['given_name'] ?? 'Cliente'), 0, 100),
+                'apellido'   => mb_substr(strip_tags($google['family_name'] ?? ''), 0, 100),
+                'correo'     => $correo,
+                'telefono'   => null,
+                'direccion'  => '',
+                'contrasena' => Hash::make(Str::random(40))
+            ]);
+
+            $cliente = DB::table('cliente')->where('id_cliente', $id_cliente)->first();
+        }
+
+        return $this->respuestaCliente($cliente);
+    }
+
+    /**
+     * Respuesta de "sesión iniciada" para un cliente.
+     * La usan el login normal y el de Google, así los dos devuelven lo mismo.
+     */
+    private function respuestaCliente($cliente)
+    {
+        $token = $this->generarToken('cliente', $cliente->id_cliente, 'cliente');
+
+        return response()->json([
+            'ok'    => true,
+            'rol'   => 'cliente',
+            'user'  => [
+                'id_cliente' => $cliente->id_cliente,
+                'nombre'     => $cliente->nombre,
+                'apellido'   => $cliente->apellido,
+                'correo'     => $cliente->correo,
+                'rol'        => 'cliente'
+            ],
+            'token' => $token
+        ]);
     }
 
     /**

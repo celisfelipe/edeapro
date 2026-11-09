@@ -498,3 +498,29 @@ body {
     .btn-volver-login { margin-bottom: 36px; }
     .form-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Login con Google ──────────────────────────────────────────
+   Línea separadora con una "o" en el centro y el botón de Google
+   centrado. El botón en sí lo dibuja Google (no se puede estilizar). */
+.separador-google {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 14px;
+    font-size: 13px;
+    color: #A8A49C;
+}
+
+.separador-google::before,
+.separador-google::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(51, 49, 47, 0.15);
+}
+
+.google-btn {
+    display: flex;
+    justify-content: center;
+    min-height: 44px;   /* reserva el espacio mientras carga el botón */
+}

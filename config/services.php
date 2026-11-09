@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    // Login con Google (solo clientes). El valor está en el .env
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+    ],
 ];

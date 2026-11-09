@@ -45,6 +45,11 @@
                 
 
                 <button class="btn-primary" onclick="iniciarSesion()">Iniciar sesión</button>
+
+                <!-- Login con Google (solo clientes). login.js dibuja el botón aquí -->
+                <div class="separador-google"><span>o</span></div>
+                <div id="google-btn" class="google-btn"></div>
+
                 <div id="login-msg" class="mensaje"></div>
 
                 <p class="switch-text">¿Olvidaste tu contraseña? <span onclick="mostrarRecuperar()">Recupérala aquí</span></p>
@@ -155,6 +160,7 @@
     </div>
 
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
     <script src="../scripts/config.js"></script>
     <script src="../scripts/validaciones.js"></script>
     <script src="../scripts/login.js"></script>
