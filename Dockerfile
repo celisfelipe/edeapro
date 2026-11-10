@@ -40,5 +40,6 @@ ENV PHP_CLI_SERVER_WORKERS=4
 # 9. Al encender la caja (no al construirla):
 #    - guardar la configuración en caché (aquí ya existen las variables)
 #    - encender el servidor en el puerto que asigna Railway (PORT)
+#    - --no-reload: necesario para que funcionen los 4 "workers" del paso 8
 CMD php artisan config:cache \
-    && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+    && php artisan serve --host=0.0.0.0 --port=${PORT:-8000} --no-reload
