@@ -405,6 +405,12 @@ body {
 /* FOCO: el anillo dorado global viene de identidad.css */
 #mascotaSel:focus { outline: none; border-color: var(--caramel); box-shadow: 0 0 0 3px var(--gold-16); }
 
+/* Flecha "‹" del calendario apagada: no se puede ir a meses pasados */
+.cal-arr:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
 /* RESPONSIVE */
 @media (max-width: 640px) {
   .svc-layout, .cal-section, .confirm-layout { flex-direction: column; }

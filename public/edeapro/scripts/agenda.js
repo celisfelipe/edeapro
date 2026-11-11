@@ -8,11 +8,21 @@ let SVCS     = {};
 let GROOMERS = [];
 let ADICIONALES = [];
 
-let S = {
-  step:1, cat:null, sel:{}, adicionales:{},
-  groomer:null, yr:2026, mo:3,
-  date:null, slot:null, mascotas:{}, done:false
-};
+/**
+ * Estado inicial del asistente de agenda. Es una función (y no un objeto
+ * fijo) para que el calendario abra siempre en el mes y el año de HOY,
+ * tanto al cargar la página como al pulsar "Agendar otra cita".
+ */
+function estadoInicial(){
+  const hoy = new Date();
+  return {
+    step:1, cat:null, sel:{}, adicionales:{},
+    groomer:null, yr:hoy.getFullYear(), mo:hoy.getMonth(),
+    date:null, slot:null, mascotas:{}, done:false
+  };
+}
+
+let S = estadoInicial();
 
 let MASCOTAS = [];
 
@@ -219,6 +229,8 @@ async function renderStep3(){
   const first = new Date(y,m,1).getDay();
   const total = new Date(y,m+1,0).getDate();
   const tn    = new Date();
+  // ¿Se está mostrando el mes actual? Entonces no se puede ir más atrás
+  const esMesActual = y===tn.getFullYear() && m===tn.getMonth();
 
   let cells = "";
   for(let i=0;i<first;i++) cells+=`<div class="cal-d emp"></div>`;
@@ -244,7 +256,7 @@ async function renderStep3(){
     <div class="cal-section">
       <div class="cal-box">
         <div class="cal-nav">
-          <button class="cal-arr" id="pmb">‹</button>
+          <button class="cal-arr" id="pmb" ${esMesActual?"disabled":""}>‹</button>
           <span class="cal-month">${MONTHS[m]} ${y}</span>
           <button class="cal-arr" id="nmb">›</button>
         </div>
@@ -271,7 +283,7 @@ async function renderStep3(){
       <button class="btn-primary" id="bgo" ${canGo()?"":"disabled"}>Revisar cita →</button>
     </div>`;
 
-  $("pmb").onclick=()=>{S.mo===0?(S.mo=11,S.yr--):(S.mo--);S.date=null;S.slot=null;render()};
+  $("pmb").onclick=()=>{ if(esMesActual) return; S.mo===0?(S.mo=11,S.yr--):(S.mo--);S.date=null;S.slot=null;render()};
   $("nmb").onclick=()=>{S.mo===11?(S.mo=0,S.yr++):(S.mo++);S.date=null;S.slot=null;render()};
   document.querySelectorAll(".cal-d:not(.dis):not(.emp)").forEach(d=>d.onclick=()=>{
     S.date=`${d.dataset.d}/${S.mo+1}/${S.yr}`; S.slot=null; render();
@@ -426,8 +438,9 @@ function renderDone(){
     </div>`;
 }
 
+/** Vuelve a empezar el asistente desde el paso 1 (botón "Agendar otra cita") */
 function resetApp(){
-  S={step:1,cat:null,sel:{},adicionales:{},groomer:null,yr:2026,mo:3,date:null,slot:null,mascotas:{},done:false};
+  S = estadoInicial();
   render();
 }
 
