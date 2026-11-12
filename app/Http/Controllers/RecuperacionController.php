@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class RecuperacionController extends Controller
@@ -48,13 +48,34 @@ class RecuperacionController extends Controller
     // Enlace de recuperación
     $enlace = config('app.frontend_url') . "/edeapro/paginas/nueva-contrasena.html?token={$token}&correo=" . urlencode($correo);
 
-    // Enviar email
-    Mail::raw(
-        "Hola,\n\nRecibimos una solicitud para restablecer tu contraseña de EDEA PRO.\n\nHaz clic en el siguiente enlace para crear una nueva contraseña (válido por 15 minutos):\n\n{$enlace}\n\nSi no solicitaste esto, ignora este mensaje.\n\nEDEA PRO",
-        function ($message) use ($correo) {
-            $message->to($correo)->subject('Recuperar contraseña — EDEA PRO');
+        // Enviar el correo con la API de Brevo (por HTTPS, no por SMTP).
+    // Si falla, se borra el token recién creado: así este intento no cuenta
+    // en el límite de 3 por hora y el usuario ve un mensaje claro.
+    try {
+        $respuesta = Http::withHeaders(['api-key' => config('services.brevo.key')])
+            ->timeout(15)
+            ->post('https://api.brevo.com/v3/smtp/email', [
+                'sender'      => ['name' => 'EDEA PRO', 'email' => config('services.brevo.remitente')],
+                'to'          => [['email' => $correo]],
+                'subject'     => 'Recuperar contraseña — EDEA PRO',
+                'textContent' => "Hola,\n\nRecibimos una solicitud para restablecer tu contraseña de EDEA PRO.\n\nHaz clic en el siguiente enlace para crear una nueva contraseña (válido por 15 minutos):\n\n{$enlace}\n\nSi no solicitaste esto, ignora este mensaje.\n\nEDEA PRO",
+            ]);
+        $enviado = $respuesta->successful();
+        if (!$enviado) {
+            report(new \RuntimeException('Brevo respondió ' . $respuesta->status() . ': ' . $respuesta->body()));
         }
-    );
+    } catch (\Throwable $e) {
+        report($e);
+        $enviado = false;
+    }
+
+    if (!$enviado) {
+        DB::table('recuperacion_contrasena')->where('token', $token)->delete();
+        return response()->json([
+            'ok'    => false,
+            'error' => 'No se pudo enviar el correo en este momento. Intenta más tarde.'
+        ]);
+    }
 
     return response()->json(['ok' => true, 'mensaje' => 'Correo enviado. Revisa tu bandeja de entrada.']);
 }
