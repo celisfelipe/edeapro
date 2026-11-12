@@ -39,4 +39,17 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
     ],
+
+        'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+    ],
+
+    // Envío de correos por la API de Brevo (HTTPS). Railway bloquea el
+    // envío por SMTP en el plan gratuito, así que no se usa Gmail directo.
+    // Los valores están en el .env
+    'brevo' => [
+        'key'       => env('BREVO_API_KEY'),
+        'remitente' => env('BREVO_REMITENTE', 'edeaproapp@gmail.com'),
+    ],
+
 ];
