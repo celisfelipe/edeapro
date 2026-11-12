@@ -1617,3 +1617,38 @@ footer::before {
     .arte-pasion-inner h2::after { margin: 0 0.35em; }
 
 }
+
+/* ── Política de privacidad (privacidad.html) ──────────────────
+   Columna de lectura centrada y con buen espacio entre secciones. */
+.privacidad {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(40px, 6vw, 72px) 20px;
+    line-height: 1.7;
+    color: var(--graphite);
+}
+
+.privacidad h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 6px;
+}
+
+.privacidad h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    margin: 32px 0 10px;
+}
+
+.privacidad ul { padding-left: 20px; margin-bottom: 12px; }
+.privacidad li { margin-bottom: 6px; }
+.privacidad-fecha { font-size: 0.85rem; color: var(--muted); }
+
+/* Enlace "Política de privacidad" en el pie de página */
+.footer-bottom a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.footer-bottom a:hover { color: var(--gold); }
