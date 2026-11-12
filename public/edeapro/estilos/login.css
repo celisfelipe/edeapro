@@ -534,3 +534,17 @@ body {
     justify-content: center;
     min-height: 44px;   /* reserva el espacio mientras carga el botón */
 }
+
+/* Aviso bajo el botón de Google con enlace a la política de privacidad */
+.aviso-privacidad {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-metal-text);
+}
+
+.aviso-privacidad a {
+    color: var(--color-heading);
+    text-decoration: underline var(--gold) 2px;
+    text-underline-offset: 3px;
+}
