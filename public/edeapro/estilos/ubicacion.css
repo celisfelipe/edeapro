@@ -249,191 +249,212 @@ body {
     font-weight: 800;
 }
 
-/* ── Carrusel de reseñas ──────────────────────────────────────────────
-   [<]  [tarjeta] [tarjeta] [tarjeta]  [>]
-                    • ━━ •
-   Cuántas tarjetas se ven a la vez lo define --resenas-por-pagina:
-   3 en computador, 2 en tablet y 1 en celular (ver Responsive al final).
-   Debe coincidir con calcularPorPagina() en scripts/ubicacion.js.     */
+/* ── Carrusel de reseñas en abanico ───────────────────────────────────
+         ╱ reseña ╲   ┌─────────┐   ╱ reseña ╲
+        ╱  borrosa ╲  │ central │  ╱  borrosa ╲
+                      └─────────┘
+                  ‹    • • ━━ • •    ›
+   La reseña del centro se ve grande y nítida; las de los lados, más
+   pequeñas, inclinadas y desenfocadas. ubicacion.js calcula la posición
+   de cada tarjeta (transform, opacity y filter) en cada cuadro; aquí solo
+   va su apariencia. Velocidad, tarjetas visibles e inclinación se
+   cambian en el objeto CARRUSEL de scripts/ubicacion.js.              */
 .resenas-carrusel {
+    --resena-ancho: clamp(250px, 78vw, 360px);   /* ancho de cada tarjeta */
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-10);
+    overflow: hidden;               /* las tarjetas laterales no generan scroll de lado */
+    overflow: clip;                 /* (navegadores actuales) además evita que el navegador lo desplace solo */
+    outline: none;
 }
 
-.resenas-track {
-    --resenas-por-pagina: 3;
-    flex: 1;
-    min-width: 0;
-    display: grid;
-    /* una columna por tarjeta, todas del mismo ancho */
-    grid-template-columns: repeat(var(--resenas-por-pagina), minmax(0, 1fr));
-    gap: 20px;
-    padding: 8px 4px 16px;          /* espacio para que no se corte la sombra */
+.resenas-carrusel:focus-visible {
+    border-radius: 24px;
+    box-shadow: var(--focus-ring);
+}
+
+/* Escenario: aquí se apilan las tarjetas. ubicacion.js ajusta su alto. */
+.resenas-escenario {
+    position: relative;
+    height: 380px;
+    touch-action: pan-y;            /* en celular: scroll vertical normal; deslizar de lado cambia de reseña */
+    /* Bordes que se desvanecen: las tarjetas de los extremos no se cortan en seco */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
 /* Tarjeta de reseña:
-     ⭐⭐⭐⭐⭐                    ❝
-     Comentario del cliente…
-     ─────────────────────────
-     (FC)  Felipe Celis
-           10 de octubre de 2026                                       */
+     (FC)  Felipe Celis               “
+           10 de octubre de 2026
+     ★★★★★
+     Comentario del cliente…                                            */
 .resena-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 230px;
-    padding: 26px 24px 20px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: var(--resena-ancho);
+    margin-left: calc(var(--resena-ancho) / -2);   /* centrada; el JS la desplaza con transform */
+    box-sizing: border-box;
+    padding: 26px 24px 24px;
     border: 1px solid rgba(51, 49, 47, 0.10);
-    border-radius: 18px;
+    border-radius: 20px;
     background: #FFFFFF;
-    box-shadow: 0 6px 20px rgba(51, 49, 47, 0.07);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.10);
+    color: var(--graphite);
+    transform-origin: 50% 140%;     /* el giro nace por debajo de la tarjeta: efecto abanico */
+    will-change: transform, opacity, filter;
+    cursor: pointer;
+    user-select: none;
 }
 
-.resena-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(242, 174, 0, 0.45);
-    box-shadow: 0 14px 32px rgba(51, 49, 47, 0.12);
+.resena-card.es-centro {
+    cursor: default;
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
 }
 
 /* Comillas grandes de adorno en la esquina */
-.resena-comillas {
+.resena-card::before {
+    content: '\201C';
     position: absolute;
-    top: 20px;
-    right: 22px;
-    font-size: 34px;
-    color: rgba(242, 174, 0, 0.25);
-}
-
-.resena-card .rating {
-    display: flex;
-    gap: 3px;
-    font-size: 14px;
+    top: 6px;
+    right: 20px;
+    font: 700 64px/1 Georgia, serif;
     color: var(--gold);
+    opacity: 0.35;
 }
 
-/* Comentario: máximo 5 líneas; si es más largo termina en "…" */
-.resena-texto {
-    flex: 1;                        /* empuja el autor al fondo de la tarjeta */
-    margin: 14px 0 18px;
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--color-text);
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Pie de la tarjeta: iniciales + nombre + fecha */
-.resena-autor {
+/* Cabecera: círculo con iniciales + nombre y fecha */
+.resena-cabecera {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(51, 49, 47, 0.08);
+    margin-bottom: 12px;
 }
 
 .resena-avatar {
     flex-shrink: 0;
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
     display: grid;
     place-items: center;
-    border: 2px solid rgba(242, 174, 0, 0.5);
     border-radius: 50%;
-    background: var(--graphite);
-    font-family: var(--font-heading);
-    font-size: 14px;
+    background: rgba(242, 174, 0, 0.16);
+    color: #8A6100;
+    font-size: 17px;
     font-weight: 700;
-    color: var(--gold);
 }
 
-.resena-autor h4 {
+.resena-nombre {
     margin: 0;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    color: var(--color-heading);
+    color: var(--graphite);
 }
 
-.resena-autor .fecha {
-    font-size: var(--text-xs);
+.resena-cabecera .fecha {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
     color: var(--color-muted);
 }
 
+.resena-card .rating {
+    margin-bottom: 10px;
+    font-size: 17px;
+    letter-spacing: 2px;
+    color: var(--gold);
+}
+
+/* Comentario: máximo 6 líneas; si es más largo termina en "…" */
+.resena-texto {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--graphite);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
+    overflow: hidden;
+}
+
 .resenas-vacio {
-    grid-column: 1 / -1;            /* ocupa todo el ancho del carrusel */
+    padding-top: 40px;
     text-align: center;
     color: var(--color-muted);
 }
 
-/* Animación al cambiar de página: las tarjetas suben y aparecen una tras otra.
-   ubicacion.js le pone la clase .resenas-entrando al contenedor. */
-.resenas-entrando .resena-card { animation: resenaEntrar 0.5s ease both; }
-.resenas-entrando .resena-card:nth-child(2) { animation-delay: 0.08s; }
-.resenas-entrando .resena-card:nth-child(3) { animation-delay: 0.16s; }
-
-@keyframes resenaEntrar {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* Controles: flechas a los lados de los puntos */
+.resenas-controles {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
 }
 
-/* Flechas anterior / siguiente */
 .resena-prev,
 .resena-next {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(51, 49, 47, 0.12);
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgba(51, 49, 47, 0.10);
     border-radius: 50%;
     background: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(51, 49, 47, 0.10);
-    font-size: 14px;
-    color: var(--color-heading);
-    cursor: pointer;
-    transition: var(--transition-fast);
-}
-
-.resena-prev:hover,
-.resena-next:hover {
-    border-color: var(--gold);
-    background: var(--gold);
+    font-size: 24px;
+    line-height: 1;
     color: var(--graphite);
+    cursor: pointer;
+    touch-action: manipulation;     /* tocar rápido dos veces no hace zoom en celular */
+    transition: background 0.2s, color 0.2s;
 }
 
-.resena-prev:focus-visible,
-.resena-next:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
+/* Solo con mouse: en celular el "hover" se queda pegado después de tocar */
+@media (hover: hover) {
+    .resena-prev:hover,
+    .resena-next:hover {
+        background: var(--graphite);
+        color: var(--gold);
+    }
 }
 
-/* Puntos: uno por página; el de la página actual se alarga y es dorado */
+/* Puntos: uno por reseña; el activo se alarga y es dorado. Con muchas
+   reseñas solo se ven 7 y los de los extremos salen más pequeños. */
 .resenas-dots {
     display: flex;
-    justify-content: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-10);
+    gap: 8px;
 }
 
-.resenas-dots span {
+.resenas-dots button {
     width: 8px;
     height: 8px;
-    border-radius: 99px;
-    background: rgba(120, 116, 108, 0.35);
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: rgba(51, 49, 47, 0.22);
     cursor: pointer;
-    transition: width 0.3s ease, background 0.3s ease;
+    touch-action: manipulation;
+    transition: width 0.3s, background 0.3s, transform 0.3s;
 }
 
-.resenas-dots span.active {
+.resenas-dots button.active {
     width: 24px;
     background: var(--gold);
+}
+
+.resenas-dots button.dot-borde { transform: scale(0.6); }
+
+.resena-prev:focus-visible,
+.resena-next:focus-visible,
+.resenas-dots button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .resenas-dots button,
+    .resena-prev,
+    .resena-next { transition: none; }
 }
 
 /* ── Formulario de reseña ── */
@@ -616,11 +637,6 @@ body {
 }
 
 /* ── Responsive ── */
-/* Tablet: 2 reseñas por página */
-@media (max-width: 1024px) {
-    .resenas-track { --resenas-por-pagina: 2; }
-}
-
 @media (max-width: 900px) {
     .ubicacion-grid {
         grid-template-columns: 1fr;
@@ -635,7 +651,6 @@ body {
 
 @media (max-width: 768px) {
     .ubicacion-page { padding: 30px 20px; }
-    .resenas-track { --resenas-por-pagina: 1; }   /* celular: 1 reseña por página */
     .resena-form-container { padding: var(--space-6); }
     .ubicacion-acciones { flex-direction: column; }
 }
@@ -644,10 +659,6 @@ body {
     #resenas h2 { font-size: 1.5rem; }
     .submit-btn { font-size: 14px; }
 
-    /* Reseñas: flechas más pequeñas para dejar más espacio a la tarjeta */
-    .resenas-carrusel { gap: 6px; }
-    .resena-prev,
-    .resena-next { width: 36px; height: 36px; font-size: 12px; }
 
     /* Horario de atención: el día arriba (en negrita) y la hora debajo */
     .horario-lista { gap: 8px; }

@@ -279,6 +279,14 @@ nav a.login:hover::before {
     visibility: hidden;
 }
 
+/* Visita repetida en la sesión: la pantalla empieza invisible y el script
+   la muestra (.mostrar) solo si la página tarda en cargar */
+.splash-diferido #splash:not(.mostrar) {
+    opacity: 0;
+    visibility: hidden;
+    transition: none;
+}
+
 /* Anillo decorativo dorado detrás del logo */
 #splash::before {
     content: '';
@@ -329,14 +337,27 @@ nav a.login:hover::before {
     text-transform: uppercase;
 }
 
+/* Barra de progreso: el riel gris es el total y la parte dorada lo que ya
+   cargó. El script cambia --progreso (de 0 a 1) a medida que llegan las
+   imágenes; scaleX la estira sin recalcular el diseño de la página. */
 .splash-linea {
-    width: 0;
+    position: relative;
+    width: 140px;
     height: 4px;
     border-radius: 2px;
+    background: rgba(51, 49, 47, 0.12);
+    overflow: hidden;
+}
+
+.splash-linea::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
     background: var(--gold);
-    box-shadow: 0 0 18px rgba(242, 174, 0, 0.48);
-    animation: splashLinea 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.3s;
+    transform-origin: left center;
+    transform: scaleX(var(--progreso, 0));
+    transition: transform 0.35s ease;
 }
 
 @keyframes splashEntrada {
@@ -344,9 +365,11 @@ nav a.login:hover::before {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes splashLinea {
-    from { width: 0; }
-    to   { width: 110px; }
+/* Si el usuario pidió "reducir movimiento": sin animaciones en la pantalla de carga */
+@media (prefers-reduced-motion: reduce) {
+    .splash-logo,
+    .splash-logo::after { animation: none; opacity: 1; }
+    .splash-linea::after { transition: none; }
 }
 
 /* =========================================

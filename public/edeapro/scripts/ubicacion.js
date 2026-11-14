@@ -1,47 +1,54 @@
 /**
  * ubicacion.js — Página de Ubicación
  * =====================================
- * Maneja el carrusel de reseñas y el formulario para dejar una opinión.
- * Las reseñas se cargan desde Laravel y se muestran en un carrusel.
+ * Maneja el carrusel de reseñas en abanico y el formulario para dejar una opinión.
+ * Las reseñas se cargan desde Laravel y se muestran en un carrusel: la reseña
+ * del centro se ve grande y nítida, y las de los lados más pequeñas, inclinadas
+ * y desenfocadas. Avanza solo, se pausa con el cursor encima y respeta la
+ * preferencia de "reducir movimiento" del sistema.
  * El formulario solo aparece si hay sesión de cliente activa.
  *
  * Conecta con la API de Laravel:
- *   GET  /api/resenas        → traer todas las reseñas
+ *   GET  /api/resenas        → traer las reseñas (las más recientes primero)
  *   POST /api/resenas/crear  → guardar nueva reseña
  */
 
-let resenas              = [];
-let indiceActual         = 0;   // página del carrusel que se está viendo
-let porPagina            = 3;   // reseñas por página (cambia según el ancho)
+/* ── Configuración del carrusel (aquí se personaliza) ── */
+const CARRUSEL = {
+    maxResenas: 15,            // cuántas reseñas recientes se muestran
+    segundosPorResena: 5,      // tiempo que cada reseña se queda en el centro
+    suavizado: 0.09,           // fluidez del deslizamiento: 0.05 = más lento, 0.15 = más rápido
+    visiblesPorLado: 2,        // tarjetas a cada lado de la central (computador)
+    visiblesPorLadoMovil: 1,   // ...y en celular
+    anchoMovil: 700,           // desde qué ancho (px) se considera celular
+    separacion: 0.58,          // distancia entre tarjetas (fracción del ancho de una tarjeta)
+    giro: 7,                   // grados de inclinación por posición (el "abanico")
+    caida: 16,                 // px que baja cada posición lateral
+    escalaLateral: 0.12,       // cuánto se achica cada posición (0.12 = 12 %)
+    opacidadLateral: 0.35,     // cuánto se apaga cada posición
+    desenfoque: 3,             // px de desenfoque por posición
+    maxPuntos: 7               // puntos visibles abajo; con más reseñas se desplazan
+};
+
+let resenas                = [];
+let tarjetas               = [];   // elementos <article> de cada reseña
+let puntos                 = [];   // botones de los puntos de abajo
+let posicion               = 0;    // dónde está el carrusel ahora (decimal mientras se mueve)
+let objetivo               = 0;    // a dónde va
+let anchoTarjeta           = 360;
+let pausado                = false;
+let temporizador           = null;
+let animando               = null;
+let ultimoTiempo           = 0;
 let puntuacionSeleccionada = 0;
 
-// ── Carrusel automático ──
-const SEGUNDOS_POR_PAGINA = 6;  // cada cuánto pasa solo a la siguiente página
-let temporizador          = null;
+const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // Al cargar la página
 document.addEventListener('DOMContentLoaded', function () {
-    porPagina = calcularPorPagina();
     cargarResenas();
     verificarSesion();
-
-    // El carrusel se pausa mientras el usuario tiene el mouse encima
-    // (para que alcance a leer) y sigue cuando lo quita.
-    const carrusel = document.querySelector('.resenas-carrusel');
-    carrusel.addEventListener('mouseenter', detenerAutoplay);
-    carrusel.addEventListener('mouseleave', iniciarAutoplay);
-
-    // Si cambia el ancho de la pantalla (girar el celular, achicar la
-    // ventana), se recalcula cuántas reseñas caben por página.
-    window.addEventListener('resize', function () {
-        const nuevo = calcularPorPagina();
-        if (nuevo !== porPagina) {
-            porPagina    = nuevo;
-            indiceActual = 0;
-            renderizarResenas();
-            renderizarDots();
-        }
-    });
+    prepararCarrusel();
 
     // Estrellas interactivas del formulario
     document.querySelectorAll('.estrella').forEach(estrella => {
@@ -81,7 +88,8 @@ function verificarSesion() {
 }
 
 /**
- * Trae las reseñas desde Laravel y las muestra en el carrusel.
+ * Trae las reseñas desde Laravel (vienen de la más nueva a la más vieja)
+ * y muestra las más recientes en el carrusel.
  * Si no hay conexión muestra reseñas de ejemplo.
  */
 function cargarResenas() {
@@ -89,10 +97,8 @@ function cargarResenas() {
     .then(res => res.json())
     .then(data => {
         if (!data.ok) return;
-        resenas = data.resenas;
-        renderizarResenas();
-        renderizarDots();
-        iniciarAutoplay();
+        resenas = data.resenas.slice(0, CARRUSEL.maxResenas);
+        construirCarrusel();
     })
     .catch(() => {
         // Reseñas de ejemplo si no hay conexión con Laravel
@@ -101,44 +107,79 @@ function cargarResenas() {
             { nombre_cliente: 'Juan G.', apellido_cliente: '', puntuacion: 5, comentario: 'Muy profesionales. La atención y el servicio son geniales.', fecha: '2025-01-08' },
             { nombre_cliente: 'María', apellido_cliente: 'López', puntuacion: 4, comentario: 'Excelente servicio. Mi gato Mishu quedó perfecto después del grooming.', fecha: '2025-01-05' }
         ];
-        renderizarResenas();
-        renderizarDots();
-        iniciarAutoplay();
+        construirCarrusel();
     });
 }
 
+/* =========================================================================
+   CARRUSEL EN ABANICO
+   ========================================================================= */
+
 /**
- * Cuántas reseñas caben por página según el ancho de la pantalla:
- * 1 en celular, 2 en tablet y 3 en computador.
- * (Debe coincidir con los anchos de .resena-card en ubicacion.css)
+ * Conecta los botones y eventos del carrusel. Se llama una sola vez;
+ * las tarjetas se crean (y se vuelven a crear) en construirCarrusel().
  */
-function calcularPorPagina() {
-    if (window.innerWidth <= 768)  return 1;
-    if (window.innerWidth <= 1024) return 2;
-    return 3;
+function prepararCarrusel() {
+    const carrusel  = document.getElementById('resenas-carrusel');
+    const escenario = document.getElementById('resenas-escenario');
+
+    document.getElementById('resena-prev').addEventListener('click', () => moverResena(-1));
+    document.getElementById('resena-next').addEventListener('click', () => moverResena(1));
+
+    // Pausa con el cursor encima (para alcanzar a leer) o al navegar con teclado
+    carrusel.addEventListener('mouseenter', () => { pausado = true;  detenerAutoplay(); });
+    carrusel.addEventListener('mouseleave', () => { pausado = false; iniciarAutoplay(); });
+    carrusel.addEventListener('focusin',    () => { pausado = true;  detenerAutoplay(); });
+    carrusel.addEventListener('focusout',   e => {
+        if (!carrusel.contains(e.relatedTarget)) { pausado = false; iniciarAutoplay(); }
+    });
+
+    // Flechas del teclado con el carrusel enfocado
+    carrusel.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); moverResena(-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); moverResena(1); }
+    });
+
+    // Deslizar con el dedo en celular
+    let inicioX = null;
+    escenario.addEventListener('pointerdown', e => { inicioX = e.clientX; });
+    escenario.addEventListener('pointerup', e => {
+        if (inicioX === null) return;
+        const dx = e.clientX - inicioX;
+        inicioX = null;
+        if (Math.abs(dx) > 40) moverResena(dx < 0 ? 1 : -1);
+    });
+
+    // No avanzar con la pestaña oculta ni si el usuario pide menos movimiento
+    document.addEventListener('visibilitychange', iniciarAutoplay);
+    movimientoReducido.addEventListener('change', iniciarAutoplay);
+
+    window.addEventListener('resize', () => { medirCarrusel(); pintarCarrusel(); });
 }
 
 /**
- * Dibuja las reseñas de la página actual del carrusel.
- * Cada tarjeta tiene: comillas decorativas, estrellas, el comentario y,
- * abajo, un círculo con las iniciales del cliente, su nombre y la fecha.
+ * Crea una tarjeta por reseña y un punto por reseña.
+ * Cada tarjeta tiene: arriba un círculo con las iniciales del cliente, su
+ * nombre y la fecha; luego las estrellas y el comentario. Las comillas
+ * decorativas las pone el CSS.
  */
-function renderizarResenas() {
-    const track = document.getElementById('resenas-track');
+function construirCarrusel() {
+    const escenario = document.getElementById('resenas-escenario');
+    const dots      = document.getElementById('resenas-dots');
+    posicion = objetivo = 0;
+
     if (resenas.length === 0) {
-        track.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña.</p>';
+        escenario.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña.</p>';
+        dots.innerHTML = '';
+        tarjetas = puntos = [];
+        escenario.style.height = '';
         return;
     }
 
-    // Qué reseñas tocan en esta página
-    const inicio   = indiceActual * porPagina;
-    const visibles = resenas.slice(inicio, inicio + porPagina);
-
-    track.innerHTML = visibles.map(r => {
+    escenario.innerHTML = resenas.map((r, i) => {
         // Estrellas: siempre entre 0 y 5 llenas, el resto vacías
-        const puntos    = Math.max(0, Math.min(5, parseInt(r.puntuacion) || 0));
-        const estrellas = '<i class="fa-solid fa-star"></i>'.repeat(puntos)
-                        + '<i class="fa-regular fa-star"></i>'.repeat(5 - puntos);
+        const estrellasLlenas = Math.max(0, Math.min(5, parseInt(r.puntuacion) || 0));
+        const estrellas = '★'.repeat(estrellasLlenas) + '☆'.repeat(5 - estrellasLlenas);
 
         const fecha = new Date(r.fecha).toLocaleDateString('es-CO', {
             year: 'numeric', month: 'long', day: 'numeric'
@@ -150,24 +191,168 @@ function renderizarResenas() {
         // SEGURIDAD: todo texto escrito por usuarios pasa por escaparTextoResena,
         // para que se muestre como texto y nunca se ejecute como código (XSS)
         return `
-            <article class="resena-card">
-                <i class="fa-solid fa-quote-right resena-comillas" aria-hidden="true"></i>
-                <div class="rating" aria-label="${puntos} de 5 estrellas">${estrellas}</div>
-                <p class="resena-texto">${escaparTextoResena(r.comentario)}</p>
-                <div class="resena-autor">
-                    <span class="resena-avatar">${escaparTextoResena(iniciales)}</span>
+            <article class="resena-card" data-indice="${i}" aria-roledescription="reseña" aria-label="Reseña ${i + 1} de ${resenas.length}">
+                <div class="resena-cabecera">
+                    <span class="resena-avatar" aria-hidden="true">${escaparTextoResena(iniciales)}</span>
                     <div>
-                        <h4>${escaparTextoResena(r.nombre_cliente)} ${escaparTextoResena(r.apellido_cliente)}</h4>
+                        <h4 class="resena-nombre">${escaparTextoResena(r.nombre_cliente)} ${escaparTextoResena(r.apellido_cliente)}</h4>
                         <span class="fecha">${fecha}</span>
                     </div>
                 </div>
+                <div class="rating" role="img" aria-label="${estrellasLlenas} de 5 estrellas">${estrellas}</div>
+                <p class="resena-texto">${escaparTextoResena(r.comentario)}</p>
             </article>`;
     }).join('');
 
-    // Reinicia la animación de entrada en cada cambio de página
-    track.classList.remove('resenas-entrando');
-    void track.offsetWidth;   // obliga al navegador a "olvidar" la animación anterior
-    track.classList.add('resenas-entrando');
+    dots.innerHTML = resenas.map((r, i) =>
+        `<button type="button" aria-label="Ver reseña ${i + 1}" data-indice="${i}"></button>`
+    ).join('');
+
+    tarjetas = [...escenario.querySelectorAll('.resena-card')];
+    puntos   = [...dots.querySelectorAll('button')];
+
+    // Al tocar una tarjeta lateral o un punto, esa reseña pasa al centro
+    tarjetas.forEach(t => t.addEventListener('click', () => irAResena(Number(t.dataset.indice))));
+    puntos.forEach(p => p.addEventListener('click', () => irAResena(Number(p.dataset.indice))));
+
+    medirCarrusel();
+    pintarCarrusel();
+    iniciarAutoplay();
+    // Las fuentes web pueden cambiar el alto de las tarjetas al terminar de cargar
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medirCarrusel(); pintarCarrusel(); });
+}
+
+/**
+ * Distancia más corta (con signo) de una tarjeta al centro, dando la vuelta
+ * al final: con 6 reseñas, la 5 está a -1 de la 0 (a su izquierda).
+ */
+function distanciaCircular(x) {
+    const total = resenas.length;
+    let d = ((x % total) + total) % total;
+    if (d > total / 2) d -= total;
+    return d;
+}
+
+/** Índice de la reseña que está (o va a quedar) en el centro */
+function resenaActual() {
+    const total = resenas.length;
+    return ((Math.round(objetivo) % total) + total) % total;
+}
+
+/** Mide las tarjetas y ajusta el alto del escenario a la más alta */
+function medirCarrusel() {
+    if (tarjetas.length === 0) return;
+    anchoTarjeta = tarjetas[0].offsetWidth;
+    const masAlta = Math.max(...tarjetas.map(t => t.offsetHeight));
+    // + espacio para la caída y la sombra de las laterales
+    document.getElementById('resenas-escenario').style.height = (masAlta + 20 + CARRUSEL.caida * 2 + 70) + 'px';
+}
+
+/**
+ * Coloca cada tarjeta según su distancia al centro: la central grande y
+ * nítida; las demás más pequeñas, inclinadas, más bajas, transparentes y
+ * desenfocadas. Se llama en cada cuadro mientras el carrusel se mueve.
+ */
+function pintarCarrusel() {
+    if (tarjetas.length === 0) return;
+    const C     = CARRUSEL;
+    const total = resenas.length;
+    const movil = document.getElementById('resenas-carrusel').clientWidth < C.anchoMovil;
+    const lado  = Math.min(movil ? C.visiblesPorLadoMovil : C.visiblesPorLado, Math.floor((total - 1) / 2));
+    const sep   = movil ? C.separacion * 0.45 : C.separacion;   // en celular las laterales asoman menos
+
+    tarjetas.forEach((t, i) => {
+        const d = distanciaCircular(i - posicion);
+        const a = Math.abs(d);
+        const desvanecer = Math.max(0, Math.min(1, lado + 1 - a));   // las que pasan del límite se apagan
+        const opacidad   = Math.max(0.15, 1 - a * C.opacidadLateral) * desvanecer;
+
+        t.style.transform =
+            `translateX(${(d * anchoTarjeta * sep).toFixed(1)}px) ` +
+            `translateY(${(a * C.caida).toFixed(1)}px) ` +
+            `rotate(${(d * C.giro).toFixed(2)}deg) ` +
+            `scale(${Math.max(0.55, 1 - a * C.escalaLateral).toFixed(3)})`;
+        t.style.opacity       = opacidad.toFixed(3);
+        t.style.filter        = a < 0.02 ? 'none' : `blur(${(a * C.desenfoque).toFixed(2)}px)`;
+        t.style.zIndex        = String(100 - Math.round(a * 10));
+        t.style.visibility    = opacidad < 0.01 ? 'hidden' : 'visible';
+        t.style.pointerEvents = a > lado + 0.2 ? 'none' : 'auto';
+
+        const enCentro = a < 0.5;
+        t.classList.toggle('es-centro', enCentro);
+        t.setAttribute('aria-hidden', enCentro ? 'false' : 'true');
+    });
+
+    // Puntos: con muchas reseñas solo se ven "maxPuntos" alrededor del activo,
+    // y los de los extremos salen más pequeños para indicar que hay más
+    const activo = resenaActual();
+    const max    = Math.min(C.maxPuntos, total);
+    const desde  = Math.min(Math.max(activo - Math.floor(max / 2), 0), total - max);
+    const hasta  = desde + max - 1;
+    puntos.forEach((p, i) => {
+        const visible = i >= desde && i <= hasta;
+        const hayMas  = (i === desde && desde > 0) || (i === hasta && hasta < total - 1);
+        p.hidden = !visible;
+        p.classList.toggle('active', i === activo);
+        p.classList.toggle('dot-borde', visible && hayMas);
+        p.setAttribute('aria-current', i === activo ? 'true' : 'false');
+    });
+}
+
+/**
+ * Un cuadro de la animación: acerca "posicion" a "objetivo" con suavidad
+ * y vuelve a pintar. requestAnimationFrame la repite hasta llegar.
+ */
+function cuadroCarrusel(tiempo) {
+    const dt = ultimoTiempo ? Math.min(64, tiempo - ultimoTiempo) : 16.7;
+    ultimoTiempo = tiempo;
+    // Suavizado independiente de los FPS (igual en pantallas de 60 y 120 Hz)
+    const factor = movimientoReducido.matches ? 1 : 1 - Math.pow(1 - CARRUSEL.suavizado, dt / 16.7);
+    posicion += (objetivo - posicion) * factor;
+    if (Math.abs(objetivo - posicion) < 0.001) posicion = objetivo;
+    pintarCarrusel();
+    animando = posicion !== objetivo ? requestAnimationFrame(cuadroCarrusel) : null;
+    if (!animando) ultimoTiempo = 0;
+}
+
+function animarCarrusel() {
+    if (!animando) animando = requestAnimationFrame(cuadroCarrusel);
+}
+
+/**
+ * Flechas del carrusel: -1 anterior, 1 siguiente.
+ * Además de mover, reinician el conteo automático, para que no salte
+ * justo después de que el usuario tocó una flecha.
+ */
+function moverResena(direccion) {
+    if (resenas.length < 2) return;
+    objetivo += direccion;
+    animarCarrusel();
+    iniciarAutoplay();
+}
+
+/** Lleva una reseña al centro por el camino más corto (al tocar un punto o una tarjeta) */
+function irAResena(indice) {
+    objetivo += distanciaCircular(indice - objetivo);
+    animarCarrusel();
+    iniciarAutoplay();
+}
+
+/**
+ * Carrusel automático: cada segundosPorResena pasa a la siguiente.
+ * No avanza si hay menos de 2 reseñas, con el cursor encima, con la
+ * pestaña oculta o si el usuario pidió "reducir movimiento".
+ */
+function iniciarAutoplay() {
+    detenerAutoplay();   // evita tener dos temporizadores a la vez
+    if (pausado || movimientoReducido.matches || resenas.length < 2 || document.hidden) return;
+    temporizador = setInterval(() => { objetivo += 1; animarCarrusel(); }, CARRUSEL.segundosPorResena * 1000);
+}
+
+/** Detiene el carrusel automático (por ejemplo, con el mouse encima) */
+function detenerAutoplay() {
+    clearInterval(temporizador);
+    temporizador = null;
 }
 
 /**
@@ -186,72 +371,9 @@ function escaparTextoResena(texto) {
         .replace(/'/g, '&#39;');
 }
 
-/**
- * Crea los dots de navegación del carrusel.
- * Un dot por cada página de reseñas.
- */
-function renderizarDots() {
-    const totalPaginas = Math.ceil(resenas.length / porPagina);
-    const dots = document.getElementById('resenas-dots');
-    dots.innerHTML = '';
-    for (let i = 0; i < totalPaginas; i++) {
-        dots.innerHTML += `<span class="${i === 0 ? 'active' : ''}" onclick="irAPagina(${i})"></span>`;
-    }
-}
-
-/**
- * Flechas del carrusel (el HTML las llama con onclick="moverResena(-1)" o (1)).
- * Además de mover, reinician el conteo del carrusel automático, para que
- * no salte de página justo después de que el usuario tocó una flecha.
- * @param {number} direccion - 1 para siguiente, -1 para anterior
- */
-function moverResena(direccion) {
-    cambiarPagina(direccion);
-    iniciarAutoplay();
-}
-
-/**
- * Pasa a la página anterior o siguiente. Al llegar al final vuelve a la
- * primera (y al revés), por eso se usa el residuo (%).
- */
-function cambiarPagina(direccion) {
-    const totalPaginas = Math.ceil(resenas.length / porPagina);
-    if (totalPaginas === 0) return;
-    indiceActual = (indiceActual + direccion + totalPaginas) % totalPaginas;
-    renderizarResenas();
-    actualizarDots();
-}
-
-/** Va directamente a una página específica del carrusel (al tocar un punto) */
-function irAPagina(indice) {
-    indiceActual = indice;
-    renderizarResenas();
-    actualizarDots();
-    iniciarAutoplay();   // vuelve a contar desde cero
-}
-
-/**
- * Carrusel automático: cada SEGUNDOS_POR_PAGINA pasa a la siguiente página.
- * Si solo hay una página no hace nada (no hay a dónde pasar).
- */
-function iniciarAutoplay() {
-    detenerAutoplay();   // evita tener dos temporizadores a la vez
-    if (Math.ceil(resenas.length / porPagina) <= 1) return;
-    temporizador = setInterval(() => cambiarPagina(1), SEGUNDOS_POR_PAGINA * 1000);
-}
-
-/** Detiene el carrusel automático (por ejemplo, con el mouse encima) */
-function detenerAutoplay() {
-    clearInterval(temporizador);
-    temporizador = null;
-}
-
-/** Actualiza el dot activo según la página actual */
-function actualizarDots() {
-    document.querySelectorAll('.resenas-dots span').forEach((dot, i) => {
-        dot.classList.toggle('active', i === indiceActual);
-    });
-}
+/* =========================================================================
+   FORMULARIO DE RESEÑA
+   ========================================================================= */
 
 /**
  * Actualiza el color de las estrellas según el valor hover o seleccionado.

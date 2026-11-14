@@ -13,16 +13,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../estilos/principal.css" />
     <link rel="stylesheet" href="../estilos/identidad.css">
+    <script>
+        // Pantalla de carga: si ya se mostró en esta sesión (por ejemplo, al volver
+        // desde "Inicio" o desde el login), queda "diferida": solo aparece si la
+        // página tarda en cargar. Va aquí, en el <head>, para decidirlo antes de pintar.
+        try {
+            if (sessionStorage.getItem('edeaSplashVisto')) document.documentElement.classList.add('splash-diferido');
+        } catch (e) { /* sin sessionStorage: se comporta como primera visita */ }
+    </script>
 </head>
 
 <body>
 
-<!-- SPLASH -->
+<!-- PANTALLA DE CARGA: la barra avanza según lo que de verdad ya cargó (ver el script al final) -->
 <div id="splash">
     <div class="splash-logo">
         <img src="../imagenes/logo/logo2.png" alt="EDEA PRO">
         <span class="splash-nombre">EDEA PRO</span>
-        <div class="splash-linea"></div>
+        <div class="splash-linea" role="progressbar" aria-label="Cargando la página" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
     </div>
 </div>
 
@@ -249,13 +257,68 @@
 <script src="../scripts/navbar.js"></script>
 
 <script>
-/* ── SPLASH: ocultar al cargar y arrancar el contador de stats ── */
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.getElementById('splash').classList.add('oculto');
-        setTimeout(iniciarContador, 300);
-    }, 1600);
-});
+/* ── PANTALLA DE CARGA ───────────────────────────────────────────────
+   La barra dorada avanza según lo que de verdad ya cargó (las imágenes de
+   la página y las letras) y la pantalla se quita apenas termina la carga,
+   sin esperas inventadas.
+   - Primera visita de la sesión: se muestra desde el principio.
+   - Visitas siguientes (clic en "Inicio" o "Volver al inicio"): solo
+     aparece si la página tarda más de 400 ms; si carga rápido, ni se ve.
+   Al terminar arranca el contador animado de estadísticas.
+   ─────────────────────────────────────────────────────────────────── */
+(function pantallaDeCarga() {
+    const splash   = document.getElementById('splash');
+    const barra    = splash.querySelector('.splash-linea');
+    const diferido = document.documentElement.classList.contains('splash-diferido');
+    const MINIMO_MS = diferido ? 0 : 600;   // primera visita: que alcance a verse la marca
+    const MAXIMO_MS = 8000;                 // una imagen lenta nunca bloquea la página
+
+    // Lo que se espera: cada imagen de la página + las fuentes de letra
+    const imagenes = [...document.images];
+    const total    = imagenes.length + 1;
+    let listos     = 0;
+
+    function avanzar() {
+        listos = Math.min(total, listos + 1);
+        pintarProgreso(listos / total);
+    }
+
+    function pintarProgreso(fraccion) {
+        splash.style.setProperty('--progreso', fraccion);
+        barra.setAttribute('aria-valuenow', Math.round(fraccion * 100));
+    }
+
+    imagenes.forEach(img => {
+        if (img.complete) { avanzar(); return; }
+        img.addEventListener('load',  avanzar, { once: true });
+        img.addEventListener('error', avanzar, { once: true });   // una imagen rota también "termina"
+    });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(avanzar);
+
+    // Visita repetida: mostrarla solo si la carga se demora
+    const temporizadorMostrar = diferido
+        ? setTimeout(() => splash.classList.add('mostrar'), 400)
+        : null;
+
+    let terminado = false;
+    function terminar() {
+        if (terminado) return;
+        terminado = true;
+        clearTimeout(temporizadorMostrar);
+        pintarProgreso(1);
+        // performance.now() = milisegundos desde que se empezó a abrir la página
+        const espera = Math.max(0, MINIMO_MS - performance.now());
+        setTimeout(() => {
+            splash.classList.add('oculto');
+            try { sessionStorage.setItem('edeaSplashVisto', '1'); } catch (e) {}
+            setTimeout(iniciarContador, 300);
+        }, espera + 250);   // 250 ms para que se alcance a ver la barra llena
+    }
+
+    if (document.readyState === 'complete') terminar();
+    else window.addEventListener('load', terminar);
+    setTimeout(terminar, MAXIMO_MS);
+})();
 
 /* ── NAVBAR SHRINK al hacer scroll ── */
 const mainHeader = document.getElementById('main-header');

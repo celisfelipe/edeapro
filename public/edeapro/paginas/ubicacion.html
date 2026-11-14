@@ -117,20 +117,17 @@
  
         <!-- SECCIÓN RESEÑAS -->
         <section id="resenas">
-            <h2>⭐ Lo Que Dicen Nuestros Clientes</h2>
+            <h2>Lo Que Dicen Nuestros Clientes</h2>
  
-            <div class="resenas-carrusel">
-                <button class="resena-prev" onclick="moverResena(-1)">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <div class="resenas-track" id="resenas-track">
-                    <!-- Las reseñas se cargan dinámicamente desde Laravel -->
+            <!-- Carrusel en abanico: ubicacion.js crea las tarjetas (desde Laravel) y los puntos -->
+            <div class="resenas-carrusel" id="resenas-carrusel" aria-roledescription="carrusel" aria-label="Reseñas de clientes" tabindex="0">
+                <div class="resenas-escenario" id="resenas-escenario"></div>
+                <div class="resenas-controles">
+                    <button type="button" class="resena-prev" id="resena-prev" aria-label="Reseña anterior">&#8249;</button>
+                    <div class="resenas-dots" id="resenas-dots"></div>
+                    <button type="button" class="resena-next" id="resena-next" aria-label="Reseña siguiente">&#8250;</button>
                 </div>
-                <button class="resena-next" onclick="moverResena(1)">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
             </div>
-            <div class="resenas-dots" id="resenas-dots"></div>
  
             <!-- Formulario — solo visible si hay sesión de cliente -->
             <div class="resena-form-container" id="form-resena" style="display:none">
