@@ -52,28 +52,85 @@
             <p id="nombre-admin">Cargando...</p>
         </div>
 
-        <div class="stats-cards" id="pagos-resumen">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
-                <h3 id="stat-total-pagos">0</h3>
-                <p>Total de pagos</p>
+        <!-- Caja: lo cobrado por método de pago en un día o en un mes (lo llena pagos.js) -->
+        <div class="card">
+            <div class="card-title-row">
+                <h2><i class="fa-solid fa-cash-register"></i> <span id="caja-titulo">Caja de hoy</span></h2>
+                <div class="filtros-cobro">
+                    <select id="caja-periodo" aria-label="Ver caja por" onchange="cambiarPeriodoCaja()">
+                        <option value="dia">Día</option>
+                        <option value="mes">Mes</option>
+                    </select>
+                    <input type="date" id="caja-fecha" aria-label="Fecha de la caja" onchange="cargarPagos()">
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(75,174,110,0.16); color:var(--success-text);"><i class="fa-solid fa-coins"></i></div>
-                <h3 id="stat-total-recaudado">$0</h3>
-                <p>Total recaudado</p>
+            <div class="stats-cards caja-cards">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <p>Efectivo</p>
+                    <h3 id="caja-efectivo">$0</h3>
+                    <small id="caja-efectivo-cant">0 servicios</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <p>Transferencia</p>
+                    <h3 id="caja-transferencia">$0</h3>
+                    <small id="caja-transferencia-cant">0 servicios</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-credit-card"></i></div>
+                    <p>Tarjeta</p>
+                    <h3 id="caja-tarjeta">$0</h3>
+                    <small id="caja-tarjeta-cant">0 servicios</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(75,174,110,0.16); color:var(--success-text);"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <p id="caja-total-label">Total del día</p>
+                    <h3 id="caja-total">$0</h3>
+                    <small id="caja-total-cant">0 servicios</small>
+                </div>
             </div>
+        </div>
+
+        <!-- Citas por cobrar: una fila por cliente y día -->
+        <div class="card">
+            <div class="card-title-row">
+                <h2><i class="fa-solid fa-clock"></i> Citas pendientes de pago</h2>
+                <div class="filtros-cobro">
+                    <button class="btn btn-blue" id="filtro-hoy" onclick="cambiarFiltro('hoy')">Hoy (0)</button>
+                    <button class="btn btn-gray" id="filtro-atrasadas" onclick="cambiarFiltro('atrasadas')">Atrasadas (0)</button>
+                </div>
+            </div>
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="buscar-cobro" placeholder="Buscar cliente o mascota" oninput="pintarPorCobrar()">
+            </div>
+            <table>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Mascotas</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+                <tbody id="tabla-por-cobrar">
+                    <tr><td colspan="5">Cargando...</td></tr>
+                </tbody>
+            </table>
+            <p class="footer-info" id="resumen-por-cobrar"></p>
         </div>
 
         <!-- Historial de pagos registrados -->
         <div class="card">
-            <h2><i class="fa-solid fa-receipt"></i> Historial de Pagos</h2>
-            <br>
+            <div class="card-title-row">
+                <h2><i class="fa-solid fa-receipt"></i> Historial de pagos</h2>
+                <p class="footer-info"><span id="stat-total-pagos">0</span> pagos · <span id="stat-total-recaudado">$0</span> recaudado</p>
+            </div>
             <table>
                 <tr>
                     <th>Fecha</th>
                     <th>Cliente</th>
-                    <th>Servicio</th>
+                    <th>Mascota</th>
                     <th>Monto</th>
                     <th>Método</th>
                     <th>Estado</th>
@@ -84,27 +141,34 @@
             </table>
         </div>
 
-        <!-- Citas pendientes de pago -->
-        <div class="card">
-            <h2><i class="fa-solid fa-clock"></i> Citas pendientes de pago</h2>
-            <br>
-            <table>
-                <tr>
-                    <th>Cliente</th>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Acciones</th>
-                </tr>
-                <tbody id="tabla-sin-pago">
-                    <tr><td colspan="5">Cargando...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
     </div>
 
-    <!-- Modal de confirmación (registrar pago) -->
+    <!-- Ventana de cobro: detalle de un cliente con precios editables (la llena pagos.js) -->
+    <div class="modal-overlay" id="modal-cobro">
+        <div class="modal">
+            <h3 id="cobro-titulo">Cobrar</h3>
+            <p id="cobro-sub">Puedes cambiar cualquier precio; el total se recalcula solo.</p>
+            <div id="cobro-detalle"></div>
+            <div class="cobro-total">
+                <span>Total a cobrar</span>
+                <strong id="cobro-total">$0</strong>
+            </div>
+            <div class="modal-form-group">
+                <label for="cobro-metodo">Método de pago</label>
+                <select id="cobro-metodo">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-gray" onclick="cerrarCobro()">Cancelar</button>
+                <button class="btn btn-green" id="cobro-registrar" onclick="registrarCobro()"><i class="fa-solid fa-check"></i> Registrar pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
     <div class="modal-overlay" id="modal-confirmar">
         <div class="modal">
             <h3>Confirmar acción</h3>

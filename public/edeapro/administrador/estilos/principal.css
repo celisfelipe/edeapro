@@ -1093,6 +1093,77 @@ input::placeholder {
 
 
 /* ==========================================================================
+   19B. PAGOS (pagos.html): caja (día o mes), filtros y ventana de cobro
+   ========================================================================== */
+
+/* Línea pequeña debajo del número en la caja de hoy ("5 servicios") */
+.stat-card small {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    color: var(--panel-muted);
+}
+
+/* Controles junto al título: "Día/Mes + fecha" en la caja, "Hoy/Atrasadas" en pendientes */
+.filtros-cobro { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Dentro de la tarjeta de la caja, los cuadros no llevan margen extra abajo */
+.caja-cards { margin-bottom: 0; }
+
+/* Resumen debajo de la lista ("2 clientes · 3 servicios · $210.000") */
+#resumen-por-cobrar { margin-top: 12px; }
+
+/* Ventana de cobro: más ancha y alineada a la izquierda */
+#modal-cobro .modal {
+    width: 480px;
+    text-align: left;
+}
+
+#modal-cobro h3 { text-align: center; }
+#modal-cobro .modal > p { text-align: center; margin-bottom: 12px; }
+
+/* Cada servicio o adicional: nombre a la izquierda, precio editable a la derecha */
+.cobro-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--panel-border);
+    font-size: 14px;
+}
+
+.cobro-linea small {
+    display: block;
+    font-size: 12px;
+    color: var(--panel-muted);
+}
+
+.cobro-linea input {
+    width: 120px;
+    min-height: 40px;
+    text-align: right;
+}
+
+.cobro-adicional { padding-left: 16px; color: var(--panel-muted); }
+
+.cobro-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding-top: 12px;
+    border-top: 2px solid var(--panel-border);
+    font-weight: 600;
+}
+
+.cobro-total strong {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    color: var(--color-heading);
+}
+
+
+/* ==========================================================================
    20. RESPONSIVE
    "@media (max-width: X)" = estas reglas solo se aplican si la pantalla
    mide X píxeles o menos. Se escriben al final para que ganen.
