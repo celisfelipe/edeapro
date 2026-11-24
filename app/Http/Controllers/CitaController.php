@@ -120,98 +120,149 @@ class CitaController extends Controller
     }
 
     /**
-     * Crea una nueva cita en la base de datos.
-     * Usa el id_mascota enviado por el cliente (verificando que sea suya),
-     * guarda el id_raza seleccionado junto con el id_servicio, y valida con
-     * las mismas reglas de slots() que el estilista (específico o "Cualquiera")
-     * esté libre en todo el rango de la cita y que termine antes del cierre.
+     * Crea las citas de una reserva.
+     *
+     * Dos casos:
+     *   - Con servicios (ej. baño de un Bulldog): una cita por servicio, una
+     *     tras otra. Los adicionales van en la primera y suman su tiempo.
+     *   - Solo adicionales (ej. solo corte de uñas): UNA cita con el
+     *     "Servicio individual" para la mascota elegida (id_mascota_adicionales),
+     *     que dura lo de sus adicionales.
+     *
+     * Usa el id_mascota enviado por el cliente (verificando que sea suya) y
+     * valida con las mismas reglas de slots() que el estilista (específico o
+     * "Cualquiera") esté libre en todo el rango y termine antes del cierre.
+     *
+     * Todo se hace dentro de una transacción con los estilistas bloqueados
+     * (lockForUpdate): si dos clientes reservan el mismo horario al mismo
+     * tiempo, el segundo espera a que el primero termine y luego ve ese
+     * horario ocupado. Y si falla la segunda cita de la reserva, la primera
+     * también se deshace: no quedan reservas a medias.
      */
     public function crear(Request $request, Disponibilidad $disp)
-{
-    $id_cliente   = intval($request->attributes->get('auth_tokenable_id'));
-    $id_estilista = intval($request->input('id_estilista'));
-    $fecha        = $request->input('fecha');
-    $hora         = $request->input('hora');
-    $servicios    = json_decode($request->input('servicios'), true);
-    $adicionales  = json_decode($request->input('adicionales'), true);
+    {
+        $id_cliente   = intval($request->attributes->get('auth_tokenable_id'));
+        $id_estilista = intval($request->input('id_estilista'));
+        $fecha_bd     = $this->fechaABd((string) $request->input('fecha', ''));
+        $hora         = (string) $request->input('hora', '');
+        $servicios    = json_decode((string) $request->input('servicios'), true) ?: [];
+        $adicionales  = json_decode((string) $request->input('adicionales'), true) ?: [];
 
-    $fecha_bd = $this->fechaABd($fecha);
-
-    // Calcular la hora de inicio en minutos para ir sumando duraciones
-    $horaActualMin = Disponibilidad::aMinutos($hora);
-
-    $primera_cita_id = null;
-
-    foreach ($servicios as $item) {
-        $id_raza    = intval($item['id_raza']);
-        $id_mascota = intval($item['id_mascota']);
-
-        // Verificar que la mascota sea del cliente y no esté archivada
-        $mascotaValida = DB::select(
-            "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ? AND activa = 1",
-            [$id_mascota, $id_cliente]
-        );
-        if (empty($mascotaValida)) {
-            return response()->json(['ok' => false, 'error' => 'Mascota no válida para este cliente']);
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_bd) || !preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $hora)) {
+            return response()->json(['ok' => false, 'error' => 'Debes seleccionar fecha y hora.']);
         }
 
-        // Obtener el servicio al que pertenece esta raza
-        $serv = DB::select("SELECT id_servicio FROM raza_servicio WHERE id_raza = ? LIMIT 1", [$id_raza]);
-        if (empty($serv)) {
-            return response()->json(['ok' => false, 'error' => 'Servicio no encontrado para la raza seleccionada']);
+        // Solo adicionales que existen (y sin repetidos)
+        $adicionales = array_values(array_unique(array_map('intval', (array) $adicionales)));
+        if ($adicionales) {
+            $marcas = implode(',', array_fill(0, count($adicionales), '?'));
+            $existentes = DB::select("SELECT id_adicional FROM adicional WHERE id_adicional IN ($marcas)", $adicionales);
+            if (count($existentes) !== count($adicionales)) {
+                return response()->json(['ok' => false, 'error' => 'Uno de los adicionales no existe.']);
+            }
         }
-        $id_servicio = $serv[0]->id_servicio;
-        $duracionMin = $disp->duracion($id_raza, $id_servicio);
 
-        $horaStr = Disponibilidad::aHora($horaActualMin);
-
-        // Asignar estilista
-        $estilistaFinal = $id_estilista;
-        if ($estilistaFinal === 0) {
-            $asignado = null;
-            foreach ($this->estilistasElegibles($disp, $fecha_bd) as $id) {
-                if ($disp->validarHorario($id, $fecha_bd, $horaStr, $duracionMin) === null) {
-                    $asignado = $id;
-                    break;
+        // Armar la lista de citas a crear: [id_raza, id_servicio, id_mascota]
+        $citas = [];
+        if (is_array($servicios) && count($servicios) > 0) {
+            foreach ($servicios as $item) {
+                $id_raza = intval($item['id_raza'] ?? 0);
+                $serv = DB::selectOne("SELECT id_servicio FROM raza_servicio WHERE id_raza = ? LIMIT 1", [$id_raza]);
+                if (!$serv) {
+                    return response()->json(['ok' => false, 'error' => 'Servicio no encontrado para la raza seleccionada.']);
                 }
+                $citas[] = [$id_raza, intval($serv->id_servicio), intval($item['id_mascota'] ?? 0)];
             }
-            if ($asignado === null) {
-                return response()->json(['ok' => false, 'error' => 'No hay estilistas disponibles en ese horario']);
+        } elseif (count($adicionales) > 0) {
+            // Solo adicionales: se usa el "Servicio individual"
+            $id_individual = $disp->idServicioIndividual();
+            if ($id_individual === null) {
+                return response()->json(['ok' => false, 'error' => 'Por ahora no se pueden agendar adicionales solos.']);
             }
-            $estilistaFinal = $asignado;
+            $citas[] = [null, $id_individual, intval($request->input('id_mascota_adicionales'))];
         } else {
-            $error = $disp->validarHorario($estilistaFinal, $fecha_bd, $horaStr, $duracionMin);
-            if ($error !== null) {
-                return response()->json(['ok' => false, 'error' => $error]);
-            }
+            return response()->json(['ok' => false, 'error' => 'Selecciona al menos un servicio o un adicional.']);
         }
 
-        // Insertar la cita
-        $id_cita = DB::table('cita')->insertGetId([
-            'id_cliente'   => $id_cliente,
-            'id_mascota'   => $id_mascota,
-            'id_servicio'  => $id_servicio,
-            'id_raza'      => $id_raza,
-            'id_estilista' => $estilistaFinal,
-            'fecha'        => $fecha_bd,
-            'hora'         => $horaStr,
-            'estado'       => 'Pendiente'
-        ]);
+        try {
+            DB::transaction(function () use ($disp, $id_cliente, $id_estilista, $fecha_bd, $hora, $citas, $adicionales) {
+                // Bloquea a los estilistas hasta terminar: las reservas simultáneas van en fila
+                DB::table('estilista')->where('estado', 'Activo')->lockForUpdate()->get();
 
-        if ($primera_cita_id === null) $primera_cita_id = $id_cita;
+                $horaActualMin   = Disponibilidad::aMinutos($hora);
+                $primera_cita_id = null;
 
-        // Avanzar la hora para la siguiente cita
-        $horaActualMin += $duracionMin;
+                foreach ($citas as [$id_raza, $id_servicio, $id_mascota]) {
+                    // Verificar que la mascota sea del cliente y no esté archivada
+                    $mascotaValida = DB::selectOne(
+                        "SELECT id_mascota FROM mascota WHERE id_mascota = ? AND id_cliente = ? AND activa = 1",
+                        [$id_mascota, $id_cliente]
+                    );
+                    if (!$mascotaValida) {
+                        throw new \DomainException('Mascota no válida para este cliente.');
+                    }
+
+                    $duracionMin = $disp->duracion($id_raza, $id_servicio);
+
+                    // La primera cita lleva los adicionales: también su tiempo
+                    if ($primera_cita_id === null) {
+                        $duracionMin += count($adicionales) * Disponibilidad::MINUTOS_ADICIONAL;
+                    }
+
+                    $horaStr = Disponibilidad::aHora($horaActualMin);
+
+                    // Asignar estilista
+                    $estilistaFinal = $id_estilista;
+                    if ($estilistaFinal === 0) {
+                        $estilistaFinal = null;
+                        foreach ($this->estilistasElegibles($disp, $fecha_bd) as $id) {
+                            if ($disp->validarHorario($id, $fecha_bd, $horaStr, $duracionMin) === null) {
+                                $estilistaFinal = $id;
+                                break;
+                            }
+                        }
+                        if ($estilistaFinal === null) {
+                            throw new \DomainException('No hay estilistas disponibles en ese horario. Elige otra hora.');
+                        }
+                    } else {
+                        $error = $disp->validarHorario($estilistaFinal, $fecha_bd, $horaStr, $duracionMin);
+                        if ($error !== null) {
+                            throw new \DomainException($error);
+                        }
+                    }
+
+                    $id_cita = DB::table('cita')->insertGetId([
+                        'id_cliente'   => $id_cliente,
+                        'id_mascota'   => $id_mascota,
+                        'id_servicio'  => $id_servicio,
+                        'id_raza'      => $id_raza,
+                        'id_estilista' => $estilistaFinal,
+                        'fecha'        => $fecha_bd,
+                        'hora'         => $horaStr,
+                        'estado'       => 'Pendiente'
+                    ]);
+
+                    if ($primera_cita_id === null) $primera_cita_id = $id_cita;
+
+                    // La siguiente cita empieza cuando termina esta
+                    $horaActualMin += $duracionMin;
+                }
+
+                // Los adicionales van en la primera cita
+                foreach ($adicionales as $id_ad) {
+                    DB::table('adicional_cita')->insert([
+                        'id_adicional' => $id_ad,
+                        'id_cita'      => $primera_cita_id
+                    ]);
+                }
+            });
+        } catch (\DomainException $e) {
+            // DomainException = errores de validación con mensaje para el cliente
+            // (los errores de base de datos son de otro tipo y no se muestran tal cual).
+            // Al lanzarse, la transacción ya deshizo todo lo guardado.
+            return response()->json(['ok' => false, 'error' => $e->getMessage()]);
+        }
+
+        return response()->json(['ok' => true]);
     }
-
-    // Los adicionales van en la primera cita
-    foreach ($adicionales as $id_ad) {
-        DB::table('adicional_cita')->insert([
-            'id_adicional' => intval($id_ad),
-            'id_cita'      => $primera_cita_id
-        ]);
-    }
-
-    return response()->json(['ok' => true]);
-}
 }
