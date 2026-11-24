@@ -58,11 +58,11 @@ CREATE TABLE `adicional_cita` (
 --
 DELIMITER $$
 CREATE TRIGGER `adicional_cita_unico` BEFORE INSERT ON `adicional_cita` FOR EACH ROW BEGIN
-    IF (SELECT COUNT(*) 
-        FROM adicional_cita 
+    IF (SELECT COUNT(*)
+        FROM adicional_cita
         WHERE id_adicional = NEW.id_adicional
         AND id_cita = NEW.id_cita) > 0 THEN
-        
+
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Ese adicional ya está agregado a esta cita.';
     END IF;
@@ -847,7 +847,8 @@ INSERT INTO `servicio` (`id_servicio`, `nombre_servicio`) VALUES
 (1, 'Pelo corto'),
 (2, 'Pelo largo-doble capa'),
 (3, 'Corte especializado'),
-(4, 'Gatos');
+(4, 'Gatos'),
+(5, 'Servicio individual');
 
 -- --------------------------------------------------------
 
