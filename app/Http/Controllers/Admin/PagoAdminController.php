@@ -24,6 +24,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\Disponibilidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -109,6 +110,8 @@ class PagoAdminController extends Controller
      * mascota, servicio (la clasificación, ej. "Pelo corto"), precio de
      * catálogo y sus adicionales. Si una cita antigua no tiene precio de
      * catálogo, su precio llega en NULL y el administrador lo escribe a mano.
+     * Las citas de "Servicio individual" (solo adicionales) llegan con
+     * solo_adicionales = true y precio 0: se cobran solo sus adicionales.
      *
      * @return array<int, array> lista de cobros, del día más reciente al más antiguo
      */
@@ -157,13 +160,16 @@ class PagoAdminController extends Controller
                 ];
             }
 
+            $soloAdicionales = $c->nombre_servicio === Disponibilidad::SERVICIO_INDIVIDUAL;
+
             $cobros[$clave]['citas'][] = [
                 'id_cita'     => $c->id_cita,
+                'solo_adicionales' => $soloAdicionales,
                 'hora'        => $c->hora,
                 'raza'        => $c->nombre_raza ?? $c->nombre_servicio,
                 'mascota'     => $c->nombre_mascota,
                 'servicio'    => $c->nombre_servicio,
-                'precio'      => $c->precio !== null ? (float) $c->precio : null,
+                'precio'      => $soloAdicionales ? 0 : ($c->precio !== null ? (float) $c->precio : null),
                 'adicionales' => array_values(array_map(
                     fn($a) => ['nombre' => $a->nombre_adicional, 'precio' => (float) $a->precio_adicional],
                     array_filter($adicionales, fn($a) => $a->id_cita == $c->id_cita)

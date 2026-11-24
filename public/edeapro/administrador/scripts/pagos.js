@@ -285,16 +285,28 @@ function abrirCobro(indice) {
 
     let html = '';
     cobro.citas.forEach(cita => {
-        const precio = cita.precio !== null ? Math.round(cita.precio).toLocaleString('es-CO') : '';
-        html += `
+        // Cita de solo adicionales (ej. solo corte de uñas): no hay servicio que cobrar,
+        // se muestra la mascota y debajo sus adicionales con precio
+        if (cita.solo_adicionales) {
+            html += `
             <div class="cobro-linea">
                 <div>
-                    ${escaparHTML(cita.raza)} · <strong>${escaparHTML(cita.mascota)}</strong>
-                    <small>${escaparHTML(cita.servicio)} · ${formatoHora12(cita.hora)}</small>
+                    Solo adicionales · <strong>${escaparHTML(cita.mascota)}</strong>
+                    <small>${formatoHora12(cita.hora)}</small>
                 </div>
-                <input type="text" inputmode="numeric" class="precio-cobro" data-cita="${cita.id_cita}"
-                       value="${precio}" placeholder="Valor" aria-label="Precio de ${escaparHTML(cita.raza)}">
             </div>`;
+        } else {
+            const precio = cita.precio !== null ? Math.round(cita.precio).toLocaleString('es-CO') : '';
+            html += `
+                <div class="cobro-linea">
+                    <div>
+                        ${escaparHTML(cita.raza)} · <strong>${escaparHTML(cita.mascota)}</strong>
+                        <small>${escaparHTML(cita.servicio)} · ${formatoHora12(cita.hora)}</small>
+                    </div>
+                    <input type="text" inputmode="numeric" class="precio-cobro" data-cita="${cita.id_cita}"
+                           value="${precio}" placeholder="Valor" aria-label="Precio de ${escaparHTML(cita.raza)}">
+                </div>`;
+        }
         cita.adicionales.forEach(ad => {
             html += `
                 <div class="cobro-linea cobro-adicional">
