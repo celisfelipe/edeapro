@@ -210,23 +210,29 @@ class ClienteController extends Controller
 }
 
     /**
-     * Busca una cita reagendable (Pendiente o Reagendada) del cliente
-     * autenticado. Devuelve null si no existe o no es suya.
+     * Margen mínimo (minutos) entre ahora y la nueva hora al reagendar.
+     * Permite mover una cita al mismo día (ej. de mañana a hoy) si hay espacio,
+     * dejando al menos este tiempo para que el cliente alcance a llegar.
+     */
+    private const MARGEN_REAGENDAR_MIN = 60;
+
+    /**
+     * Busca una cita reagendable del cliente autenticado: Pendiente o
+     * Reagendada, y que todavía no haya empezado. Devuelve null si no
+     * existe, no es suya o ya pasó.
      */
     private function citaReagendable(int $id_cita, int $id_cliente)
     {
-        return DB::selectOne(
-            "SELECT id_cita, id_estilista, id_raza, id_servicio
+        $cita = DB::selectOne(
+            "SELECT id_cita, id_estilista, id_raza, id_servicio, fecha, hora
              FROM cita
              WHERE id_cita = ? AND id_cliente = ? AND estado IN ('Pendiente', 'Reagendada')",
             [$id_cita, $id_cliente]
         );
-    }
-
-    /** Indica si fecha + hora quedan a más de 24h desde ahora (regla de reagendamiento) */
-    private function conAnticipacion(string $fecha, string $hora): bool
-    {
-        return strtotime($fecha . ' ' . $hora) > strtotime('+24 hours');
+        if ($cita && strtotime($cita->fecha . ' ' . $cita->hora) <= time()) {
+            return null;   // la cita ya empezó o ya pasó: no se puede mover
+        }
+        return $cita;
     }
 
     /**
@@ -236,8 +242,10 @@ class ClienteController extends Controller
      *   - la cita completa debe caber antes del cierre (17:00 − duración),
      *   - no puede solaparse con otras citas del estilista (la propia cita
      *     se ignora, para poder moverla dentro del mismo día),
-     *   - no se ofrecen domingos ni días con bloqueo temporal del estilista.
-     * Además se quitan los horarios a menos de 24h, que reagendarCita() rechazaría.
+     *   - no se ofrecen domingos ni días con bloqueo temporal del estilista,
+     *   - no se ofrecen horas a menos de MARGEN_REAGENDAR_MIN de ahora
+     *     (sí se puede mover al mismo día, ej. de mañana a hoy).
+     * La duración incluye los adicionales de la cita.
      *
      * Parámetros: id_cita, fecha (YYYY-MM-DD).
      */
@@ -261,9 +269,8 @@ class ClienteController extends Controller
                 'aviso' => 'Tu estilista no está recibiendo citas en este momento.']);
         }
 
-        $duracion    = $disp->duracion($cita->id_raza, $cita->id_servicio);
-        $disponibles = $disp->horariosDisponibles($cita->id_estilista, $fecha, $duracion, $cita->id_cita);
-        $disponibles = array_values(array_filter($disponibles, fn($h) => $this->conAnticipacion($fecha, $h)));
+        $duracion    = $disp->duracionDeCita($cita->id_cita);
+        $disponibles = $disp->horariosDisponibles($cita->id_estilista, $fecha, $duracion, $cita->id_cita, self::MARGEN_REAGENDAR_MIN);
 
         return response()->json(['ok' => true, 'disponibles' => $disponibles, 'duracion' => $duracion]);
     }
@@ -271,9 +278,10 @@ class ClienteController extends Controller
     /**
      * Reagenda una cita del cliente autenticado (mismo estilista).
      * Valida en el servidor, con las mismas reglas que horariosReagendar():
-     * que la cita sea suya y esté pendiente, que la nueva fecha sea con más
-     * de 24h de anticipación, que la cita completa termine antes del cierre
-     * y que el estilista esté libre en todo ese rango.
+     * que la cita sea suya, esté pendiente y no haya empezado, que la nueva
+     * hora sea al menos MARGEN_REAGENDAR_MIN después de ahora, que la cita
+     * completa (con adicionales) termine antes del cierre y que el estilista
+     * esté libre en todo ese rango.
      */
     public function reagendarCita(Request $request, Disponibilidad $disp)
     {
@@ -286,30 +294,39 @@ class ClienteController extends Controller
             return response()->json(['ok' => false, 'error' => 'Debes seleccionar fecha y hora.']);
         }
 
-        if (!$this->conAnticipacion($fecha, $hora)) {
-            return response()->json(['ok' => false, 'error' => 'Solo puedes reagendar con más de 24 horas de anticipación.']);
+        if ($disp->yaPaso($fecha, $hora, self::MARGEN_REAGENDAR_MIN)) {
+            return response()->json(['ok' => false, 'error' => 'La nueva hora debe ser al menos 1 hora después de ahora.']);
         }
 
         $cita = $this->citaReagendable($id_cita, $id_cliente);
         if (!$cita) {
-            return response()->json(['ok' => false, 'error' => 'Cita no encontrada o ya no está pendiente.'], 403);
+            return response()->json(['ok' => false, 'error' => 'Cita no encontrada, ya pasó o ya no está pendiente.'], 403);
         }
 
         if (!$disp->estilistaAtiende($cita->id_estilista)) {
             return response()->json(['ok' => false, 'error' => 'Tu estilista no está recibiendo citas en este momento.']);
         }
 
-        $duracion = $disp->duracion($cita->id_raza, $cita->id_servicio);
-        $error    = $disp->validarHorario($cita->id_estilista, $fecha, $hora, $duracion, $cita->id_cita);
+        $duracion = $disp->duracionDeCita($cita->id_cita);
+
+        // Igual que al agendar: se bloquea al estilista mientras se revisa y
+        // se guarda, para que dos personas no tomen el mismo horario a la vez
+        $error = DB::transaction(function () use ($disp, $cita, $fecha, $hora, $duracion) {
+            DB::table('estilista')->where('id_estilista', $cita->id_estilista)->lockForUpdate()->first();
+
+            $error = $disp->validarHorario($cita->id_estilista, $fecha, $hora, $duracion, $cita->id_cita);
+            if ($error === null) {
+                DB::update(
+                    "UPDATE cita SET fecha = ?, hora = ?, estado = 'Reagendada' WHERE id_cita = ?",
+                    [$fecha, $hora, $cita->id_cita]
+                );
+            }
+            return $error;
+        });
+
         if ($error !== null) {
             return response()->json(['ok' => false, 'error' => $error]);
         }
-
-        DB::update(
-            "UPDATE cita SET fecha = ?, hora = ?, estado = 'Reagendada' WHERE id_cita = ?",
-            [$fecha, $hora, $id_cita]
-        );
-
         return response()->json(['ok' => true]);
     }
 

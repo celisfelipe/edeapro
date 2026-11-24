@@ -479,11 +479,10 @@ function reagendarCita(id_cita) {
     const inputFecha = document.getElementById("reagendar-fecha");
     const selectHora = document.getElementById("reagendar-hora");
 
-    // Fecha mínima: mañana (las horas a menos de 24h las descarta el servidor).
+    // Fecha mínima: hoy. Se puede mover la cita al mismo día si hay espacio;
+    // las horas a menos de 1 hora de ahora las descarta el servidor.
     // Se usa la fecha local; toISOString usaría UTC y podría saltar un día.
-    const manana = new Date();
-    manana.setDate(manana.getDate() + 1);
-    inputFecha.min = formatearFechaLocal(manana);
+    inputFecha.min = formatearFechaLocal(new Date());
     inputFecha.value = "";
     selectHora.innerHTML = '<option value="">Selecciona una hora</option>';
 
