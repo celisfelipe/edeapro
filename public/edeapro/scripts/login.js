@@ -345,10 +345,16 @@ async function enviarRecuperacion() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ correo })
         });
+            // Límite de 3 solicitudes por minuto (throttle en routes/api.php)
+        if (res.status === 429) {
+            mostrarMsg(msg, 'Demasiados intentos. Espera un minuto e intenta de nuevo.', 'error');
+            return;
+        }
         const data = await res.json();
 
         if (data.ok) {
-            mostrarMsg(msg, 'Correo enviado. Revisa tu bandeja de entrada.', 'success');
+            // Mensaje del servidor: es el mismo exista o no la cuenta
+            mostrarMsg(msg, data.mensaje, 'success');
         } else {
             mostrarMsg(msg, data.error || 'Error al enviar el correo.', 'error');
         }

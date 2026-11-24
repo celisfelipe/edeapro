@@ -20,8 +20,12 @@ Route::middleware('throttle:5,1')->group(function () {
 });
 
 // ── Recuperación de contraseña ────────────────────────────────
-Route::post('/recuperar-contrasena',   [App\Http\Controllers\RecuperacionController::class, 'enviarToken']);
-Route::post('/restablecer-contrasena', [App\Http\Controllers\RecuperacionController::class, 'restablecerContrasena']);
+// Máximo 3 solicitudes de recuperación y 5 cambios por minuto por IP
+// (evita que alguien use el formulario para mandar correos sin parar)
+Route::post('/recuperar-contrasena',   [App\Http\Controllers\RecuperacionController::class, 'enviarToken'])
+    ->middleware('throttle:3,1');
+Route::post('/restablecer-contrasena', [App\Http\Controllers\RecuperacionController::class, 'restablecerContrasena'])
+    ->middleware('throttle:5,1');
 
 // ── Rutas públicas ────────────────────────────────────────────
 Route::get('/citas/servicios',   [App\Http\Controllers\CitaController::class, 'servicios']);

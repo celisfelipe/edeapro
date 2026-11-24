@@ -10,20 +10,31 @@ use Illuminate\Support\Str;
 
 class RecuperacionController extends Controller
 {
+    /** Respuesta igual exista o no la cuenta (ver enviarToken) */
+    private const MENSAJE_GENERICO = 'Si el correo está registrado, te enviamos un enlace para crear una nueva contraseña. Revisa tu bandeja de entrada y la carpeta de spam.';
+
     /**
      * Recibe el correo, genera un token y envía el email.
-     * Máximo 3 solicitudes por hora por correo.
+     * Máximo 3 solicitudes por hora por correo (y 3 por minuto por IP, en routes/api.php).
+     *
+     * Responde LO MISMO exista o no la cuenta: así nadie puede usar este
+     * formulario para averiguar qué correos están registrados (enumeración).
      */
     public function enviarToken(Request $request)
 {
-    $correo = filter_var(trim($request->input('correo')), FILTER_SANITIZE_EMAIL);
+    $correo = filter_var(trim((string) $request->input('correo')), FILTER_SANITIZE_EMAIL);
+
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        return response()->json(['ok' => false, 'error' => 'Escribe un correo válido.']);
+    }
 
     // Verificar si el correo existe en clientes o estilistas
     $cliente   = DB::table('cliente')->where('correo', $correo)->first();
     $estilista = DB::table('estilista')->where('correo', $correo)->first();
 
     if (!$cliente && !$estilista) {
-        return response()->json(['ok' => false, 'error' => 'No existe una cuenta con ese correo.']);
+        // No se dice que no existe: misma respuesta que cuando sí se envía
+        return response()->json(['ok' => true, 'mensaje' => self::MENSAJE_GENERICO]);
     }
 
     // Verificar que no haya más de 3 solicitudes en la última hora
@@ -77,7 +88,7 @@ class RecuperacionController extends Controller
         ]);
     }
 
-    return response()->json(['ok' => true, 'mensaje' => 'Correo enviado. Revisa tu bandeja de entrada.']);
+    return response()->json(['ok' => true, 'mensaje' => self::MENSAJE_GENERICO]);
 }
 
     /**
