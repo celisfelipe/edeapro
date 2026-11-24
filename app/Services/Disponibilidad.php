@@ -17,6 +17,10 @@
  *     otra cita activa (no cancelada) del mismo estilista.
  *   - Un estilista con bloqueo temporal (vacaciones, etc.) ese día no tiene
  *     horarios disponibles.
+ *   - Cada adicional de una cita suma MINUTOS_ADICIONAL a su duración.
+ *   - Una cita de "Servicio individual" (solo adicionales, ej. corte de uñas)
+ *     dura solo lo de sus adicionales.
+ *   - No se aceptan fechas ni horas que ya pasaron.
  *
  * Todas las horas se manejan internamente como minutos desde la medianoche.
  */
@@ -33,6 +37,19 @@ class Disponibilidad
 
     /** Duración por defecto (min) si no se encuentra ninguna en el catálogo */
     const DURACION_POR_DEFECTO = 60;
+
+    /** Minutos que suma cada adicional (el mismo valor que muestra la agenda: "~20 min") */
+    const MINUTOS_ADICIONAL = 20;
+
+    /**
+     * Nombre del registro de la tabla servicio que se usa para las citas de
+     * solo adicionales. Toda cita necesita un id_servicio, así que estas
+     * citas usan este servicio (no tiene razas ni precio propio).
+     */
+    const SERVICIO_INDIVIDUAL = 'Servicio individual';
+
+    /** Caché por petición del id del "Servicio individual" (false = aún no consultado) */
+    private int|null|false $idIndividual = false;
 
     /** Caché por petición de la duración máxima de cada servicio */
     private ?array $maximosPorServicio = null;
@@ -51,6 +68,18 @@ class Disponibilidad
     }
 
     /**
+     * id_servicio del "Servicio individual", o null si no existe en la base de datos.
+     */
+    public function idServicioIndividual(): ?int
+    {
+        if ($this->idIndividual === false) {
+            $fila = DB::selectOne("SELECT id_servicio FROM servicio WHERE nombre_servicio = ?", [self::SERVICIO_INDIVIDUAL]);
+            $this->idIndividual = $fila ? intval($fila->id_servicio) : null;
+        }
+        return $this->idIndividual;
+    }
+
+    /**
      * Duración en minutos de un servicio para una raza, según raza_servicio.
      * Si la combinación no existe (ej. citas antiguas con id_raza = NULL), usa
      * la duración más larga registrada para ese servicio, como margen de
@@ -58,6 +87,10 @@ class Disponibilidad
      */
     public function duracion(?int $id_raza, int $id_servicio): int
     {
+        // Solo adicionales: el servicio en sí no ocupa tiempo
+        if ($id_servicio === $this->idServicioIndividual()) {
+            return 0;
+        }
         if ($id_raza) {
             $fila = DB::selectOne(
                 "SELECT duracion FROM raza_servicio WHERE id_raza = ? AND id_servicio = ?",
@@ -66,6 +99,24 @@ class Disponibilidad
             if ($fila && intval($fila->duracion) > 0) return intval($fila->duracion);
         }
         return $this->duracionMaximaDeServicio($id_servicio);
+    }
+
+    /**
+     * Duración total de una cita ya guardada: su servicio más sus adicionales.
+     * Se usa al reagendar, para mover la cita con todo su tiempo real.
+     */
+    public function duracionDeCita(int $id_cita): int
+    {
+        $cita = DB::selectOne(
+            "SELECT id_raza, id_servicio,
+                    (SELECT COUNT(*) FROM adicional_cita ac WHERE ac.id_cita = c.id_cita) AS n_adicionales
+             FROM cita c WHERE c.id_cita = ?",
+            [$id_cita]
+        );
+        if (!$cita) return self::DURACION_POR_DEFECTO;
+
+        $base = $this->duracion($cita->id_raza ? intval($cita->id_raza) : null, intval($cita->id_servicio));
+        return $base + intval($cita->n_adicionales) * self::MINUTOS_ADICIONAL;
     }
 
     /** Duración más larga registrada para un servicio (respaldo conservador) */
@@ -86,7 +137,8 @@ class Disponibilidad
 
     /**
      * Rangos [inicio, fin) en minutos de las citas activas (no canceladas)
-     * de un estilista en una fecha, con la duración real de cada una.
+     * de un estilista en una fecha, con la duración real de cada una
+     * (servicio + MINUTOS_ADICIONAL por cada adicional).
      *
      * @param int|null $excluirCita id_cita a ignorar (la cita que se está
      *                              reagendando no debe bloquearse a sí misma)
@@ -94,7 +146,8 @@ class Disponibilidad
     public function rangosOcupados(int $id_estilista, string $fecha_bd, ?int $excluirCita = null): array
     {
         $citas = DB::select("
-            SELECT c.hora, c.id_servicio, rs.duracion
+            SELECT c.hora, c.id_servicio, rs.duracion,
+                   (SELECT COUNT(*) FROM adicional_cita ac WHERE ac.id_cita = c.id_cita) AS n_adicionales
             FROM cita c
             LEFT JOIN raza_servicio rs ON rs.id_raza = c.id_raza AND rs.id_servicio = c.id_servicio
             WHERE c.id_estilista = ? AND c.fecha = ? AND c.estado != 'Cancelada'
@@ -103,9 +156,12 @@ class Disponibilidad
 
         $rangos = [];
         foreach ($citas as $c) {
-            $duracion = $c->duracion !== null
-                ? intval($c->duracion)
-                : $this->duracionMaximaDeServicio(intval($c->id_servicio));
+            $duracion = match (true) {
+                intval($c->id_servicio) === $this->idServicioIndividual() => 0,   // solo adicionales
+                $c->duracion !== null => intval($c->duracion),
+                default => $this->duracionMaximaDeServicio(intval($c->id_servicio)),
+            };
+            $duracion += intval($c->n_adicionales) * self::MINUTOS_ADICIONAL;
             $inicio   = self::aMinutos($c->hora);
             $rangos[] = [$inicio, $inicio + $duracion];
         }
@@ -134,6 +190,15 @@ class Disponibilidad
         ) !== null;
     }
 
+    /**
+     * Indica si una fecha y hora ya pasaron (o están a menos de
+     * $margenMinutos de ahora). Usa la hora de Colombia (config/app.php).
+     */
+    public function yaPaso(string $fecha_bd, string $hora, int $margenMinutos = 0): bool
+    {
+        return strtotime($fecha_bd . ' ' . $hora) <= time() + $margenMinutos * 60;
+    }
+
     /** El negocio atiende de lunes a sábado */
     public function esDiaHabil(string $fecha_bd): bool
     {
@@ -152,9 +217,10 @@ class Disponibilidad
     /**
      * Horarios de inicio ("HH:MM") en los que el estilista puede atender una
      * cita de $duracion minutos esa fecha: dentro del horario de atención,
-     * terminando a más tardar a las 17:00 y sin solaparse con otras citas.
+     * terminando a más tardar a las 17:00, sin solaparse con otras citas y
+     * sin horas que ya pasaron (o a menos de $margenMinutos de ahora).
      */
-    public function horariosDisponibles(int $id_estilista, string $fecha_bd, int $duracion, ?int $excluirCita = null): array
+    public function horariosDisponibles(int $id_estilista, string $fecha_bd, int $duracion, ?int $excluirCita = null, int $margenMinutos = 0): array
     {
         if (!$this->esDiaHabil($fecha_bd) || $this->estaBloqueado($id_estilista, $fecha_bd)) {
             return [];
@@ -165,8 +231,9 @@ class Disponibilidad
         $libres      = [];
 
         for ($inicio = self::APERTURA; $inicio <= $ultimoInicio; $inicio += self::MINUTOS_SLOT) {
-            if (!$this->seSolapa($rangos, $inicio, $inicio + $duracion)) {
-                $libres[] = self::aHora($inicio);
+            $hora = self::aHora($inicio);
+            if (!$this->yaPaso($fecha_bd, $hora, $margenMinutos) && !$this->seSolapa($rangos, $inicio, $inicio + $duracion)) {
+                $libres[] = $hora;
             }
         }
         return $libres;
@@ -175,11 +242,16 @@ class Disponibilidad
     /**
      * Valida en el servidor que una cita concreta se pueda guardar.
      * Devuelve null si es válida, o el mensaje de error para el usuario.
+     * Rechaza fechas u horas que ya pasaron: el navegador las oculta, pero
+     * alguien podría enviarlas a mano a la API.
      */
     public function validarHorario(int $id_estilista, string $fecha_bd, string $hora, int $duracion, ?int $excluirCita = null): ?string
     {
         $inicio = self::aMinutos($hora);
 
+        if (!strtotime($fecha_bd) || $this->yaPaso($fecha_bd, $hora)) {
+            return 'Esa fecha u hora ya pasó. Elige un horario disponible.';
+        }
         if (!$this->esDiaHabil($fecha_bd)) {
             return 'No atendemos los domingos.';
         }
