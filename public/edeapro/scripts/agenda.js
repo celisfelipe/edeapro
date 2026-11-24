@@ -18,7 +18,7 @@ function estadoInicial(){
   return {
     step:1, cat:null, sel:{}, adicionales:{},
     groomer:null, yr:hoy.getFullYear(), mo:hoy.getMonth(),
-    date:null, slot:null, mascotas:{}, done:false
+    date:null, slot:null, mascotas:{}, mascotaAdicionales:null, done:false
   };
 }
 
@@ -36,8 +36,12 @@ const durL = m => m >= 60
   ? `${Math.floor(m/60)} h${m%60?" "+m%60+" min":""}`
   : m + " min";
 
+/** ¿Eligió solo adicionales, sin baño ni corte? (ej. solo corte de uñas) */
+const soloAdicionales = () => Object.keys(S.sel).length === 0 && Object.keys(S.adicionales).length > 0;
+
 function canGo(){
-  if(S.step===1) return Object.keys(S.sel).length > 0;
+  // Se puede seguir con un servicio, con adicionales solos, o con ambos
+  if(S.step===1) return Object.keys(S.sel).length > 0 || Object.keys(S.adicionales).length > 0;
   if(S.step===2) return S.groomer !== null;
   if(S.step===3) return S.date && S.slot;
   return true;
@@ -146,13 +150,13 @@ function renderStep1(){
     <div>
       <div class="sec-eyebrow">Paso 1 de 4</div>
       <div class="sec-title">¿Qué necesita tu mascota?</div>
-      <div class="sec-sub">Selecciona uno o más servicios. Los tiempos se acumulan automáticamente.</div>
+      <div class="sec-sub">Selecciona servicios, adicionales o ambos. Los tiempos se acumulan automáticamente.</div>
     </div>
     <div class="svc-layout">
       <div style="flex:1">
         <div class="race-tabs">
           ${CATS.map(c=>`<button class="rtab ${c===cat?"on":""}" data-c="${c}">${c}</button>`).join("")}
-          ${Object.keys(S.sel).length > 0 ? `<button class="rtab ${cat==="Adicionales"?"on":""}" data-c="Adicionales">Adicionales</button>` : ""}
+          <button class="rtab ${cat==="Adicionales"?"on":""}" data-c="Adicionales">Adicionales</button>
         </div>
         <div class="svc-list">${lista}</div>
       </div>
@@ -321,8 +325,21 @@ async function renderStep4(){
     }
   }
 
+  // Solo adicionales: van en una cita para UNA mascota (la primera, o la que elija)
+  if (soloAdicionales() && MASCOTAS.length > 0 && !MASCOTAS.some(m => m.id_mascota === S.mascotaAdicionales)) {
+    S.mascotaAdicionales = MASCOTAS[0].id_mascota;
+  }
+
   // HTML del selector de mascotas — solo aparece si hay 2 o más mascotas
   const necesitaSelector = MASCOTAS.length >= 2;
+
+  const selectorAdicionalesHtml = soloAdicionales() && necesitaSelector ? `
+      <div class="cc-mascota-sel">
+        <span class="cc-mascota-lbl">¿Para cuál mascota son los adicionales?</span>
+        <select id="mascota-adicionales">
+          ${MASCOTAS.map(m=>`<option value="${m.id_mascota}" ${m.id_mascota===S.mascotaAdicionales?"selected":""}>${m.nombre} (${m.especie})</option>`).join("")}
+        </select>
+      </div>` : "";
 
   const serviciosHtml = items.map(s => {
     const selectorHtml = necesitaSelector ? `
@@ -363,6 +380,7 @@ async function renderStep4(){
             <span class="cc-lbl">${a.nombre_adicional}</span>
             <span class="cc-val">${fmt(a.precio_adicional)}</span>
           </div>`).join("")}
+        ${selectorAdicionalesHtml}
         <div class="cc-row"><span class="cc-lbl">Peluquero</span><span class="cc-val">${g?g.name:"Cualquier disponible"}</span></div>
         <div class="cc-row"><span class="cc-lbl">Fecha</span><span class="cc-val">${S.date}</span></div>
         <div class="cc-row"><span class="cc-lbl">Hora</span><span class="cc-val">${formatoHora12(S.slot)}</span></div>
@@ -374,6 +392,10 @@ async function renderStep4(){
       <button class="btn-sec" id="bbk">← Volver</button>
       <button class="btn-primary" id="bgo">Confirmar cita</button>
     </div>`;
+
+  // Mascota de los adicionales (cuando son solos)
+  const selAd = document.getElementById("mascota-adicionales");
+  if (selAd) selAd.onchange = e => { S.mascotaAdicionales = parseInt(e.target.value); };
 
   // Escuchar cambios en los selectores por servicio
   document.querySelectorAll(".mascota-por-servicio").forEach(sel => {
@@ -409,7 +431,9 @@ async function renderStep4(){
         fecha:        S.date,
         hora:         S.slot,
         servicios:    JSON.stringify(serviciosEnviar),
-        adicionales:  JSON.stringify(Object.keys(S.adicionales))
+        adicionales:  JSON.stringify(Object.keys(S.adicionales)),
+        // Solo se usa cuando no hay servicios (cita de solo adicionales)
+        id_mascota_adicionales: S.mascotaAdicionales || MASCOTAS[0].id_mascota
       })
     })
     .then(r=>r.json())
