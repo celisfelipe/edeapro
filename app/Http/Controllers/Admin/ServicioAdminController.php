@@ -39,12 +39,31 @@ class ServicioAdminController extends Controller
      * Actualiza el precio y la duración de un servicio para una raza específica.
      * Identifica el registro por la combinación id_raza + id_servicio.
      */
+    /**
+     * Revisa la duración escrita por el administrador y la deja como "90 min".
+     * Solo acepta minutos (ej. "90" o "90 min"), entre 5 y 480. Devuelve null
+     * si no sirve: la agenda lee el número del inicio, así que "1 hora" se
+     * leería como 1 minuto y se podrían cruzar citas.
+     */
+    private function normalizarDuracion($texto): ?string
+    {
+        if (!preg_match('/^\s*(\d{1,3})\s*(min)?\s*$/i', (string) $texto, $m)) {
+            return null;
+        }
+        $minutos = intval($m[1]);
+        return ($minutos >= 5 && $minutos <= 480) ? "{$minutos} min" : null;
+    }
+
     public function editar(Request $request)
     {
         $id_raza     = intval($request->input('id_raza'));
         $id_servicio = intval($request->input('id_servicio'));
         $precio      = $request->input('precio');
-        $duracion    = $request->input('duracion');
+        $duracion    = $this->normalizarDuracion($request->input('duracion'));
+
+        if ($duracion === null) {
+            return response()->json(['ok' => false, 'error' => 'Escribe la duración en minutos, por ejemplo 90.']);
+        }
 
         DB::update(
             "UPDATE raza_servicio SET precio=?, duracion=? WHERE id_raza=? AND id_servicio=?",
@@ -67,6 +86,15 @@ class ServicioAdminController extends Controller
         $nombre    = strip_tags(trim($request->input('nombre_raza')));
         $servicios = $request->input('servicios');
 
+        // Revisar todas las duraciones antes de guardar nada
+        foreach ($servicios as $i => $item) {
+            $duracion = $this->normalizarDuracion($item['duracion'] ?? '');
+            if ($duracion === null) {
+                return response()->json(['ok' => false, 'error' => 'Escribe cada duración en minutos, por ejemplo 90.']);
+            }
+            $servicios[$i]['duracion'] = $duracion;
+        }
+
         // Insertar la raza nueva y obtener su ID
         $id_raza = DB::table('raza')->insertGetId([
             'nombre_raza' => $nombre
@@ -78,7 +106,7 @@ class ServicioAdminController extends Controller
                 'id_raza'     => $id_raza,
                 'id_servicio' => intval($item['id_servicio']),
                 'precio'      => floatval($item['precio']),
-                'duracion'    => strip_tags(trim($item['duracion'])),
+                'duracion'    => $item['duracion'],   // ya revisada: "90 min"
             ]);
         }
 
@@ -87,8 +115,11 @@ class ServicioAdminController extends Controller
 
     public function listaCategorias()
     {
+        // "Servicio individual" (citas de solo adicionales) no lleva razas ni
+        // precios propios, por eso no se ofrece al crear una raza
         $servicios = DB::table('servicio')
             ->select('id_servicio', 'nombre_servicio')
+            ->where('nombre_servicio', '!=', \App\Services\Disponibilidad::SERVICIO_INDIVIDUAL)
             ->get();
 
         return response()->json(['ok' => true, 'servicios' => $servicios]);
