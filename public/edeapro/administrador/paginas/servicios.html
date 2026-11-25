@@ -68,6 +68,27 @@
             </div>
         </div>
 
+        <!-- Adicionales: extras que el cliente puede agendar solos o junto a un servicio -->
+        <div class="card">
+            <div class="card-title-row">
+                <h2><i class="fa-solid fa-plus"></i> Adicionales</h2>
+                <button class="btn btn-blue" id="btn-nuevo-adicional">
+                    <i class="fa-solid fa-plus"></i> Nuevo adicional
+                </button>
+            </div>
+            <table>
+                <tr>
+                    <th>Adicional</th>
+                    <th>Precio</th>
+                    <th>Duración</th>
+                    <th>Acciones</th>
+                </tr>
+                <tbody id="tabla-adicionales">
+                    <tr><td colspan="4">Cargando adicionales...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <!-- Modal para editar precio y duración de un servicio -->
@@ -75,7 +96,7 @@
         <div class="modal">
             <h3>Editar servicio</h3>
             <div class="modal-form-group">
-                <label>Duración (ej: 45 min)</label>
+                <label>Duración en minutos (ej: 45)</label>
                 <input type="text" id="edit-svc-duracion">
             </div>
             <div class="modal-form-group">
@@ -105,6 +126,26 @@
             <div class="modal-footer">
                 <button class="btn btn-gray" id="nuevo-servicio-cancel">Cancelar</button>
                 <button class="btn btn-blue" id="nuevo-servicio-ok">Crear raza</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para crear o editar un adicional (lo maneja servicios.js) -->
+    <div class="modal-overlay" id="modal-adicional">
+        <div class="modal">
+            <h3 id="adicional-titulo">Nuevo adicional</h3>
+            <div class="modal-form-group">
+                <label for="adicional-nombre">Nombre (ej: Shampoo pelo blanco)</label>
+                <input type="text" id="adicional-nombre" maxlength="30">
+            </div>
+            <div class="modal-form-group">
+                <label for="adicional-precio">Precio (solo números)</label>
+                <input type="number" id="adicional-precio" min="1">
+            </div>
+            <p>Cada adicional reserva 20 minutos en la agenda.</p>
+            <div class="modal-footer">
+                <button class="btn btn-gray" id="adicional-cancel">Cancelar</button>
+                <button class="btn btn-blue" id="adicional-ok">Guardar</button>
             </div>
         </div>
     </div>

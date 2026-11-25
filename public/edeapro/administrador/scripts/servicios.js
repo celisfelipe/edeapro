@@ -235,3 +235,146 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// ── ADICIONALES ───────────────────────────────────────────────
+// Extras como corte de uñas o un shampoo especial. Lo que se crea aquí
+// aparece solo en la agenda del cliente (pestaña "Adicionales") y en Pagos.
+
+/** Adicional que se está editando en el modal (null = crear uno nuevo) */
+let adicionalEditando = null;
+
+/**
+ * Pide los adicionales al servidor y llena la tabla #tabla-adicionales.
+ * Un adicional que ya se usó en citas no muestra el botón de eliminar.
+ * @returns {void}
+ */
+function cargarAdicionales() {
+    fetchAuth(`${API_BASE}/api/admin/adicionales`)
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.getElementById('tabla-adicionales');
+        if (!data.ok) return;
+
+        if (data.adicionales.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4">No hay adicionales. Crea el primero con "Nuevo adicional".</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.adicionales.map(a => `
+            <tr>
+                <td>${escaparHTML(a.nombre_adicional)}</td>
+                <td>$${Number(a.precio_adicional).toLocaleString('es-CO')}</td>
+                <td>20 min</td>
+                <td class="acciones-cell">
+                    <button class="btn btn-blue btn-editar-adicional"
+                            data-id="${a.id_adicional}"
+                            data-nombre="${escaparHTML(a.nombre_adicional)}"
+                            data-precio="${Number(a.precio_adicional)}"><i class="fa-solid fa-pen"></i> Editar</button>
+                    ${Number(a.usos) === 0
+                        ? `<button class="btn btn-red btn-eliminar-adicional"
+                                   data-id="${a.id_adicional}"
+                                   data-nombre="${escaparHTML(a.nombre_adicional)}"><i class="fa-solid fa-trash"></i> Eliminar</button>`
+                        : ''}
+                </td>
+            </tr>`).join('');
+    });
+}
+
+/**
+ * Abre el modal del adicional: vacío para crear, o con sus datos para editar.
+ * @param {{id: number, nombre: string, precio: number}|null} adicional
+ * @returns {void}
+ */
+function abrirModalAdicional(adicional) {
+    adicionalEditando = adicional;
+    document.getElementById('adicional-titulo').textContent = adicional ? 'Editar adicional' : 'Nuevo adicional';
+    document.getElementById('adicional-nombre').value = adicional ? adicional.nombre : '';
+    document.getElementById('adicional-precio').value = adicional ? adicional.precio : '';
+    document.getElementById('modal-adicional').classList.add('open');
+}
+
+/**
+ * Guarda el adicional del modal (crea o edita) y recarga la tabla.
+ * El servidor vuelve a validar nombre y precio.
+ * @returns {void}
+ */
+function guardarAdicional() {
+    const nombre = document.getElementById('adicional-nombre').value.trim();
+    const precio = document.getElementById('adicional-precio').value;
+
+    if (!nombre) { modalError('Escribe el nombre del adicional.'); return; }
+    if (!precio || Number(precio) <= 0) { modalError('Escribe un precio mayor que 0.'); return; }
+
+    const datos = { nombre, precio };
+    let url = `${API_BASE}/api/admin/adicionales/agregar`;
+    if (adicionalEditando) {
+        url = `${API_BASE}/api/admin/adicionales/editar`;
+        datos.id_adicional = adicionalEditando.id;
+    }
+
+    fetchAuth(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(datos)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.ok) {
+            document.getElementById('modal-adicional').classList.remove('open');
+            cargarAdicionales();
+            modalExito(adicionalEditando ? 'Adicional actualizado.' : 'Adicional creado. Ya aparece en la agenda.');
+        } else {
+            modalError(data.error);
+        }
+    });
+}
+
+/**
+ * Elimina un adicional después de confirmar. El servidor no deja borrar
+ * uno que ya se usó en citas.
+ * @param {number} id
+ * @param {string} nombre
+ * @returns {void}
+ */
+function eliminarAdicional(id, nombre) {
+    modalConfirmar(`¿Eliminar el adicional "${nombre}"?`, function () {
+        fetchAuth(`${API_BASE}/api/admin/adicionales/eliminar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id_adicional: id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                cargarAdicionales();
+                modalExito('Adicional eliminado.');
+            } else {
+                modalError(data.error);
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (!verificarSesionAdmin()) return;
+
+    cargarAdicionales();
+
+    document.getElementById('btn-nuevo-adicional').addEventListener('click', () => abrirModalAdicional(null));
+    document.getElementById('adicional-cancel').addEventListener('click', () => {
+        document.getElementById('modal-adicional').classList.remove('open');
+    });
+    document.getElementById('adicional-ok').addEventListener('click', guardarAdicional);
+
+    // Botones de cada fila (la tabla se vuelve a pintar, por eso se escucha en el tbody)
+    document.getElementById('tabla-adicionales').addEventListener('click', function (e) {
+        const editar = e.target.closest('.btn-editar-adicional');
+        if (editar) {
+            const d = editar.dataset;
+            abrirModalAdicional({ id: Number(d.id), nombre: d.nombre, precio: Number(d.precio) });
+            return;
+        }
+        const eliminar = e.target.closest('.btn-eliminar-adicional');
+        if (eliminar) eliminarAdicional(Number(eliminar.dataset.id), eliminar.dataset.nombre);
+    });
+});

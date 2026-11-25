@@ -60,6 +60,11 @@ Route::middleware('verificar.token:administrador')->group(function () {
     Route::post('/admin/servicios/editar',   [App\Http\Controllers\Admin\ServicioAdminController::class, 'editar']);
     Route::post('/admin/servicios/agregar',  [App\Http\Controllers\Admin\ServicioAdminController::class, 'agregar']);
     Route::post('/admin/servicios/eliminar', [App\Http\Controllers\Admin\ServicioAdminController::class, 'eliminar']);
+    
+    Route::get('/admin/adicionales',           [App\Http\Controllers\Admin\AdicionalAdminController::class, 'index']);
+    Route::post('/admin/adicionales/agregar',  [App\Http\Controllers\Admin\AdicionalAdminController::class, 'agregar']);
+    Route::post('/admin/adicionales/editar',   [App\Http\Controllers\Admin\AdicionalAdminController::class, 'editar']);
+    Route::post('/admin/adicionales/eliminar', [App\Http\Controllers\Admin\AdicionalAdminController::class, 'eliminar']);
 
     Route::get('/admin/notificaciones',       [App\Http\Controllers\Admin\NotificacionAdminController::class, 'index']);
     Route::post('/admin/notificaciones/leer', [App\Http\Controllers\Admin\NotificacionAdminController::class, 'leer']);
