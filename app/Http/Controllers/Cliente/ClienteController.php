@@ -143,7 +143,7 @@ class ClienteController extends Controller
         }
 
         $historial = DB::select("
-            SELECT c.fecha, c.hora, c.estado, s.nombre_servicio, e.nombre_estilista
+            SELECT c.fecha, c.hora, c.estado, " . Disponibilidad::sqlNombreServicio('c', 's') . " AS nombre_servicio, e.nombre_estilista
             FROM cita c
             JOIN servicio s  ON c.id_servicio  = s.id_servicio
             JOIN estilista e ON c.id_estilista = e.id_estilista
@@ -165,7 +165,7 @@ class ClienteController extends Controller
             SELECT c.id_cita, c.fecha, c.hora, c.estado,
                    c.id_estilista,
                    m.nombre AS mascota,
-                   s.nombre_servicio,
+                   " . Disponibilidad::sqlNombreServicio('c', 's') . " AS nombre_servicio,
                    e.nombre_estilista
             FROM cita c
             JOIN mascota m  ON c.id_mascota   = m.id_mascota
@@ -387,7 +387,7 @@ class ClienteController extends Controller
     {
         $id    = $this->idClienteAutenticado($request);
         $pagos = DB::select("
-            SELECT p.fecha_pago, p.metodo_pago, p.estado_pago, p.monto, s.nombre_servicio
+            SELECT p.fecha_pago, p.metodo_pago, p.estado_pago, p.monto, " . Disponibilidad::sqlNombreServicio('c', 's') . " AS nombre_servicio
             FROM pago p
             JOIN cita c     ON p.id_cita      = c.id_cita
             JOIN servicio s ON c.id_servicio  = s.id_servicio

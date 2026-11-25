@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\Disponibilidad;
 
 class ReporteController extends Controller
 {
@@ -55,7 +56,7 @@ class ReporteController extends Controller
         $pagos = DB::select("
             SELECT p.id_pago, p.fecha_pago, p.metodo_pago, p.estado_pago,
                    c.nombre AS nombre_cliente, c.apellido AS apellido_cliente,
-                   s.nombre_servicio
+                   " . Disponibilidad::sqlNombreServicio('ci', 's') . " AS nombre_servicio
             FROM pago p
             JOIN cita ci ON p.id_cita = ci.id_cita
             JOIN cliente c ON ci.id_cliente = c.id_cliente
@@ -121,7 +122,7 @@ public function pagosExcel()
     $pagos = DB::select("
         SELECT p.fecha_pago, p.metodo_pago, p.estado_pago,
                c.nombre AS nombre_cliente, c.apellido AS apellido_cliente,
-               s.nombre_servicio
+               " . Disponibilidad::sqlNombreServicio('ci', 's') . " AS nombre_servicio
         FROM pago p
         JOIN cita ci ON p.id_cita = ci.id_cita
         JOIN cliente c ON ci.id_cliente = c.id_cliente
@@ -216,11 +217,12 @@ public function clientesExcel()
 private function consultarCitas(?int $id_estilista = null): array
 {
     if ($id_estilista === null) {
-        return DB::select("SELECT * FROM citas_completas ORDER BY fecha DESC, hora ASC");
+        return DB::select("SELECT cc.*, " . Disponibilidad::sqlNombreServicio('cc', 'cc') . " AS nombre_servicio
+                           FROM citas_completas cc ORDER BY cc.fecha DESC, cc.hora ASC");
     }
 
     return DB::select("
-        SELECT cc.*
+        SELECT cc.*, " . Disponibilidad::sqlNombreServicio('cc', 'cc') . " AS nombre_servicio
         FROM citas_completas cc
         JOIN cita c ON c.id_cita = cc.id_cita
         WHERE c.id_estilista = ?

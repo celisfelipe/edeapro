@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Services\Disponibilidad;
 
 class EnviarRecordatoriosCitas extends Command
 {
@@ -30,7 +31,7 @@ class EnviarRecordatoriosCitas extends Command
                 cl.apellido      AS cliente_apellido,
                 cl.correo        AS cliente_correo,
                 e.nombre_estilista AS estilista_nombre,
-                s.nombre_servicio  AS servicio
+                " . Disponibilidad::sqlNombreServicio('c', 's') . " AS servicio
             FROM cita c
             JOIN cliente  cl ON cl.id_cliente  = c.id_cliente
             JOIN estilista e ON e.id_estilista  = c.id_estilista

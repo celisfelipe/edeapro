@@ -68,6 +68,25 @@ class Disponibilidad
     }
 
     /**
+     * Expresión SQL con el nombre del servicio que se le muestra a las personas.
+     * Para una cita de "Servicio individual" muestra sus adicionales en lugar
+     * de ese nombre (ej. "Corte de uñas, Hidratación de pelaje"); para las
+     * demás, el nombre normal del servicio (ej. "Pelo corto").
+     *
+     * @param string $cita     alias de la tabla/vista que tiene id_cita (ej. 'c')
+     * @param string $servicio alias que tiene nombre_servicio (ej. 's')
+     */
+    public static function sqlNombreServicio(string $cita = 'c', string $servicio = 's'): string
+    {
+        return "CASE WHEN {$servicio}.nombre_servicio = '" . self::SERVICIO_INDIVIDUAL . "'
+                THEN IFNULL((SELECT GROUP_CONCAT(a.nombre_adicional ORDER BY a.nombre_adicional SEPARATOR ', ')
+                             FROM adicional_cita ac
+                             JOIN adicional a ON a.id_adicional = ac.id_adicional
+                             WHERE ac.id_cita = {$cita}.id_cita), {$servicio}.nombre_servicio)
+                ELSE {$servicio}.nombre_servicio END";
+    }
+
+    /**
      * id_servicio del "Servicio individual", o null si no existe en la base de datos.
      */
     public function idServicioIndividual(): ?int

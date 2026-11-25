@@ -182,14 +182,16 @@ class PagoAdminController extends Controller
 
     /**
      * Historial completo de pagos registrados, del más reciente al más antiguo.
-     * Incluye raza y mascota para saber qué se cobró.
+     * Incluye raza y mascota para saber qué se cobró (en las citas de solo
+     * adicionales no hay raza, y nombre_servicio trae los adicionales).
      */
     private function historial(): array
     {
         return DB::select("
             SELECT p.id_pago, p.fecha_pago, p.metodo_pago, p.estado_pago, p.monto,
                    c.nombre AS nombre_cliente, c.apellido AS apellido_cliente,
-                   s.nombre_servicio, r.nombre_raza, m.nombre AS nombre_mascota, ci.id_cita
+                   " . Disponibilidad::sqlNombreServicio('ci', 's') . " AS nombre_servicio,
+                   r.nombre_raza, m.nombre AS nombre_mascota, ci.id_cita
             FROM pago p
             JOIN cita ci    ON p.id_cita = ci.id_cita
             JOIN cliente c  ON ci.id_cliente = c.id_cliente

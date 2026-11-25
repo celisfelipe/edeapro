@@ -22,6 +22,11 @@ class Agenda
      * solo por id_servicio duplicaría cada cita una vez por raza del servicio.
      * Las horas salen en 24h (HH:MM:SS); el frontend las muestra en 12h.
      *
+     * nombre_servicio: en las citas de solo adicionales trae los nombres de
+     * los adicionales (ej. "Corte de uñas") en vez de "Servicio individual".
+     * duracion: la del servicio más 20 min por adicional (lo mismo que
+     * reserva la agenda), para que el bloque de la grilla tenga su tamaño real.
+     *
      * @param string   $fecha        YYYY-MM-DD
      * @param int|null $id_estilista si se indica, solo las citas de ese estilista
      */
@@ -31,7 +36,9 @@ class Agenda
             SELECT c.id_cita, c.fecha, c.hora, c.estado,
                    cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente,
                    m.nombre AS mascota,
-                   r.nombre_raza, s.nombre_servicio, rs.duracion,
+                   r.nombre_raza, " . Disponibilidad::sqlNombreServicio('c', 's') . " AS nombre_servicio,
+                   rs.duracion, c.id_servicio,
+                   (SELECT COUNT(*) FROM adicional_cita ac WHERE ac.id_cita = c.id_cita) AS n_adicionales,
                    e.id_estilista, e.nombre_estilista
             FROM cita c
             JOIN cliente cl  ON c.id_cliente = cl.id_cliente
@@ -49,7 +56,16 @@ class Agenda
             $params[] = $id_estilista;
         }
 
-        return DB::select($sql . " ORDER BY c.hora", $params);
+        $citas         = DB::select($sql . " ORDER BY c.hora", $params);
+        $id_individual = (new Disponibilidad())->idServicioIndividual();
+
+        foreach ($citas as $c) {
+            $base = intval($c->id_servicio) === $id_individual ? 0 : intval($c->duracion);
+            $total = $base + intval($c->n_adicionales) * Disponibilidad::MINUTOS_ADICIONAL;
+            // Sin duración conocida se deja como venía (la grilla usa 30 min por defecto)
+            if ($total > 0) $c->duracion = "{$total} min";
+        }
+        return $citas;
     }
 
     /**

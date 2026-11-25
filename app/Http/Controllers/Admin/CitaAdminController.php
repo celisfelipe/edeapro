@@ -15,16 +15,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\Disponibilidad;
 
 class CitaAdminController extends Controller
 {
     /**
      * Devuelve todas las citas del sistema usando la vista citas_completas.
      * Esta vista ya incluye nombre del cliente, mascota, servicio y estilista.
+     * En las citas de "Servicio individual", nombre_servicio muestra sus
+     * adicionales (ej. "Corte de uñas"); va de último para reemplazar al de la vista.
      */
     public function index()
     {
-        $citas = DB::select("SELECT * FROM citas_completas");
+        $citas = DB::select("SELECT cc.*, " . Disponibilidad::sqlNombreServicio('cc', 'cc') . " AS nombre_servicio FROM citas_completas cc");
         return response()->json(['ok' => true, 'citas' => $citas]);
     }
 

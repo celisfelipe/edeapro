@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Agenda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\Disponibilidad;
 
 class EmpleadoController extends Controller
 {
@@ -37,7 +38,7 @@ class EmpleadoController extends Controller
         $citas = DB::select("
             SELECT c.id_cita, c.fecha, c.hora, c.estado,
                    cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente,
-                   s.nombre_servicio
+                   " . Disponibilidad::sqlNombreServicio('c', 's') . " AS nombre_servicio
             FROM cita c
             JOIN cliente cl ON c.id_cliente = cl.id_cliente
             JOIN servicio s ON c.id_servicio = s.id_servicio
