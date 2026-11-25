@@ -20,16 +20,16 @@ class NotificacionAdminController extends Controller
 {
     /**
      * Devuelve todas las notificaciones con el nombre del cliente asociado.
-     * Ordenadas de más reciente a más antigua.
+     * Ordenadas por fecha de creación de más reciente a más antigua.
      */
     public function index()
     {
         $notificaciones = DB::select("
-            SELECT n.id_notificacion, n.titulo, n.mensaje, n.tipo, n.estado,
+            SELECT n.id_notificacion, n.titulo, n.mensaje, n.tipo, n.estado, n.fecha_creacion,
                    c.nombre AS nombre_cliente, c.apellido AS apellido_cliente
             FROM notificacion n
             JOIN cliente c ON n.id_cliente = c.id_cliente
-            ORDER BY n.id_notificacion DESC
+            ORDER BY n.fecha_creacion DESC, n.id_notificacion DESC
         ");
 
         return response()->json(['ok' => true, 'notificaciones' => $notificaciones]);
