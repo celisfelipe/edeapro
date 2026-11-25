@@ -872,6 +872,49 @@ input::placeholder {
     font-weight: 600;
 }
 
+/* Grupos por día */
+.notif-grupo {
+    margin-bottom: 22px;
+}
+
+.notif-grupo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 18px 0 10px;
+    color: var(--color-heading);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.notif-grupo:first-child .notif-grupo-titulo {
+    margin-top: 0;
+}
+
+.notif-grupo-nuevas {
+    margin-left: auto;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--color-cta);
+    color: var(--color-on-cta);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.notif .btn {
+    grid-row: 1 / span 4;
+}
+
+.notif-fecha {
+    font-size: 12px;
+    color: var(--panel-muted);
+}
+
+.notif-fecha strong {
+    color: var(--panel-graphite);
+    font-weight: 700;
+}
+
 /* Botón "Marcar todas como leídas": blanco con borde, discreto */
 #btnMarcarTodas {
     padding: 7px 14px;
