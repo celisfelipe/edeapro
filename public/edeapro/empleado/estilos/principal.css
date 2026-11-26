@@ -650,6 +650,18 @@ input::placeholder {
 .reporte-estado:empty { display: none; }
 
 
+/* Selector "Mes del reporte" (encima de las tarjetas de reportes) */
+.periodo-reportes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+}
+.periodo-reportes label   { font-weight: 600; color: var(--color-heading); }
+.periodo-reportes label i { margin-right: 6px; color: var(--panel-gold-dark); }
+.periodo-reportes p       { flex-basis: 100%; margin: 0; font-size: 13px; color: var(--color-metal-text); }
+
+
 /* ==========================================================================
    14. AGENDA (disponibilidad.html)
    La grilla en sí está en estilos/agenda-grilla.css; aquí solo se ajusta

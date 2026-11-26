@@ -52,11 +52,18 @@
             <p id="nombre-admin">Cargando...</p>
         </div>
 
+        <!-- Mes de los reportes: lo usa reportes.js al descargar -->
+        <div class="card periodo-reportes">
+            <label for="reporte-mes"><i class="fa-solid fa-calendar-days"></i> Mes del reporte</label>
+            <input type="month" id="reporte-mes">
+            <p>Citas y pagos salen solo de este mes. El de clientes trae a todos, con sus citas de este mes.</p>
+        </div>
+
         <!-- Una tarjeta por reporte; cada una descarga en PDF o Excel -->
         <div class="reportes-grid">
             <div class="card reporte-card">
                 <h2><i class="fa-solid fa-calendar-check"></i> Citas</h2>
-                <p>Todas las citas con cliente, mascota, servicio, estilista y estado.</p>
+                <p>Citas del mes con cliente, mascota, servicio, estilista y estado, y el resumen por estado.</p>
                 <div class="reporte-acciones">
                     <button type="button" class="btn btn-red" onclick="descargarReporte('citas', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button type="button" class="btn btn-green" onclick="descargarReporte('citas', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>
@@ -65,7 +72,7 @@
 
             <div class="card reporte-card">
                 <h2><i class="fa-solid fa-credit-card"></i> Pagos</h2>
-                <p>Historial de pagos con cliente, servicio, método y estado.</p>
+                <p>Pagos del mes con lo cobrado a cada cliente, total recaudado y total por método de pago.</p>
                 <div class="reporte-acciones">
                     <button type="button" class="btn btn-red" onclick="descargarReporte('pagos', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button type="button" class="btn btn-green" onclick="descargarReporte('pagos', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>
@@ -74,7 +81,7 @@
 
             <div class="card reporte-card">
                 <h2><i class="fa-solid fa-users"></i> Clientes</h2>
-                <p>Clientes registrados con datos de contacto y total de citas.</p>
+                <p>Clientes con contacto, mascotas, citas del mes, citas en total y fecha de su última cita.</p>
                 <div class="reporte-acciones">
                     <button type="button" class="btn btn-red" onclick="descargarReporte('clientes', 'pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button type="button" class="btn btn-green" onclick="descargarReporte('clientes', 'excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>

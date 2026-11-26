@@ -6,8 +6,9 @@
  * su propia entrada en el sidebar.
  *
  * API Laravel:
- *   GET /api/reportes/{tipo}/pdf   → tipo = citas | pagos | clientes
- *   GET /api/reportes/{tipo}/excel
+ *   GET /api/reportes/{tipo}/pdf?mes=AAAA-MM   → tipo = citas | pagos | clientes
+ *   GET /api/reportes/{tipo}/excel?mes=AAAA-MM
+ * El mes sale del selector "Mes del reporte" (por defecto, el mes actual).
  *
  * Depende de: fetchToken.js (fetchAuth), descargas.js (descargarArchivo),
  *             sesion.js (verificarSesionAdmin, cerrarSesion),
@@ -16,6 +17,8 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionAdmin()) return;
+    // El selector abre en el mes actual (fecha local "AAAA-MM")
+    document.getElementById('reporte-mes').value = new Date().toLocaleDateString('en-CA').slice(0, 7);
 });
 
 /**
@@ -28,9 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function descargarReporte(tipo, formato, boton) {
     const extension = formato === 'excel' ? 'xlsx' : 'pdf';
+    const mes       = document.getElementById('reporte-mes').value;   // "2026-11"
     boton.disabled = true;
 
-    descargarArchivo(`${API_BASE}/api/reportes/${tipo}/${formato}`, `reporte-${tipo}.${extension}`)
+    descargarArchivo(`${API_BASE}/api/reportes/${tipo}/${formato}?mes=${mes}`, `reporte-${tipo}-${mes}.${extension}`)
         .catch(() => modalError(`No se pudo generar el reporte de ${tipo} (${extension.toUpperCase()}).`))
         .finally(() => { boton.disabled = false; });
 }

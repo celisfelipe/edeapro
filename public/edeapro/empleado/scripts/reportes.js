@@ -6,8 +6,9 @@
  * request, así que un empleado no puede descargar las citas de otro.
  *
  * Conecta con la API de Laravel:
- *   GET /api/empleado/reportes/citas/pdf
- *   GET /api/empleado/reportes/citas/excel
+ *   GET /api/empleado/reportes/citas/pdf?mes=AAAA-MM
+ *   GET /api/empleado/reportes/citas/excel?mes=AAAA-MM
+ * El mes sale del selector "Mes del reporte" (por defecto, el mes actual).
  *
  * Depende de: fetchToken.js (fetchAuth), descargas.js (descargarArchivo),
  *             sesion.js (verificarSesionEmpleado, cerrarSesion).
@@ -15,6 +16,8 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     if (!verificarSesionEmpleado()) return;
+    // El selector abre en el mes actual (fecha local "AAAA-MM")
+    document.getElementById('reporte-mes').value = new Date().toLocaleDateString('en-CA').slice(0, 7);
 });
 
 /**
@@ -28,9 +31,10 @@ function descargarMisCitas(formato, boton) {
     const extension = formato === 'excel' ? 'xlsx' : 'pdf';
     const estado    = document.getElementById('reporte-estado');
     estado.textContent = '';
+    const mes = document.getElementById('reporte-mes').value;   // "2026-11"
     boton.disabled = true;
 
-    descargarArchivo(`${API_BASE}/api/empleado/reportes/citas/${formato}`, `mis-citas.${extension}`)
+    descargarArchivo(`${API_BASE}/api/empleado/reportes/citas/${formato}?mes=${mes}`, `mis-citas-${mes}.${extension}`)
         .catch(() => { estado.textContent = `No se pudo generar el reporte (${extension.toUpperCase()}). Intenta de nuevo.`; })
         .finally(() => { boton.disabled = false; });
 }

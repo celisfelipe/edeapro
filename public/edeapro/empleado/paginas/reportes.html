@@ -48,10 +48,17 @@
             <p id="nombre-empleado">Cargando...</p>
         </div>
 
+        <!-- Mes del reporte: lo usa reportes.js al descargar -->
+        <div class="card periodo-reportes">
+            <label for="reporte-mes"><i class="fa-solid fa-calendar-days"></i> Mes del reporte</label>
+            <input type="month" id="reporte-mes">
+            <p>El reporte trae solo tus citas de este mes.</p>
+        </div>
+
         <div class="reportes-grid">
             <div class="card reporte-card">
                 <h2><i class="fa-solid fa-calendar-check"></i> Mis citas</h2>
-                <p>Todas las citas que tienes asignadas, con cliente, mascota, servicio y estado.</p>
+                <p>Tus citas del mes, con cliente, mascota, servicio y estado, y el resumen por estado.</p>
                 <div class="reporte-acciones">
                     <button type="button" class="btn btn-red" onclick="descargarMisCitas('pdf', this)"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button type="button" class="btn btn-green" onclick="descargarMisCitas('excel', this)"><i class="fa-solid fa-file-excel"></i> Excel</button>

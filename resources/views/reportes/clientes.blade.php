@@ -1,46 +1,60 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Reporte de Clientes</title>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; color: #333; }
-        h1 { color: #af9d81; text-align: center; margin-bottom: 5px; }
-        .fecha { text-align: center; color: #888; font-size: 11px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #af9d81; color: white; padding: 8px; text-align: left; font-size: 11px; }
-        td { padding: 6px 8px; border-bottom: 1px solid #e0d5c5; font-size: 11px; }
-        tr:nth-child(even) { background: #f9f7f4; }
-        .footer { text-align: center; margin-top: 20px; font-size: 10px; color: #aaa; }
-    </style>
-</head>
-<body>
-    <h1>🐾 EDEA PRO — Reporte de Clientes</h1>
-    <div class="fecha">Generado el {{ $fecha }}</div>
+{{--
+    Reporte de clientes (PDF): la lista completa, con las citas de cada uno
+    en el mes elegido. Datos de ReporteController::datosClientes():
+      $clientes, $resumen (total, activos_mes, sin_citas)
+    Usa el diseño común de plantilla.blade.php.
+--}}
+@extends('reportes.plantilla')
 
-    <table>
+@section('contenido')
+    <table class="resumen"><tr>
+        <td class="dest">
+            <div class="lbl">Clientes registrados</div>
+            <div class="val">{{ $resumen['total'] }}</div>
+        </td>
+        <td>
+            <div class="lbl">Con citas en el mes</div>
+            <div class="val">{{ $resumen['activos_mes'] }}</div>
+        </td>
+        <td>
+            <div class="lbl">Sin citas todavía</div>
+            <div class="val">{{ $resumen['sin_citas'] }}</div>
+        </td>
+        <td>
+            <div class="lbl">Mascotas activas</div>
+            <div class="val">{{ array_sum(array_map(fn($c) => (int) $c->mascotas, $clientes)) }}</div>
+        </td>
+    </tr></table>
+
+    <table class="datos">
         <thead>
             <tr>
                 <th>#</th>
-                <th>Nombre</th>
+                <th>Cliente</th>
                 <th>Teléfono</th>
                 <th>Correo</th>
-                <th>Total Citas</th>
+                <th class="num">Mascotas</th>
+                <th class="num">Citas del mes</th>
+                <th class="num">Citas en total</th>
+                <th>Última cita</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($clientes as $i => $cliente)
-            <tr>
-                <td>{{ $i + 1 }}</td>
-                <td>{{ $cliente->nombre }} {{ $cliente->apellido }}</td>
-                <td>{{ $cliente->telefono }}</td>
-                <td>{{ $cliente->correo }}</td>
-                <td>{{ $cliente->total_citas }}</td>
-            </tr>
-            @endforeach
+            @forelse($clientes as $i => $c)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $c->nombre }} {{ $c->apellido }}</td>
+                    <td>{{ $c->telefono ?: '—' }}</td>
+                    <td>{{ $c->correo }}</td>
+                    <td class="num">{{ (int) $c->mascotas }}</td>
+                    <td class="num">{{ (int) $c->citas_mes }}</td>
+                    <td class="num">{{ (int) $c->total_citas }}</td>
+                    <td>{{ $c->ultima_cita ? $fecha($c->ultima_cita) : '—' }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="8" class="vacio">No hay clientes registrados.</td></tr>
+            @endforelse
         </tbody>
     </table>
-
-    <div class="footer">EDEA PRO — Peluquería Canina y Felina</div>
-</body>
-</html>
+    <p style="margin-top:6px; font-size:8px; color:#706B63">Las citas canceladas no se cuentan.</p>
+@endsection
